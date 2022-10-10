@@ -9,17 +9,21 @@ import {
 import Logo from '../../../assets/images/logo.png';
 import CustomInput from '../../components/CustomInput';
 import CustomButton from '../../components/CustomButton';
-import GoogleButton from '../../components/GoogleButton';
 import { useForm } from 'react-hook-form';
 import useAuth from '../../hooks/useAuth';
 
-const SignInScreen = () => {
-  const { signInWithGoogle, onSignInPressed } = useAuth();
+const FormScreen = () => {
+  //const { signInWithGoogle, onSignInPressed } = useAuth();
   const {height} = useWindowDimensions();
   const {
     control,
     handleSubmit,
   } = useForm();
+
+  const onCompleteSignInPressed = (data) => {
+      console.warn('Sign in!');
+      console.log('Sign in: ', data);
+  }
 
   return (
     <ScrollView showVerticalScrollIndicator={false}>
@@ -31,37 +35,37 @@ const SignInScreen = () => {
         />
 
         <CustomInput 
-            name="username"
-            placeholder="Username"
+            name="name"
+            placeholder="Name"
             control={control}
-            rules={{required: 'Username is required'}}
+            rules={{required: 'Name is required'}}
         />
         <CustomInput 
-            name="password"
-            placeholder="Password"
+            name="lastname"
+            placeholder="Lastname"
             control={control}
-            rules={{
-                required: 'Password is required', 
-                minLength: {value: 4, message: 'Password should be minimum 4 characters long'}
-            }}
-            secureTextEntry
+            rules={{required: 'Lastname is required'}}
+        />
+        <CustomInput 
+            name="role"
+            placeholder="Passenger or Driver?"
+            control={control}
+            rules={{required: 'Role is required'}}
+        />
+        <CustomInput 
+            name="address"
+            placeholder="Address"
+            control={control}
+            rules={{required: 'Address is required'}}
         />
 
         <CustomButton 
-            text="Sign in"
-            onPress={handleSubmit(onSignInPressed)}
-        />
-
-        {/* Login federado */}
-        <GoogleButton onPress={signInWithGoogle} />
-
-        <CustomButton 
-            text="Don't have an account? Create one"
-            type="TERTIARY"
+            text="Complete sign in"
+            onPress={handleSubmit(onCompleteSignInPressed)}
         />
     </View>
     </ScrollView>
-);
+    );
 };
 
 const styles = StyleSheet.create({
@@ -77,4 +81,4 @@ logo: {
 });
 
 
-export default SignInScreen;
+export default FormScreen;

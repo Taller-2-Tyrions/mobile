@@ -1,14 +1,15 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, Button } from 'react-native';
 import useAuth from '../../hooks/useAuth';
 
 const HomeScreen = () => {
-  const { user } = useAuth();
+  const { accessToken, logout } = useAuth();
 
   return (
     <View>
       <Text>I am the home screen</Text>
-      <Text>{user.email}</Text>
+      <Text>{accessToken}</Text>
+      <Button title={'Logout'} onPress={logout} />
         
     </View>
   );
