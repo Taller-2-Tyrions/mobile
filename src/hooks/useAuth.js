@@ -62,17 +62,13 @@ export function AuthProvider({ children }) {
             // pasar a backend auth.currentUser.accessToken
 
             //setAccessToken(auth.currentUser.accessToken);
-            //console.log('AT: ', auth.currentUser.accessToken);
+            console.log('AT: ', auth.currentUser);
 
             const url = 'https://fiuber-gateway.herokuapp.com/login/google';
         
             axios
                 .post(url, {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Authorization: `Bearer ${auth.currentUser.accessToken}`
-                    },
-                    withCredentials: true,
+                    "token": auth.currentUser.accessToken,
                 })
                 .then((res) => {
                     const {token, is_registered} = res.data;
@@ -84,10 +80,11 @@ export function AuthProvider({ children }) {
                         console.log('is registered: ', is_registered);
                         
                         setAccessToken(token);
+                        setIsRegistered(is_registered);
                     }
                 })
                 .catch(err => {
-                    console.warn(err);
+                    console.warn('Error en axios:', err);
                 })
         }
         
@@ -96,6 +93,32 @@ export function AuthProvider({ children }) {
     async function signInWithGoogle() {
         promptAsync({showInRecents: true});
     };
+
+    const completeForm = async (data) => {
+        const url = 'https://fiuber-gateway.herokuapp.com/users';
+        
+        console.log('Data: ', data);
+
+        // validate user -> backend
+        axios
+            .post(url, {
+                "user": {
+                    "name": data.name,
+                    "last_name": data.lastname,
+                    "roles": [data.role],
+                    "address": data.address
+                },
+                "token": {
+                    "token": accessToken
+                }
+            })
+            .then((res) => {
+                setIsRegistered(true);
+            })
+            .catch(err => {
+                console.warn(err);
+            })
+    }
 
     const onSignInPressed = (data) => {
         const url = 'https://fiuber-gateway.herokuapp.com/login';
@@ -116,6 +139,7 @@ export function AuthProvider({ children }) {
                     console.log('is registered: ', is_registered);
                     
                     setAccessToken(token);
+                    setIsRegistered(is_registered);
                 }
             })
             .catch(err => {
@@ -132,8 +156,9 @@ export function AuthProvider({ children }) {
         signInWithGoogle,
         onSignInPressed,
         logout,
-        isRegistered
-    }), [accessToken, logout, signInWithGoogle, onSignInPressed, isRegistered]);
+        isRegistered,
+        completeForm
+    }), [accessToken, logout, signInWithGoogle, onSignInPressed, isRegistered, completeForm]);
 
     return (
         <AuthContext.Provider value={memoedValue}>

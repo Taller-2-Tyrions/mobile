@@ -13,17 +13,12 @@ import { useForm } from 'react-hook-form';
 import useAuth from '../../hooks/useAuth';
 
 const FormScreen = () => {
-  //const { signInWithGoogle, onSignInPressed } = useAuth();
+  const { completeForm, logout } = useAuth();
   const {height} = useWindowDimensions();
   const {
     control,
     handleSubmit,
   } = useForm();
-
-  const onCompleteSignInPressed = (data) => {
-      console.warn('Sign in!');
-      console.log('Sign in: ', data);
-  }
 
   return (
     <ScrollView showVerticalScrollIndicator={false}>
@@ -48,7 +43,7 @@ const FormScreen = () => {
         />
         <CustomInput 
             name="role"
-            placeholder="Passenger or Driver?"
+            placeholder="User or Driver?"
             control={control}
             rules={{required: 'Role is required'}}
         />
@@ -61,7 +56,11 @@ const FormScreen = () => {
 
         <CustomButton 
             text="Complete sign in"
-            onPress={handleSubmit(onCompleteSignInPressed)}
+            onPress={handleSubmit(completeForm)}
+        />
+        <CustomButton 
+            text="Logout"
+            onPress={logout}
         />
     </View>
     </ScrollView>
