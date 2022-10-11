@@ -12,14 +12,20 @@ import CustomButton from '../../components/CustomButton';
 import GoogleButton from '../../components/GoogleButton';
 import { useForm } from 'react-hook-form';
 import useAuth from '../../hooks/useAuth';
+import { useNavigation } from '@react-navigation/native';
 
 const SignInScreen = () => {
   const { signInWithGoogle, onSignInPressed } = useAuth();
   const {height} = useWindowDimensions();
+  const navigation = useNavigation();
   const {
     control,
     handleSubmit,
   } = useForm();
+
+  const goToSignUp = () => {
+    navigation.navigate('SignUp');
+  }
 
   return (
     <ScrollView showVerticalScrollIndicator={false}>
@@ -58,6 +64,7 @@ const SignInScreen = () => {
         <CustomButton 
             text="Don't have an account? Create one"
             type="TERTIARY"
+            onPress={goToSignUp}
         />
     </View>
     </ScrollView>

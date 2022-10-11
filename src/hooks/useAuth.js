@@ -30,6 +30,7 @@ export function AuthProvider({ children }) {
     const [isRegistered, setIsRegistered] = useState(false);
     const [idUser, setIdUser] = useState(null);
     const [infoHome, setInfoHome] = useState(null);
+    const [isUser, setIsUser] = useState(false);
 
     const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
         expoClientId: '388259755156-rouqicldlne824v27jfoh8lfen057gnu.apps.googleusercontent.com',
@@ -43,7 +44,6 @@ export function AuthProvider({ children }) {
         const unsub = onAuthStateChanged(auth, (user) => {
             if (user) {
                 setAccessToken(user.accessToken);
-                //console.log('AT del user: ', user.accessToken);
             } else {
                 setUser(null);
             }
@@ -61,7 +61,7 @@ export function AuthProvider({ children }) {
             const credential = GoogleAuthProvider.credential(id_token);
             signInWithCredential(auth, credential);
                         
-            console.log('AT: ', auth.currentUser);
+            //console.log('AT: ', auth.currentUser);
 
             const url = 'https://fiuber-gateway.herokuapp.com/login/google';
         
@@ -75,16 +75,13 @@ export function AuthProvider({ children }) {
                     if (!token) {
                         console.warn('Error');
                     } else {
-                        console.log('AT: ', token);
-                        console.log('is registered: ', is_registered);
-                        
                         setAccessToken(token);
                         setIsRegistered(is_registered);
                         setIdUser(id);
                     }
                 })
                 .catch(err => {
-                    console.warn('Error en axios:', err);
+                    console.log('Error en axios 1:', err);
                 })
         }
         
@@ -96,8 +93,6 @@ export function AuthProvider({ children }) {
 
     const completeForm = async (data) => {
         const url = 'https://fiuber-gateway.herokuapp.com/users';
-        
-        console.log('Data: ', data);
 
         // validate user -> backend
         axios
@@ -133,20 +128,17 @@ export function AuthProvider({ children }) {
                 const {token, is_registered, id} = res.data;
     
                 if (!token) {
-                    console.warn('Error');
-                } else {
-                    console.log('AT: ', token);
-                    console.log('is registered: ', is_registered);
-                    
+                    console.log('Error');
+                } else {                    
                     setAccessToken(token);
                     setIsRegistered(is_registered);
                     setIdUser(id);
                 }
             })
             .catch(err => {
-                console.warn(err);
+                console.log('Error en axios 2: ', err);
             })
-        };
+    };
 
     const logout = () => {
         setAccessToken(null);
@@ -162,11 +154,11 @@ export function AuthProvider({ children }) {
               },
             })
             .then((res) => {
-                console.log('Anduvo: ', res.data);
                 setInfoHome(res.data);
+                setIsUser(infoHome.roles.includes("User"));
             })
             .catch(err => {
-                console.log('Error en axios:', err);
+                console.log('Error en axios 3:', err);
             })
       }
 
@@ -184,7 +176,8 @@ export function AuthProvider({ children }) {
         isRegistered,
         completeForm,
         idUser,
-        infoHome
+        infoHome,
+        isUser
     }), [
         accessToken,
         logout,
@@ -193,7 +186,8 @@ export function AuthProvider({ children }) {
         isRegistered,
         completeForm,
         idUser,
-        infoHome
+        infoHome,
+        isUser
     ]);
 
     return (
