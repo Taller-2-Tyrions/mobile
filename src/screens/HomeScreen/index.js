@@ -1,12 +1,28 @@
-import { StyleSheet, Text, View, TextInput, Pressable } from 'react-native'
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
+import { StyleSheet, Text, View } from 'react-native'
 import useAuth from '../../hooks/useAuth';
+import useAuthProfile from '../../hooks/useAuthProfile';
 import FormPopUp from '../../components/FormPopUp';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 const HomeScreen = () => {
   const { user } = useAuth();
+  const { profile, getProfile } = useAuthProfile();
   console.log(user);
+
+  useEffect(() => {
+    if (user.formComplete) {
+      getProfile(user);
+
+      console.log('Perfil del usuario seteado: ', profile);
+    }
+  }, [user]);
+
+  useEffect(() => {
+    if (profile.id) {
+      console.log('Perfil del usuario seteado: ', profile);
+    }
+  }, [profile]);
+
   return (
     <>
       <View style={styles.container}>
@@ -20,7 +36,7 @@ const HomeScreen = () => {
   )
 }
 
-export default HomeScreen
+export default HomeScreen;
 
 const styles = StyleSheet.create({
     container: {

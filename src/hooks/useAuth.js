@@ -76,8 +76,6 @@ export function AuthProvider({ children }) {
 
     const completeForm = async (accessToken, data) => {
         const url = 'https://fiuber-gateway.herokuapp.com/users';
-        console.log("Data: ", data);
-        console.log("Access token: ", accessToken);
 
         axios
             .post(url,
