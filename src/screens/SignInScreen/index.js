@@ -23,7 +23,6 @@ const SignInScreen = () => {
     control,
     handleSubmit,
   } = useForm();
-  const [loading, setLoading] = useState(false);
 
   // reset del usuario para que no hayan bugs
   useEffect(() => {
@@ -37,13 +36,11 @@ const SignInScreen = () => {
   }
 
   const onSignInPressed = async (data) => {
-    setLoading(true);
     await signIn(data);
 
-    if (user.accessToken && user.id) {
+    /*if (user.accessToken && user.id) {
       navigation.navigate('Home');
-    }
-    setLoading(false);
+    }*/
   }
 
   const signInGoogle = () => {
@@ -81,7 +78,6 @@ const SignInScreen = () => {
               onPress={handleSubmit(onSignInPressed)}
           />
 
-          {/* Login federado */}
           <GoogleButton onPress={signInGoogle} />
 
           <CustomButton 

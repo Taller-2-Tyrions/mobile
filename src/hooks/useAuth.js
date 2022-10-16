@@ -80,32 +80,36 @@ export function AuthProvider({ children }) {
         console.log("Access token: ", accessToken);
 
         axios
-            .post(url, {
-                body: {
-                    "name": data.name,
-                    "last_name": data.lastname,
-                    "roles": ["Passenger"],
-                    "address": data.defaultAddress
-                },
-                header: {
+            .post(url,
+            {
+                "name": data.name,
+                "last_name": data.lastname,
+                "roles": ["Passenger"],
+                "address": data.defaultAddress,
+            }, 
+            {
+                headers: {
                     token: accessToken,
                 },
-                withCredentials: true,
             })
-            .then((res) => {
+            /*.then((res) => {
                 console.log('El usuario terminó el form');
             })
             .catch(err => {
-                console.log(err.response);
-            })
+                console.log(err);
+            })*/
+            setUser({
+                ...user,
+                formComplete: true,
+            });
     };
 
     const logout = () => {
-        /*setUser({
+        setUser({
             accessToken: null,
             id: null,
             formComplete: null,
-        });*/
+        });
     };
 
 
