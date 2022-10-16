@@ -18,11 +18,11 @@ const SearchScreen = () => {
 
     const checkNavigation = () => {
         if (originPlace && destinationPlace) {
-            //navigation.navigate('SearchResults', {
-            //    originPlace,
-            //    destinationPlace
-            //});
-            console.log('Todo seteado');
+            console.log('Origen y destino: ', originPlace, destinationPlace);
+            navigation.navigate('SearchResultsScreen', {
+                originPlace,
+                destinationPlace
+            });
         }
     };
 
