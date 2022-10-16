@@ -1,8 +1,22 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styles from './styles';
-import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps';
+import MapView, {PROVIDER_GOOGLE} from 'react-native-maps';
+import * as Location from 'expo-location';
+
+Location.installWebGeolocationPolyfill();
 
 const HomeMap = () => {
+    useEffect(() => {
+        (async () => {
+          
+          let { status } = await Location.requestForegroundPermissionsAsync();
+          if (status !== 'granted') {
+            console.warn('Permission to access location was denied');
+            return;
+          }
+        })();
+    }, []);
+
     return (
         <MapView
             provider={PROVIDER_GOOGLE}
