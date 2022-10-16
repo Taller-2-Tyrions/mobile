@@ -4,6 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import HomeNavigator from './HomeNavigator';
 import CustomDrawer from './CustomDrawer';
+import DriverDrawer from './DriverDrawer';
 import { AuthProvider } from '../hooks/useAuth';
 import { AuthProfileProvider } from '../hooks/useAuthProfile';
 
@@ -37,11 +38,7 @@ const RootNavigator = () => {
                         { () => <DummyScreen name={"Wallet"} />}
                     </Drawer.Screen>
 
-                    <Drawer.Screen name="Settings">
-                        { () => <DummyScreen name={"Settings"} />}
-                    </Drawer.Screen>
-
-                    <Drawer.Screen name="DriverApp">
+                    <Drawer.Screen name="Driver App">
                         { () => <DummyScreen name={"Driver App"} />}
                     </Drawer.Screen>
                     </Drawer.Navigator>
