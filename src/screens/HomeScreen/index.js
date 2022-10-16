@@ -1,22 +1,31 @@
-import React, {useEffect} from 'react';
-import { View, Text, Button } from 'react-native';
+import { StyleSheet, Text, View, TextInput, Pressable } from 'react-native'
+import React, { useState } from 'react';
 import useAuth from '../../hooks/useAuth';
-import axios from 'axios';
-import { useNavigation } from '@react-navigation/native';
-
-axios.defaults.withCredentials = true;
+import FormPopUp from '../../components/FormPopUp';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const HomeScreen = () => {
-  const { infoHome, logout } = useAuth();
-  const navigation = useNavigation();
-
+  const { user } = useAuth();
+  console.log(user);
   return (
-    <View>
-        <Text style={{fontSize: 24, alignSelf: 'center'}}>Cargando contenidos</Text>
-        <Button title={'Logout'} onPress={logout} />
-        
-    </View>
-  );
-};
+    <>
+      <View style={styles.container}>
+        <Text>HOME</Text>
+      </View>
+      {
+        !user.formComplete && <FormPopUp />
+      }
+    
+    </>
+  )
+}
 
-export default HomeScreen;
+export default HomeScreen
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',    
+      }
+})

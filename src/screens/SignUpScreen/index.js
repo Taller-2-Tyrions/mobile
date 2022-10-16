@@ -9,12 +9,13 @@ import CustomInput from '../../components/CustomInput';
 import CustomButton from '../../components/CustomButton';
 import { useNavigation } from '@react-navigation/native';
 import { useForm } from 'react-hook-form';
-import axios from 'axios';
+import useAuth from '../../hooks/useAuth';
 
 const EMAIL_REGEX =
   /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
 const SignUpScreen = () => {
+    const { user, register } = useAuth();
     const {
         control,
         handleSubmit,
@@ -24,31 +25,14 @@ const SignUpScreen = () => {
     }});
     const pwd = watch('password');
     const navigation = useNavigation();
-    const [registerSuccess, setRegisterSuccess] = useState(false);
 
     const onRegisterPressed = async (data) => {
-        const url = 'https://fiuber-gateway.herokuapp.com/signup';
-        
-        // validate user -> backend
-        await axios
-            .post(url, {
-                "email": data.email,
-                "password": data.password
-            })
-            .then((res) => {
-                console.log('success');
-                setRegisterSuccess(true);
-            })
-            .catch(err => {
-                console.warn('Error axios: ', err);
-            })
-    };
+        await register(data);
 
-    useEffect(() => {
-        if (registerSuccess) {
-            navigation.navigate('SignIn');
+        if (user.accessToken) {
+            navigation.navigate('Home');
         }
-    }, [registerSuccess]);
+    };
 
     const onSignInPressed = () => {
         navigation.navigate('SignIn');
