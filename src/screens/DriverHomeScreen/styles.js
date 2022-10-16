@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 50,
-        top: 20,
+        top: 35,
         left: Dimensions.get('window').width / 2 - 50,
       },
       balanceText: {
