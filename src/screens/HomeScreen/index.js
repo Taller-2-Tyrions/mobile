@@ -1,8 +1,10 @@
 import React, { useEffect } from 'react';
-import { StyleSheet, Text, View } from 'react-native'
+import { View, Dimensions } from 'react-native'
 import useAuth from '../../hooks/useAuth';
 import useAuthProfile from '../../hooks/useAuthProfile';
 import FormPopUp from '../../components/FormPopUp';
+import HomeMap from '../../components/HomeMap';
+import HomeSearch from '../../components/HomeSearch';
 
 const HomeScreen = () => {
   const { user } = useAuth();
@@ -12,8 +14,6 @@ const HomeScreen = () => {
   useEffect(() => {
     if (user.formComplete) {
       getProfile(user);
-
-      console.log('Perfil del usuario seteado: ', profile);
     }
   }, [user]);
 
@@ -25,9 +25,12 @@ const HomeScreen = () => {
 
   return (
     <>
-      <View style={styles.container}>
-        <Text>HOME</Text>
-      </View>
+      <View>
+          <View style={{height: Dimensions.get('window').height-400}}>
+              <HomeMap />
+          </View>
+          <HomeSearch nameDefaultAddress={"Default address"} />
+        </View>
       {
         !user.formComplete && <FormPopUp />
       }
@@ -37,11 +40,3 @@ const HomeScreen = () => {
 }
 
 export default HomeScreen;
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',    
-      }
-})
