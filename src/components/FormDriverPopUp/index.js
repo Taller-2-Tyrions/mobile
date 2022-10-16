@@ -5,16 +5,18 @@ import { useForm } from 'react-hook-form';
 import CustomInput from '../CustomInput';
 import CustomButton from '../CustomButton';
 import useAuth from '../../hooks/useAuth';
+import useAuthProfile from '../../hooks/useAuthProfile';
 
-const FormPopUp = () => {
+const FormDriverPopUp = () => {
     const {
         control,
         handleSubmit,
     } = useForm();
-    const { user, completeForm } = useAuth();
+    const { user } = useAuth();
+    const { profile, completeDriverForm } = useAuthProfile();
 
     const onSubmitPressed = async (data) => {
-        completeForm(user.accessToken, data);
+        completeDriverForm(user.accessToken, profile, data);
     }
 
     return (
@@ -26,29 +28,38 @@ const FormPopUp = () => {
                 
                 <View style={styles.formContainer}>
                     <CustomInput 
-                        name="name"
-                        placeholder="First name"
+                        name="model"
+                        placeholder="Modelo del vehículo"
                         control={control}
                         rules={{
-                            required: 'First name is required',
+                            required: 'Campo obligatorio',
                         }}
                     />
 
                     <CustomInput 
-                        name="lastname"
-                        placeholder="Last name"
+                        name="year"
+                        placeholder="Año"
                         control={control}
                         rules={{
-                            required: 'Last name is required',
+                            required: 'Campo obligatorio',
                         }}
                     />
 
                     <CustomInput 
-                        name="defaultAddress"
-                        placeholder="Default address"
+                        name="plaque"
+                        placeholder="Placa"
                         control={control}
                         rules={{
-                            required: 'Default address is required',
+                            required: 'Campo obligatorio',
+                        }}
+                    />
+
+                    <CustomInput 
+                        name="capacity"
+                        placeholder="Capacidad"
+                        control={control}
+                        rules={{
+                            required: 'Campo obligatorio',
                         }}
                     />
 
@@ -62,4 +73,4 @@ const FormPopUp = () => {
     )
 }
 
-export default FormPopUp;
+export default FormDriverPopUp;

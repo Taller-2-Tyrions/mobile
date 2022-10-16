@@ -13,13 +13,16 @@ export function AuthProfileProvider({ children }) {
         isBlocked: null
     });
 
-    const getProfile = async (user) => {
-        const url = `https://fiuber-gateway.herokuapp.com/users/${user.id}`;
+    const getProfile = async (id, accessToken) => {
+        if (!id || !accessToken) {
+            console.log('fallo un parametro');
+        }
+        const url = `https://fiuber-gateway.herokuapp.com/users/${id}`;
     
         axios
         .get(url, {
             headers: {
-                token: user.accessToken
+                token: accessToken
             }
         })
         .then((res) => {
@@ -31,6 +34,8 @@ export function AuthProfileProvider({ children }) {
                 is_blocked,
                 address
             } = res.data;
+            
+            console.log('Roles: ', roles)
 
             setProfile({
                 id: id,
@@ -44,13 +49,42 @@ export function AuthProfileProvider({ children }) {
         .catch(err => {
             console.log('error in getProfile', err);
         });
+    };
+
+    const completeDriverForm = async (accessToken, profile, data) => {
+        const url = `https://fiuber-gateway.herokuapp.com/users/driver/${profile.id}`;
+
+        axios
+        .post(url, {
+            "name": profile.name,
+            "last_name": profile.lastName,
+            "roles": ["Driver"],
+            "car": {
+                "model": data.model,
+                "year": data.year,
+                "plaque": data.plaque,
+                "capacity": data.capacity,
+            }
+        }, {
+            headers: {
+                token: accessToken
+            }
+        })
+        /*.then((res) => {
+            console.log('funcionó');
+        })
+        .catch(err => {
+            console.log('Error in CompleteDriverForm: ', err);
+        })*/
+
+        await getProfile(profile.id, accessToken);
     }
 
 
     const memoedValue = useMemo(() => ({
-        profile, getProfile,
+        profile, getProfile, completeDriverForm
     }), [
-        profile, getProfile,
+        profile, getProfile, completeDriverForm
     ]);
 
     return (

@@ -13,7 +13,7 @@ const HomeScreen = () => {
 
   useEffect(() => {
     if (user.formComplete) {
-      getProfile(user);
+      getProfile(user.id, user.accessToken);
     }
   }, [user]);
 
