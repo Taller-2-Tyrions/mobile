@@ -8,7 +8,7 @@ const HomeSearch = ({ nameDefaultAddress }) => {
     const navigation = useNavigation();
 
     const goToSearch = () => {
-        //navigation.navigate('DestinationSearch');
+        navigation.navigate('SearchScreen');
     };
 
     return (
