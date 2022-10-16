@@ -1,24 +1,20 @@
-import { View, TextInput } from 'react-native';
+import { View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import React, { useState, useEffect } from 'react';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { useNavigation } from '@react-navigation/native';
 import styles from './styles';
 import PlaceRow from './PlaceRow';
-
-const homePlace = {
-    description: 'Home',
-    geometry: { location: { lat: 48.8152937, lng: 2.4597668 } },
-};
-  const workPlace = {
-    description: 'Work',
-    geometry: { location: { lat: 48.8496818, lng: 2.2940881 } },
-};
+import useAuthProfile from '../../hooks/useAuthProfile';
 
 const SearchScreen = () => {
     const [originPlace, setOriginPlace] = useState(null);
     const [destinationPlace, setDestinationPlace] = useState(null);
     const navigation = useNavigation();
+    const { profile } = useAuthProfile();
+    const location = {
+        description: profile.defaultAddress,
+    };
 
     const checkNavigation = () => {
         if (originPlace && destinationPlace) {
@@ -44,7 +40,7 @@ const SearchScreen = () => {
                     }}
                     suppressDefaultStyles
                     currentLocation={true}
-                    currentLocationLabel='Current location'
+                    currentLocationLabel='Ubicación actual'
                     enablePoweredByContainer={false}
                     styles={{
                         textInput: styles.textInput,
@@ -59,7 +55,7 @@ const SearchScreen = () => {
                     }}
                     renderRow={(data) => <PlaceRow data={data} />}
                     renderDescription={(data) => data.description || data.vicinity}
-                    predefinedPlaces={[homePlace, workPlace]}
+                    predefinedPlaces={[location]}
                 />
 
                 <GooglePlacesAutocomplete
@@ -83,6 +79,7 @@ const SearchScreen = () => {
                         language: 'en',
                     }}
                     renderRow={(data) => <PlaceRow data={data} />}
+                    predefinedPlaces={[location]}
                 />
 
                 {/* Círculo al lado del "Where to?" */}
