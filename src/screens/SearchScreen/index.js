@@ -18,7 +18,9 @@ const SearchScreen = () => {
 
     const checkNavigation = () => {
         if (originPlace && destinationPlace) {
-            console.log('Origen y destino: ', originPlace, destinationPlace);
+            console.log('Origen: ', originPlace.details.geometry.location);
+            //console.log('Origen: ', originPlace.data.geometry.location);
+            console.log('Destino: ', destinationPlace.details.geometry.location);
             navigation.navigate('SearchResultsScreen', {
                 originPlace,
                 destinationPlace
