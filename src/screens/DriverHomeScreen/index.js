@@ -6,13 +6,28 @@ import styles from './styles';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import useAuthProfile from '../../hooks/useAuthProfile';
 import FormDriverPopUp from '../../components/FormDriverPopUp';
+import useLocation from '../../hooks/useLocation';
+import useAuth from '../../hooks/useAuth';
 
 const DriverHomeScreen = () => {
-    const [isOnline, setIsOnline] = useState(false);
     const { profile } = useAuthProfile();
+    const { user } = useAuth();
+    const { setDriverOnline, setDriverOffline, changeDriverLocation } = useLocation();
+    const [isOnline, setIsOnline] = useState(false);
 
-    const onGoPress = () => {
+    const onGoPress = async () => {
+        if (isOnline) {
+            await setDriverOffline(user.accessToken);
+        } else {
+            await setDriverOnline(user.accessToken);
+        }
+
         setIsOnline(!isOnline);
+    };
+
+    const onUserLocationChange = async (event) => {
+        //console.log('event.native.coord: ', event.nativeEvent.coordinate);
+        await changeDriverLocation(user.accessToken, event.nativeEvent.coordinate);
     };
 
     const renderBottomTitle = () => {
@@ -34,6 +49,7 @@ const DriverHomeScreen = () => {
                     provider={PROVIDER_GOOGLE}
                     style={styles.map}
                     showsUserLocation={true}
+                    onUserLocationChange={onUserLocationChange}
                     initialRegion={{
                         latitude: -34.7425261,
                         longitude: -58.3869874,
