@@ -11,12 +11,11 @@ import { useNavigation } from "@react-navigation/native";
 const EditProfileScreen = () => {
   const navigation = useNavigation();
   const { control, handleSubmit } = useForm();
-  //const { user, editProfile } = useAuth();
+  const { editProfile } = useAuth();
 
   const onSubmitPressed = async (data) => {
-    console.log("New data: ", data);
+    await editProfile(data);
     navigation.navigate("ProfileScreen");
-    //editProfile(user.accessToken, data);
   };
 
   return (

@@ -7,6 +7,7 @@ import CustomDrawer from "./CustomDrawer";
 import { AuthProvider } from "../hooks/useAuth";
 import { AuthProfileProvider } from "../hooks/useAuthProfile";
 import { LocationProvider } from "../hooks/useLocation";
+import { AuthGoogleProvider } from "../hooks/useAuthGoogle";
 import { PushNotificationProvider } from "../hooks/usePushNotification";
 import DriverHomeScreen from "../screens/DriverHomeScreen";
 
@@ -23,28 +24,30 @@ const RootNavigator = () => {
     <NavigationContainer>
       <PushNotificationProvider>
         <AuthProvider>
-          <AuthProfileProvider>
-            <LocationProvider>
-              <Drawer.Navigator
-                screenOptions={{ headerShown: false }}
-                drawerContent={(props) => <CustomDrawer {...props} />}
-              >
-                <Drawer.Screen name="Home" component={HomeNavigator} />
+          <AuthGoogleProvider>
+            <AuthProfileProvider>
+              <LocationProvider>
+                <Drawer.Navigator
+                  screenOptions={{ headerShown: false }}
+                  drawerContent={(props) => <CustomDrawer {...props} />}
+                >
+                  <Drawer.Screen name="Home" component={HomeNavigator} />
 
-                <Drawer.Screen name="Your Trips">
-                  {() => <DummyScreen name={"Your Trips"} />}
-                </Drawer.Screen>
+                  <Drawer.Screen name="Your Trips">
+                    {() => <DummyScreen name={"Your Trips"} />}
+                  </Drawer.Screen>
 
-                <Drawer.Screen name="Wallet">
-                  {() => <DummyScreen name={"Wallet"} />}
-                </Drawer.Screen>
+                  <Drawer.Screen name="Wallet">
+                    {() => <DummyScreen name={"Wallet"} />}
+                  </Drawer.Screen>
 
-                <Drawer.Screen name="Driver App">
-                  {() => <DriverHomeScreen />}
-                </Drawer.Screen>
-              </Drawer.Navigator>
-            </LocationProvider>
-          </AuthProfileProvider>
+                  <Drawer.Screen name="Driver App">
+                    {() => <DriverHomeScreen />}
+                  </Drawer.Screen>
+                </Drawer.Navigator>
+              </LocationProvider>
+            </AuthProfileProvider>
+          </AuthGoogleProvider>
         </AuthProvider>
       </PushNotificationProvider>
     </NavigationContainer>

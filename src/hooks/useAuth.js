@@ -5,31 +5,10 @@ import React, {
   createContext,
   useContext,
 } from "react";
-import * as Google from "expo-auth-session/providers/google";
-import * as WebBrowser from "expo-web-browser";
 import axios from "axios";
-import {
-  GoogleAuthProvider,
-  onAuthStateChanged,
-  signInWithCredential,
-  getAuth,
-} from "firebase/auth";
-import { initializeApp } from "firebase/app";
 import usePushNotification from "./usePushNotification";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyBSenFicB4rNCqRO183gmoMILDImbTR84Y",
-  authDomain: "fiuber-36b86.firebaseapp.com",
-  projectId: "fiuber-36b86",
-  storageBucket: "fiuber-36b86.appspot.com",
-  messagingSenderId: "388259755156",
-  appId: "1:388259755156:web:04d82df1a410135ee9f081",
-};
-
-initializeApp(firebaseConfig);
-
 const AuthContext = createContext({});
-WebBrowser.maybeCompleteAuthSession();
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState({
@@ -66,6 +45,20 @@ export function AuthProvider({ children }) {
       })
       .catch((err) => {
         console.log("signIn error: ", err);
+      });
+  };
+
+  const editProfile = async (data) => {
+    const url = `https://fiuber-gateway.herokuapp.com/users/passenger/${user.id}`;
+
+    await axios
+      .put(url, {
+        name: data.name,
+        last_name: data.lastname,
+        address: data.defaultAddress,
+      })
+      .catch((err) => {
+        console.log("Error in edit profile: ", err);
       });
   };
 
@@ -124,12 +117,14 @@ export function AuthProvider({ children }) {
   const memoedValue = useMemo(
     () => ({
       user,
+      setUser,
       signIn,
       register,
       logout,
       completeForm,
+      editProfile,
     }),
-    [user, signIn, register, logout, completeForm]
+    [user, setUser, signIn, register, logout, completeForm, editProfile]
   );
 
   return (
