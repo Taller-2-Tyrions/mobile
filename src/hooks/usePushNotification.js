@@ -4,7 +4,6 @@ import React, {
   useMemo,
   createContext,
   useContext,
-  useCallback,
   useRef,
 } from "react";
 import * as Notifications from "expo-notifications";
@@ -97,8 +96,10 @@ export function PushNotificationProvider({ children }) {
     () => ({
       requestPermission,
       expoToken,
+      notification,
+      setNotification,
     }),
-    [requestPermission, expoToken]
+    [requestPermission, expoToken, notification, setNotification]
   );
 
   return (
