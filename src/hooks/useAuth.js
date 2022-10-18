@@ -15,6 +15,7 @@ import {
   getAuth,
 } from "firebase/auth";
 import { initializeApp } from "firebase/app";
+import usePushNotification from "./usePushNotification";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBSenFicB4rNCqRO183gmoMILDImbTR84Y",
@@ -36,14 +37,17 @@ export function AuthProvider({ children }) {
     id: null,
     formComplete: null,
   });
+  const { expoToken } = usePushNotification();
 
   const signIn = async (data) => {
     const url = "https://fiuber-gateway.herokuapp.com/login";
+    console.log("Token que llega a signIn: ", expoToken);
 
     axios
       .post(url, {
         email: data.email,
         password: data.password,
+        device_token: expoToken,
       })
       .then((res) => {
         const { token, is_registered, id } = res.data;

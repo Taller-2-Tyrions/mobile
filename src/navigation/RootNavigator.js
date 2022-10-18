@@ -21,10 +21,10 @@ const DummyScreen = (props) => (
 const RootNavigator = () => {
   return (
     <NavigationContainer>
-      <AuthProvider>
-        <AuthProfileProvider>
-          <LocationProvider>
-            <PushNotificationProvider>
+      <PushNotificationProvider>
+        <AuthProvider>
+          <AuthProfileProvider>
+            <LocationProvider>
               <Drawer.Navigator
                 screenOptions={{ headerShown: false }}
                 drawerContent={(props) => <CustomDrawer {...props} />}
@@ -43,10 +43,10 @@ const RootNavigator = () => {
                   {() => <DriverHomeScreen />}
                 </Drawer.Screen>
               </Drawer.Navigator>
-            </PushNotificationProvider>
-          </LocationProvider>
-        </AuthProfileProvider>
-      </AuthProvider>
+            </LocationProvider>
+          </AuthProfileProvider>
+        </AuthProvider>
+      </PushNotificationProvider>
     </NavigationContainer>
   );
 };
