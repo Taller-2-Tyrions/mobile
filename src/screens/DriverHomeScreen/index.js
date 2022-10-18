@@ -10,6 +10,7 @@ import useLocation from "../../hooks/useLocation";
 import useAuth from "../../hooks/useAuth";
 import usePushNotification from "../../hooks/usePushNotification";
 import NewOrderPopup from "../../components/NewOrderPopUp";
+import { MapViewDirections } from "react-native-maps-directions";
 
 const GOOGLE_MAPS_APIKEY = "AIzaSyCeWGHDDYw0J5rRmoQSwJGlmfO6tlmiutc";
 

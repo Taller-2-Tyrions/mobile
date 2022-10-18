@@ -11,9 +11,15 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import styles from "./styles";
 import { Entypo, Feather, FontAwesome5 } from "@expo/vector-icons";
 import useAuthProfile from "../../hooks/useAuthProfile";
+import { useNavigation } from "@react-navigation/native";
 
 const ProfileScreen = () => {
   const { profile } = useAuthProfile();
+  const navigation = useNavigation();
+
+  const goToEditProfileScreen = () => {
+    navigation.navigate("EditProfileScreen");
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -63,7 +69,7 @@ const ProfileScreen = () => {
             },
           ]}
         >
-          <Title>₹140.50</Title>
+          <Title>$140.50</Title>
           <Caption>Billetera</Caption>
         </View>
         <View style={styles.infoBox}>
@@ -85,10 +91,10 @@ const ProfileScreen = () => {
             <Text style={styles.menuItemText}>Historial de viajes</Text>
           </View>
         </TouchableRipple>
-        <TouchableRipple onPress={() => {}}>
+        <TouchableRipple onPress={goToEditProfileScreen}>
           <View style={styles.menuItem}>
             <Feather name="settings" size={25} color="black" />
-            <Text style={styles.menuItemText}>Settings</Text>
+            <Text style={styles.menuItemText}>Editar perfil</Text>
           </View>
         </TouchableRipple>
       </View>

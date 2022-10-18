@@ -1,30 +1,35 @@
-import { Text, View, Pressable } from "react-native";
 import React from "react";
+import { View, Text, Pressable } from "react-native";
 import styles from "./styles";
 import { useForm } from "react-hook-form";
-import CustomInput from "../CustomInput";
-import CustomButton from "../CustomButton";
+import CustomButton from "../../components/CustomButton";
+import CustomInput from "../../components/CustomInput";
 import useAuth from "../../hooks/useAuth";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useNavigation } from "@react-navigation/native";
 
-const FormPopUp = () => {
+const EditProfileScreen = () => {
+  const navigation = useNavigation();
   const { control, handleSubmit } = useForm();
-  const { user, completeForm } = useAuth();
+  //const { user, editProfile } = useAuth();
 
   const onSubmitPressed = async (data) => {
-    completeForm(user.accessToken, data);
+    console.log("New data: ", data);
+    navigation.navigate("ProfileScreen");
+    //editProfile(user.accessToken, data);
   };
 
   return (
-    <View style={styles.root}>
+    <SafeAreaView style={styles.root}>
       <Pressable style={styles.popupContainer}>
         <View style={styles.titleContainer}>
-          <Text style={styles.title}>Completá los siguientes datos</Text>
+          <Text style={styles.title}>Editar perfil</Text>
         </View>
 
         <View style={styles.formContainer}>
           <CustomInput
             name="name"
-            placeholder="First name"
+            placeholder="Nuevo nombre"
             control={control}
             rules={{
               required: "First name is required",
@@ -33,7 +38,7 @@ const FormPopUp = () => {
 
           <CustomInput
             name="lastname"
-            placeholder="Last name"
+            placeholder="Nuevo apellido"
             control={control}
             rules={{
               required: "Last name is required",
@@ -55,8 +60,8 @@ const FormPopUp = () => {
           />
         </View>
       </Pressable>
-    </View>
+    </SafeAreaView>
   );
 };
 
-export default FormPopUp;
+export default EditProfileScreen;
