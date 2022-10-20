@@ -1,87 +1,103 @@
-import React from 'react';
+import React, { useState, useEffect } from "react";
 import {
   View,
+  Text,
   Image,
   StyleSheet,
   useWindowDimensions,
   ScrollView,
-} from 'react-native';
-import Logo from '../../../assets/images/logo.png';
-import CustomInput from '../../components/CustomInput';
-import CustomButton from '../../components/CustomButton';
-import GoogleButton from '../../components/GoogleButton';
-import { useForm } from 'react-hook-form';
-import useAuth from '../../hooks/useAuth';
-import { useNavigation } from '@react-navigation/native';
+} from "react-native";
+import Logo from "../../../assets/images/logo.png";
+import CustomInput from "../../components/CustomInput";
+import CustomButton from "../../components/CustomButton";
+import GoogleButton from "../../components/GoogleButton";
+import { useForm } from "react-hook-form";
+import useAuth from "../../hooks/useAuth";
+import { useNavigation } from "@react-navigation/native";
+import styles from "./styles";
+import useAuthGoogle from "../../hooks/useAuthGoogle";
 
 const SignInScreen = () => {
-  const { signInWithGoogle, onSignInPressed } = useAuth();
-  const {height} = useWindowDimensions();
+  const { signInWithGoogle } = useAuthGoogle();
+  const { signIn, logout } = useAuth();
+  const { height } = useWindowDimensions();
   const navigation = useNavigation();
-  const {
-    control,
-    handleSubmit,
-  } = useForm();
+  const { control, handleSubmit } = useForm();
+  const [loading, setLoading] = useState(false);
+
+  // reset del usuario para que no hayan bugs
+  useEffect(() => {
+    console.log("logout user");
+    logout();
+    navigation.navigate("SignIn");
+    setLoading(false);
+  }, []);
 
   const goToSignUp = () => {
-    navigation.navigate('SignUp');
-  }
+    navigation.navigate("SignUp");
+  };
 
-  return (
-    <ScrollView showVerticalScrollIndicator={false}>
-    <View style={styles.root}>
-        <Image 
+  const onSignInPressed = async (data) => {
+    setLoading(true);
+    await signIn(data);
+  };
+
+  const signInGoogle = async () => {
+    await signInWithGoogle();
+  };
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <Text style={styles.loadingText}>Loading...</Text>
+      </View>
+    );
+  } else {
+    return (
+      <ScrollView showVerticalScrollIndicator={false}>
+        <View style={styles.root}>
+          <Image
             source={Logo}
-            style={[styles.logo, {height: height*0.3}]} 
+            style={[styles.logo, { height: height * 0.3 }]}
             resizeMode="contain"
-        />
+          />
 
-        <CustomInput 
-            name="username"
-            placeholder="Username"
+          <CustomInput
+            name="email"
+            placeholder="Email"
             control={control}
-            rules={{required: 'Username is required'}}
-        />
-        <CustomInput 
+            rules={{ required: "Email is required" }}
+          />
+          <CustomInput
             name="password"
             placeholder="Password"
             control={control}
             rules={{
-                required: 'Password is required', 
-                minLength: {value: 4, message: 'Password should be minimum 4 characters long'}
+              required: "Password is required",
+              minLength: {
+                value: 4,
+                message: "Password should be minimum 4 characters long",
+              },
             }}
             secureTextEntry
-        />
+          />
 
-        <CustomButton 
+          <CustomButton
             text="Sign in"
             onPress={handleSubmit(onSignInPressed)}
-        />
+          />
 
-        {/* Login federado */}
-        <GoogleButton onPress={signInWithGoogle} />
+          <GoogleButton onPress={signInGoogle} />
 
-        <CustomButton 
+          <CustomButton
             text="Don't have an account? Create one"
             type="TERTIARY"
             onPress={goToSignUp}
-        />
-    </View>
-    </ScrollView>
-);
+          />
+        </View>
+      </ScrollView>
+    );
+  }
 };
-
-const styles = StyleSheet.create({
-root: {
-    alignItems: 'center',
-    padding: 20,
-},
-logo: {
-    width: '70%',
-    maxWidth: 300,
-    maxHeight: 200,
-},
-});
-
 
 export default SignInScreen;

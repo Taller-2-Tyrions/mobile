@@ -1,22 +1,42 @@
-import React, {useEffect} from 'react';
-import { View, Text, Button } from 'react-native';
+import React, { useEffect } from 'react';
+import { View, Dimensions } from 'react-native'
 import useAuth from '../../hooks/useAuth';
-import axios from 'axios';
-import { useNavigation } from '@react-navigation/native';
-
-axios.defaults.withCredentials = true;
+import useAuthProfile from '../../hooks/useAuthProfile';
+import FormPopUp from '../../components/FormPopUp';
+import HomeMap from '../../components/HomeMap';
+import HomeSearch from '../../components/HomeSearch';
 
 const HomeScreen = () => {
-  const { infoHome, logout } = useAuth();
-  const navigation = useNavigation();
+  const { user } = useAuth();
+  const { profile, getProfile } = useAuthProfile();
+  console.log(user);
+
+  useEffect(() => {
+    if (user.formComplete) {
+      getProfile(user.id, user.accessToken);
+    }
+  }, [user]);
+
+  useEffect(() => {
+    if (profile.id) {
+      console.log('Perfil del usuario seteado: ', profile);
+    }
+  }, [profile]);
 
   return (
-    <View>
-        <Text style={{fontSize: 24, alignSelf: 'center'}}>Cargando contenidos</Text>
-        <Button title={'Logout'} onPress={logout} />
-        
-    </View>
-  );
-};
+    <>
+      <View>
+          <View style={{height: Dimensions.get('window').height-400}}>
+              <HomeMap />
+          </View>
+          <HomeSearch nameDefaultAddress={"Default address"} />
+        </View>
+      {
+        !user.formComplete && <FormPopUp />
+      }
+    
+    </>
+  )
+}
 
 export default HomeScreen;
