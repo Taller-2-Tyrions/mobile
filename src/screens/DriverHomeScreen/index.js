@@ -11,6 +11,7 @@ import useAuth from "../../hooks/useAuth";
 import usePushNotification from "../../hooks/usePushNotification";
 import NewOrderPopup from "../../components/NewOrderPopUp";
 import { MapViewDirections } from "react-native-maps-directions";
+import { mapDarkStyle } from "../../components/MapStyles";
 
 const GOOGLE_MAPS_APIKEY = "AIzaSyCeWGHDDYw0J5rRmoQSwJGlmfO6tlmiutc";
 
@@ -179,6 +180,7 @@ const DriverHomeScreen = () => {
           provider={PROVIDER_GOOGLE}
           style={styles.map}
           showsUserLocation={true}
+          customMapStyle={mapDarkStyle}
           onUserLocationChange={onUserLocationChange}
           initialRegion={{
             latitude: initialPosition.latitude,

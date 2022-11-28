@@ -24,7 +24,7 @@ const SearchScreen = () => {
         destinationPlace?.details?.geometry?.location ||
           destinationPlace?.data?.geometry?.location
       );*/
-      navigation.navigate("SearchResultsScreen", {
+      navigation.navigate("ChooseDriverScreen", {
         originPlace,
         destinationPlace,
       });

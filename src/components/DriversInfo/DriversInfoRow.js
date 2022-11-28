@@ -1,24 +1,16 @@
 import React from "react";
-import { View, Image, Text, Pressable } from "react-native";
+import { View, Image, Text, TouchableOpacity } from "react-native";
 import styles from "./styles";
 import { Ionicons } from "@expo/vector-icons";
 
-const DriversInfoRow = ({ driver, selectedDriver, setSelectedDriver }) => {
+const DriversInfoRow = ({ driver, setSelectedDriver }) => {
   const selectRow = () => {
-    setSelectedDriver({
-      driver: driver,
-      isSelected: !selectedDriver.isSelected,
-    });
+    setSelectedDriver(driver);
   };
 
   return (
-    <Pressable
-      style={[
-        styles.container,
-        selectedDriver.isSelected
-          ? styles.containerSelected
-          : styles.containerUnselected,
-      ]}
+    <TouchableOpacity
+      style={[styles.container, styles.containerUnselected]}
       onPress={selectRow}
     >
       <Image
@@ -42,7 +34,7 @@ const DriversInfoRow = ({ driver, selectedDriver, setSelectedDriver }) => {
           est. ${driver.prices.Standard.toFixed(2)}
         </Text>
       </View>
-    </Pressable>
+    </TouchableOpacity>
   );
 };
 

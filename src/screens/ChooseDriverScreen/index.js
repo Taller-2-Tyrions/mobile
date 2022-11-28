@@ -7,12 +7,14 @@ import useLocation from "../../hooks/useLocation";
 import DriversInfo from "../../components/DriversInfo";
 import styles from "./styles";
 import SafeAreaView from "react-native-safe-area-view";
+import Loading from "../../components/Loading";
+import DriversOptions from "./DriversOptions";
 
-const SearchResultsScreen = () => {
+const ChooseDriverScreen = () => {
   const route = useRoute();
   const { originPlace, destinationPlace } = route.params;
   const { user } = useAuth();
-  const { passengerSearch } = useLocation();
+  const { passengerSearch, drivers } = useLocation();
 
   var origin;
   var posOrigin;
@@ -46,8 +48,6 @@ const SearchResultsScreen = () => {
     };
   }
 
-  const [loadingDriver, setLoadingDriver] = useState(null);
-
   useEffect(() => {
     const awaitSearching = async () => {
       await passengerSearch(origin, destination, user.accessToken);
@@ -55,41 +55,16 @@ const SearchResultsScreen = () => {
 
     const interval = setInterval(() => {
       awaitSearching();
-    }, 5000);
+    }, 10000);
 
     return () => clearInterval(interval);
   }, []);
 
-  return (
-    <>
-      <View>
-        <View style={{ display: "flex", justifyContent: "space-between" }}>
-          <View style={{ height: Dimensions.get("window").height - 300 }}>
-            <RouteMap origin={posOrigin} destination={posDestination} />
-          </View>
-
-          <ScrollView style={{ height: 400, backgroundColor: "white" }}>
-            <DriversInfo
-              setLoadingDriver={setLoadingDriver}
-              origin={origin}
-              destination={destination}
-            />
-          </ScrollView>
-        </View>
-      </View>
-
-      {loadingDriver && (
-        <View style={styles.root}>
-          <View style={styles.titleContainer}>
-            <Text style={styles.title}>
-              Esperando respuesta de: {loadingDriver.name}{" "}
-              {loadingDriver.last_name}
-            </Text>
-          </View>
-        </View>
-      )}
-    </>
-  );
+  if (drivers && drivers.length > 0) {
+    return <DriversOptions />;
+  } else {
+    return <Loading typeLoading="chofer" textLoading="Cargando choferes" />;
+  }
 };
 
-export default SearchResultsScreen;
+export default ChooseDriverScreen;

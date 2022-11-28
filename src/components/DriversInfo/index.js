@@ -1,29 +1,31 @@
 import React, { useState } from "react";
-import { View, Text, Pressable } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import useLocation from "../../hooks/useLocation";
 import useAuth from "../../hooks/useAuth";
 import DriversInfoRow from "./DriversInfoRow";
 import styles from "./styles";
 
 const DriversInfo = ({ setLoadingDriver, origin, destination }) => {
-  const [selectedDriver, setSelectedDriver] = useState({
-    driver: null,
-    isSelected: false,
-  });
+  const [selectedDriver, setSelectedDriver] = useState(null);
   const { drivers, passengerPickDriver } = useLocation();
   const { user } = useAuth();
 
   const confirmDriver = async () => {
     console.log("Passenger picks: ", selectedDriver.driver.id);
 
-    await passengerPickDriver(
+    /*await passengerPickDriver(
       user.accessToken,
-      selectedDriver.driver.id,
+      selectedDriver.id,
       origin,
       destination
     );
 
-    setLoadingDriver(selectedDriver.driver);
+    setLoadingDriver(selectedDriver.driver);*/
+  };
+
+  const clearDriver = () => {
+    console.log("Clear driver");
+    setSelectedDriver(null);
   };
 
   if (drivers) {
@@ -40,25 +42,37 @@ const DriversInfo = ({ setLoadingDriver, origin, destination }) => {
           <DriversInfoRow
             key={driver.id}
             driver={driver}
-            selectedDriver={selectedDriver}
             setSelectedDriver={setSelectedDriver}
           />
         ))}
 
-        {selectedDriver.isSelected && (
-          <Pressable
-            onPress={confirmDriver}
-            style={{
-              backgroundColor: "black",
-              padding: 10,
-              margin: 10,
-              alignItems: "center",
-            }}
-          >
-            <Text style={{ color: "white", fontWeigth: "bold" }}>
-              Confirm Uber
-            </Text>
-          </Pressable>
+        {selectedDriver !== null && (
+          <View>
+            <TouchableOpacity
+              onPress={confirmDriver}
+              style={{
+                backgroundColor: "black",
+                padding: 10,
+                margin: 10,
+                alignItems: "center",
+              }}
+            >
+              <Text style={{ color: "white", fontWeigth: "bold" }}>
+                Confirm Uber
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={clearDriver}
+              style={{
+                backgroundColor: "white",
+                padding: 10,
+                margin: 10,
+                alignItems: "center",
+              }}
+            >
+              <Text style={{ color: "black", fontWeigth: "bold" }}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
         )}
       </View>
     );
