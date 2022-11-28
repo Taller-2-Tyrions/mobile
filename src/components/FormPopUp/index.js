@@ -15,7 +15,14 @@ const FormPopUp = () => {
   const [disabled, setDisabled] = useState(true);
 
   const onSubmitPressed = async (data) => {
-    completeForm(user.accessToken, data, originPlace);
+    const data_aux = {
+      name: data.name,
+      lastname: data.lastname,
+      location: originPlace.description,
+      lat: originPlace.lat,
+      long: originPlace.long,
+    };
+    completeForm(user.accessToken, data_aux);
   };
 
   useEffect(() => {
@@ -28,7 +35,7 @@ const FormPopUp = () => {
     <View style={styles.root}>
       <Pressable style={styles.popupContainer}>
         <View style={styles.titleContainer}>
-          <Text style={styles.title}>Complete this form with your data</Text>
+          <Text style={styles.title}>Complete your profile</Text>
         </View>
 
         <View style={styles.formContainer}>
@@ -53,13 +60,18 @@ const FormPopUp = () => {
           <GooglePlacesAutocomplete
             placeholder="Default address"
             onPress={(data, details = null) => {
+              var description;
               if (data.description) {
-                console.log("desc:", data.description);
-                setOriginPlace(data.description);
+                description = data.description;
               } else {
-                console.log("vic:", data.vicinity);
-                setOriginPlace(data.vicinity);
+                description = data.vicinity;
               }
+              console.log("details: ", details.geometry.location);
+              setOriginPlace({
+                description: description,
+                lat: details.geometry.location.lat,
+                long: details.geometry.location.lng,
+              });
             }}
             suppressDefaultStyles
             currentLocation={true}
@@ -73,19 +85,22 @@ const FormPopUp = () => {
             fetchDetails
             query={{
               key: "AIzaSyCeWGHDDYw0J5rRmoQSwJGlmfO6tlmiutc",
-              language: "en",
+              language: "es",
+              components: "country:ar",
             }}
             renderRow={(data) => <PlaceRow data={data} />}
             renderDescription={(data) => data.description || data.vicinity}
           />
 
-          <CustomButton
-            text="Complete form"
-            position="absolute"
-            top={1050}
-            onPress={handleSubmit(onSubmitPressed)}
-            disabled={disabled}
-          />
+          <View style={styles.buttonContainer}>
+            <CustomButton
+              text="Finish"
+              position="absolute"
+              bottom={0}
+              onPress={handleSubmit(onSubmitPressed)}
+              disabled={disabled}
+            />
+          </View>
         </View>
       </Pressable>
     </View>

@@ -87,7 +87,8 @@ const EditProfileScreen = () => {
             fetchDetails
             query={{
               key: "AIzaSyCeWGHDDYw0J5rRmoQSwJGlmfO6tlmiutc",
-              language: "en",
+              language: "es",
+              components: "country:ar",
             }}
             renderRow={(data) => <PlaceRow data={data} />}
             renderDescription={(data) => data.description || data.vicinity}

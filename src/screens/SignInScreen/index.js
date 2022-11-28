@@ -15,7 +15,7 @@ import useAuth from "../../hooks/useAuth";
 import { useNavigation } from "@react-navigation/native";
 import styles from "./styles";
 import useAuthGoogle from "../../hooks/useAuthGoogle";
-import LottieView from "lottie-react-native";
+import Loading from "../../components/Loading";
 
 const SignInScreen = () => {
   const { signInWithGoogle } = useAuthGoogle();
@@ -47,23 +47,7 @@ const SignInScreen = () => {
   };
 
   if (loading) {
-    return (
-      <View style={styles.loadingContainer}>
-        <LottieView
-          source={require("../../assets/images/loading.json")}
-          autoPlay
-          loop
-        />
-        <Text
-          style={{
-            position: "absolute",
-            top: 900,
-          }}
-        >
-          loading...
-        </Text>
-      </View>
-    );
+    return <Loading />;
   } else {
     return (
       <ScrollView showVerticalScrollIndicator={false}>

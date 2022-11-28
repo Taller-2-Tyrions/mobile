@@ -8,7 +8,7 @@ const CustomButton = ({
   bgColor,
   fgColor,
   position,
-  top,
+  bottom,
   disabled,
 }) => {
   return (
@@ -25,7 +25,7 @@ const CustomButton = ({
         position
           ? {
               position: position,
-              top: top,
+              bottom: bottom,
             }
           : {},
       ]}

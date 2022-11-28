@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, Dimensions } from "react-native";
 
 const styles = StyleSheet.create({
   root: {
@@ -11,10 +11,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#00000099",
   },
   popupContainer: {
+    height: Dimensions.get("window").height - 70,
     backgroundColor: "white",
-    top: 20,
+    top: 50,
     borderRadius: 10,
-    height: 1200,
   },
   title: {
     alignItems: "center",
@@ -24,17 +24,16 @@ const styles = StyleSheet.create({
     margin: 20,
   },
   formContainer: {
+    height: Dimensions.get("window").height - 200,
     marginHorizontal: 15,
   },
   titleContainer: {
     alignItems: "center",
   },
   buttonContainer: {
-    position: "absolute",
-    top: 1000,
-    width: "100%",
-    padding: 20,
-    height: "100%",
+    flex: 1,
+    flexDirection: "column",
+    justifyContent: "space-between",
   },
   textInput: {
     padding: 10,
