@@ -48,14 +48,14 @@ export function AuthProvider({ children }) {
       });
   };
 
-  const editProfile = async (data) => {
+  const editProfile = async (data, newAddress) => {
     const url = `https://fiuber-gateway.herokuapp.com/users/passenger/${user.id}`;
 
     await axios
       .put(url, {
         name: data.name,
         last_name: data.lastname,
-        address: data.defaultAddress,
+        address: newAddress,
       })
       .catch((err) => {
         console.log("Error in edit profile: ", err);
