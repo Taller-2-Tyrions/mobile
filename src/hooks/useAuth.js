@@ -48,14 +48,14 @@ export function AuthProvider({ children }) {
       });
   };
 
-  const editProfile = async (data) => {
+  const editProfile = async (data, newAddress) => {
     const url = `https://fiuber-gateway.herokuapp.com/users/passenger/${user.id}`;
 
     await axios
       .put(url, {
         name: data.name,
         last_name: data.lastname,
-        address: data.defaultAddress,
+        address: newAddress,
       })
       .catch((err) => {
         console.log("Error in edit profile: ", err);
@@ -80,13 +80,17 @@ export function AuthProvider({ children }) {
   const completeForm = async (accessToken, data) => {
     const url = "https://fiuber-gateway.herokuapp.com/users";
 
+    console.log("Data completeForm: ", data);
+    const location =
+      String(data.location) + ";" + String(data.lat) + ";" + String(data.long);
+
     axios.post(
       url,
       {
         name: data.name,
         last_name: data.lastname,
         roles: ["Passenger"],
-        address: data.defaultAddress,
+        address: location,
       },
       {
         headers: {
