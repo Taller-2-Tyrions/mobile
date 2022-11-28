@@ -66,7 +66,7 @@ const SearchScreen = () => {
           predefinedPlaces={[
             {
               type: "favorite",
-              description: "Ubicación favorita",
+              description: profile.defaultAddress.location,
               geometry: {
                 location: {
                   lat: profile.defaultAddress.lat,
