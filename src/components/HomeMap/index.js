@@ -3,6 +3,7 @@ import styles from "./styles";
 import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
 import * as Location from "expo-location";
 import { mapDarkStyle } from "../MapStyles";
+import SafeAreaView from "react-native-safe-area-view";
 
 Location.installWebGeolocationPolyfill();
 

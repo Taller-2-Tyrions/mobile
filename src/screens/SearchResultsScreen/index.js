@@ -6,6 +6,7 @@ import useAuth from "../../hooks/useAuth";
 import useLocation from "../../hooks/useLocation";
 import DriversInfo from "../../components/DriversInfo";
 import styles from "./styles";
+import SafeAreaView from "react-native-safe-area-view";
 
 const SearchResultsScreen = () => {
   const route = useRoute();
@@ -32,7 +33,7 @@ const SearchResultsScreen = () => {
     <>
       <ScrollView>
         <View style={{ display: "flex", justifyContent: "space-between" }}>
-          <View style={{ height: Dimensions.get("window").height - 200 }}>
+          <View style={{ height: Dimensions.get("window").height - 100 }}>
             <RouteMap origin={originPlace} destination={destinationPlace} />
           </View>
 

@@ -1,14 +1,22 @@
 import React from "react";
-import { StyleSheet, View, Text, Pressable } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Text,
+  Pressable,
+  TouchableOpacity,
+} from "react-native";
 import {
   DrawerContentScrollView,
   DrawerItemList,
 } from "@react-navigation/drawer";
 import useAuthProfile from "../hooks/useAuthProfile";
+import useAuth from "../hooks/useAuth";
 import { useNavigation } from "@react-navigation/native";
 
 const CustomDrawer = (props) => {
   const { profile } = useAuthProfile();
+  const { logout } = useAuth();
   const navigation = useNavigation();
 
   const goToProfileScreen = () => {
@@ -68,6 +76,29 @@ const CustomDrawer = (props) => {
       </View>
 
       <DrawerItemList {...props} />
+
+      {/* Botón de logout */}
+      <View
+        style={{
+          borderBottomWidth: 1,
+          borderTopWidth: 1,
+          borderBottomColor: "#919191",
+          borderTopColor: "#919191",
+          paddingVertical: 5,
+          marginVertical: 10,
+          backgroundColor: "#F98080",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <TouchableOpacity
+          onPress={() => {
+            logout();
+          }}
+        >
+          <Text style={{ paddingVertical: 5 }}>Logout</Text>
+        </TouchableOpacity>
+      </View>
     </DrawerContentScrollView>
   );
 };

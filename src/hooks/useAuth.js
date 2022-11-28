@@ -77,8 +77,10 @@ export function AuthProvider({ children }) {
     await signIn(data);
   };
 
-  const completeForm = async (accessToken, data) => {
+  const completeForm = async (accessToken, data, defaultAddress) => {
     const url = "https://fiuber-gateway.herokuapp.com/users";
+
+    console.log("Default addres: ", defaultAddress);
 
     axios.post(
       url,
@@ -86,7 +88,7 @@ export function AuthProvider({ children }) {
         name: data.name,
         last_name: data.lastname,
         roles: ["Passenger"],
-        address: data.defaultAddress,
+        address: defaultAddress,
       },
       {
         headers: {
