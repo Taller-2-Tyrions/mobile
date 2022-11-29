@@ -129,11 +129,11 @@ export function LocationProvider({ children }) {
         url,
         {
           init: {
-            longitude: origin.lng,
+            longitude: origin.long,
             latitude: origin.lat,
           },
           end: {
-            longitude: destination.lng,
+            longitude: destination.long,
             latitude: destination.lat,
           },
           is_vip: false,
@@ -145,7 +145,7 @@ export function LocationProvider({ children }) {
         }
       )
       .then((res) => {
-        console.log("Drivers: ", res.data);
+        console.log("Driver response: ", res.data);
       })
       .catch((err) => {
         console.log("Error in passengerPickDriver: ", err);

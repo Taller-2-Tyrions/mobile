@@ -6,8 +6,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  textContainer: {
+    marginTop: 400,
+    height: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
   textStyle: {
-    height: Dimensions.get("window").height - 100,
+    fontSize: 24,
   },
 });
 

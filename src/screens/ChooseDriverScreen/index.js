@@ -15,6 +15,7 @@ const ChooseDriverScreen = () => {
   const { originPlace, destinationPlace } = route.params;
   const { user } = useAuth();
   const { passengerSearch, drivers } = useLocation();
+  const [searchDrivers, setSearchDrivers] = useState(true);
 
   var origin;
   var posOrigin;
@@ -54,14 +55,22 @@ const ChooseDriverScreen = () => {
     };
 
     const interval = setInterval(() => {
-      awaitSearching();
+      if (searchDrivers) {
+        awaitSearching();
+      }
     }, 10000);
 
     return () => clearInterval(interval);
   }, []);
 
   if (drivers && drivers.length > 0) {
-    return <DriversOptions />;
+    return (
+      <DriversOptions
+        setSearchDrivers={setSearchDrivers}
+        origin={posOrigin}
+        destination={posDestination}
+      />
+    );
   } else {
     return <Loading typeLoading="chofer" textLoading="Cargando choferes" />;
   }

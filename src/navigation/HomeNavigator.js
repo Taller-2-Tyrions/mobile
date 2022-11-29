@@ -9,6 +9,7 @@ import SearchResultsScreen from "../screens/SearchResultsScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 import EditProfileScreen from "../screens/EditProfileScreen";
 import ChooseDriverScreen from "../screens/ChooseDriverScreen";
+import WaitingDriverScreen from "../screens/WaitingDriverScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -37,6 +38,10 @@ const HomeNavigator = () => {
           <Stack.Screen
             name="ChooseDriverScreen"
             component={ChooseDriverScreen}
+          />
+          <Stack.Screen
+            name="WaitingDriverScreen"
+            component={WaitingDriverScreen}
           />
         </>
       )}

@@ -1,11 +1,11 @@
 import { View, Text } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import LottieView from "lottie-react-native";
 import styles from "./styles";
 
 const Loading = ({
   typeLoading = "loading",
-  textLoading = "cargando contenido...",
+  textLoading = "Cargando contenido...",
 }) => {
   const getImage = () => {
     switch (typeLoading) {
@@ -19,7 +19,9 @@ const Loading = ({
   return (
     <View style={styles.loadingContainer}>
       <LottieView source={getImage()} autoPlay loop />
-      <Text style={styles.textStyle}>{textLoading}</Text>
+      <View style={styles.textContainer}>
+        <Text style={styles.textStyle}>{textLoading}</Text>
+      </View>
     </View>
   );
 };

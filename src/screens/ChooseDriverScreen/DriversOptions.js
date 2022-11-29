@@ -5,23 +5,27 @@ import useAuth from "../../hooks/useAuth";
 import styles from "./styles";
 import DriverRow from "./DriverRow";
 import CustomButton from "../../components/CustomButton";
+import { useNavigation } from "@react-navigation/native";
 
-const DriversOptions = () => {
+const DriversOptions = ({ setSearchDrivers, origin, destination }) => {
   const [selectedDriver, setSelectedDriver] = useState(null);
   const { drivers, passengerPickDriver } = useLocation();
   const { user } = useAuth();
+  const navigation = useNavigation();
 
   const confirmDriver = async () => {
     console.log("Passenger picks: ", selectedDriver);
 
-    /*await passengerPickDriver(
+    setSearchDrivers(false);
+
+    await passengerPickDriver(
       user.accessToken,
       selectedDriver.id,
       origin,
       destination
     );
 
-    setLoadingDriver(selectedDriver);*/
+    navigation.navigate("WaitingDriverScreen");
   };
 
   const clearDriver = () => {
