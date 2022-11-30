@@ -16,7 +16,10 @@ const NewOrderPopup = ({
         <Text style={styles.declineText}>Decline</Text>
       </Pressable>
 
-      <Pressable onPress={onAccept} style={styles.popupContainer}>
+      <Pressable
+        onPress={() => onAccept(newOrder)}
+        style={styles.popupContainer}
+      >
         <View style={styles.row}>
           <Text style={styles.uberType}>Solicitud de viaje</Text>
           <View style={styles.userBackground}>
@@ -26,7 +29,7 @@ const NewOrderPopup = ({
         </View>
 
         <Text style={styles.minutes}>{duration} min</Text>
-        <Text style={styles.distance}>{distance} mi</Text>
+        <Text style={styles.distance}>{distance} km</Text>
       </Pressable>
     </View>
   );

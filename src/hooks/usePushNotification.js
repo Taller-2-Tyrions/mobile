@@ -21,7 +21,7 @@ const PushNotificationContext = createContext({});
 
 export function PushNotificationProvider({ children }) {
   const [expoToken, setExpoToken] = useState(null);
-  const [notification, setNotification] = useState(false);
+  const [notification, setNotification] = useState(null);
   const notificationListener = useRef();
   const responseListener = useRef();
 

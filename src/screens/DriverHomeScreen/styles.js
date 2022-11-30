@@ -1,62 +1,76 @@
-import { StyleSheet, Dimensions } from 'react-native'
-import React from 'react'
+import { StyleSheet, Dimensions } from "react-native";
+import React from "react";
 
 const styles = StyleSheet.create({
-    map: {
-        height: Dimensions.get('window').height-150,
-        width: '100%',
-    },
-    bottomContainer: {
-        height: 100,
-        backgroundColor: 'white',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        padding: 15,
-    },
-    bottomText: {
-        fontSize: 22,
-        color: '#4a4a4a'
-    },
-    roundButton: {
-        position: 'absolute',
-        backgroundColor: 'white',
-        padding: 10,
-        borderRadius: 25,
-    },
-    goButton: {
-        position: 'absolute',
-        backgroundColor: '#1495ff',
-        width: 75,
-        height: 75,
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: 50,
-        bottom: 110,
-        left: Dimensions.get('window').width / 2 - 37,
-    },
-    goText: {
-        fontSize: 30,
-        color: 'white',
-        fontWeight: 'bold',
-    },
-    balanceButton: {
-        position: 'absolute',
-        backgroundColor: '#1c1c1c',
-        width: 100,
-        height: 50,
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: 50,
-        top: 35,
-        left: Dimensions.get('window').width / 2 - 50,
-      },
-      balanceText: {
-        fontSize: 24,
-        color: 'white',
-        fontWeight: 'bold',
-      }
-
-})
+  map: {
+    height: Dimensions.get("window").height - 150,
+    width: "100%",
+  },
+  bottomContainer: {
+    height: 100,
+    backgroundColor: "white",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: 15,
+  },
+  bottomText: {
+    fontSize: 22,
+    color: "#4a4a4a",
+  },
+  roundButton: {
+    position: "absolute",
+    backgroundColor: "white",
+    padding: 10,
+    borderRadius: 25,
+  },
+  goButton: {
+    position: "absolute",
+    backgroundColor: "#1495ff",
+    width: 75,
+    height: 75,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 50,
+    bottom: 110,
+    left: Dimensions.get("window").width / 2 - 37,
+  },
+  goText: {
+    fontSize: 30,
+    color: "white",
+    fontWeight: "bold",
+  },
+  balanceButton: {
+    position: "absolute",
+    backgroundColor: "#1c1c1c",
+    width: 100,
+    height: 50,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 50,
+    top: 35,
+    left: Dimensions.get("window").width / 2 - 50,
+  },
+  balanceText: {
+    fontSize: 24,
+    color: "white",
+    fontWeight: "bold",
+  },
+  container: {
+    backgroundColor: "white",
+    height: "100%",
+    width: "100%",
+  },
+  titleContainer: {
+    marginTop: 50,
+    marginBottom: 10,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "white",
+  },
+  titleText: {
+    fontSize: 24,
+  },
+});
 
 export default styles;
