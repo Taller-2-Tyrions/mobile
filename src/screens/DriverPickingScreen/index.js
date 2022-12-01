@@ -21,15 +21,8 @@ const DriverPickingScreen = ({ order, setOrder, location, user }) => {
   const [initVoyage, setInitVoyage] = useState(false);
 
   useEffect(() => {
-    setOrder({
-      ...order,
-      distance: null,
-      duration: null,
-      pickedUp: null,
-      isFinished: null,
-    });
+    console.log("ORDEN: ", order);
   }, []);
-  console.log("ORDEN: ", order);
 
   const startVoyage = () => {
     // me tiene que redirigir a la
