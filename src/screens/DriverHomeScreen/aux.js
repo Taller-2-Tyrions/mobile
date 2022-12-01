@@ -170,7 +170,7 @@ const DriverHomeScreen = () => {
 
     return {
       latitude: order.init.latitude,
-      longitude: order.end.longitude,
+      longitude: order.init.longitude,
     };
   };
 

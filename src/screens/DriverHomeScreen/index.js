@@ -3,16 +3,36 @@ import { Text, View } from "react-native";
 import useLocation from "../../hooks/useLocation";
 import useAuthProfile from "../../hooks/useAuthProfile";
 import usePushNotification from "../../hooks/usePushNotification";
+import useAuth from "../../hooks/useAuth";
 import styles from "./styles";
 import NewOrderPopup from "../../components/NewOrderPopUp";
+import { useNavigation } from "@react-navigation/native";
+import * as Location from "expo-location";
+import FormDriverPopUp from "../../components/FormDriverPopUp";
+import DriverPickingScreen from "../DriverPickingScreen";
 
 const DriverHomeScreen = () => {
+  // debería poner el usuario online siempre que entra acá!!!
   const { setDriverOnline } = useLocation();
   const { notification, setNotification } = usePushNotification();
   const { profile } = useAuthProfile();
   const [order, setOrder] = useState(null);
-  // booleano aux, debería ser una redirección
-  const [navigateAux, setNavigateAux] = useState(false);
+  const { user } = useAuth();
+  const [location, setLocation] = useState(null);
+
+  useEffect(() => {
+    (async () => {
+      let location = await Location.getCurrentPositionAsync({});
+      setLocation({
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+      });
+    })();
+  }, []);
+
+  useEffect(() => {
+    if (profile.isDriver) setDriverOnline(user.accessToken);
+  }, []);
 
   const onDecline = (newOrder) => {
     // debería pegarle al gateway para decir que no
@@ -22,8 +42,6 @@ const DriverHomeScreen = () => {
   const onAccept = (newOrder) => {
     // debería pegarle al gateway para aceptar el viaje
     setOrder(newOrder);
-    setNotification(null); // limpio la notif por si llega otra.
-    setNavigateAux(true);
   };
 
   useEffect(() => {
@@ -32,13 +50,9 @@ const DriverHomeScreen = () => {
     }
   }, [notification]);
 
-  if (navigateAux) {
+  if (order) {
     return (
-      <View style={styles.container}>
-        <View style={styles.titleContainer}>
-          <Text style={styles.titleText}>Ventana de nuevo viaje</Text>
-        </View>
-      </View>
+      <DriverPickingScreen order={order} location={location} user={user} />
     );
   } else {
     return (
@@ -49,7 +63,7 @@ const DriverHomeScreen = () => {
           </View>
         </View>
 
-        {/* {!profile.isDriver && <FormDriverPopUp />} */}
+        {!profile.isDriver && <FormDriverPopUp />}
         {profile.isDriver && notification && (
           <NewOrderPopup
             newOrder={notification.request.content.data}
