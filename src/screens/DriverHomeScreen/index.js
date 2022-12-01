@@ -52,7 +52,12 @@ const DriverHomeScreen = () => {
 
   if (order) {
     return (
-      <DriverPickingScreen order={order} location={location} user={user} />
+      <DriverPickingScreen
+        order={order}
+        setOrder={setOrder}
+        location={location}
+        user={user}
+      />
     );
   } else {
     return (

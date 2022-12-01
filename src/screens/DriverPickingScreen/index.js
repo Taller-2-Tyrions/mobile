@@ -2,14 +2,14 @@ import { Dimensions, View, Text, TouchableOpacity } from "react-native";
 import React, { useState, useEffect } from "react";
 import { mapDarkStyle } from "../../components/MapStyles";
 import MapView, { PROVIDER_GOOGLE, Marker } from "react-native-maps";
-import { MapViewDirections } from "react-native-maps-directions";
+import MapViewDirections from "react-native-maps-directions";
 import styles from "./styles";
 import { DriverMarker } from "./markers";
 import VoyageStartedScreen from "./VoyageStartedScreen";
 
 const GOOGLE_MAPS_APIKEY = "AIzaSyCeWGHDDYw0J5rRmoQSwJGlmfO6tlmiutc";
 
-const DriverPickingScreen = ({ order, location, user }) => {
+const DriverPickingScreen = ({ order, setOrder, location, user }) => {
   // recibe los datos de la push notification y la
   // posición inicial del chófer
   const [driverPosition, setDriverPosition] = useState({
@@ -20,6 +20,15 @@ const DriverPickingScreen = ({ order, location, user }) => {
   const destination = order.end;
   const [initVoyage, setInitVoyage] = useState(false);
 
+  useEffect(() => {
+    setOrder({
+      ...order,
+      distance: null,
+      duration: null,
+      pickedUp: null,
+      isFinished: null,
+    });
+  }, []);
   console.log("ORDEN: ", order);
 
   const startVoyage = () => {
@@ -91,8 +100,8 @@ const DriverPickingScreen = ({ order, location, user }) => {
             origin={clientLocation}
             destination={destination}
             apikey={GOOGLE_MAPS_APIKEY}
-            strokeWidth={3}
-            strokeColor="grey"
+            strokeWidth={5}
+            strokeColor="#618C8C"
           />
           <DriverMarker position={driverPosition} />
           <Marker title={"Client location"} coordinate={clientLocation} />
