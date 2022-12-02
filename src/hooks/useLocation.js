@@ -1,28 +1,66 @@
-import React, { useState, useMemo, createContext, useContext } from "react";
+import React, {
+  useState,
+  useMemo,
+  createContext,
+  useContext,
+  useEffect,
+} from "react";
 import axios from "axios";
+import * as Location from "expo-location";
 
 const LocationContext = createContext({});
 
 export function LocationProvider({ children }) {
   const [drivers, setDrivers] = useState(null);
-  const [driverPosition, setDriverPosition] = useState({
-    latitude: -34.7425261,
-    longitude: -58.3869874,
-  });
+  const [driverPosition, setDriverPosition] = useState(null);
+  const [origin, setOrigin] = useState(null);
+  const [destination, setDestination] = useState(null);
 
-  const passengerSearch = async (origin, destination, accessToken) => {
+  const getInitialPosition = async () => {
+    if (driverPosition) {
+      return driverPosition;
+    } else {
+      const location = await Location.getCurrentPositionAsync({});
+      setDriverPosition({
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+      });
+      return driverPosition;
+    }
+  };
+
+  useEffect(() => {
+    getInitialPosition();
+  }, []);
+
+  useEffect(() => {
+    console.log("Posición seteada: ", driverPosition);
+  }, [driverPosition]);
+
+  const setLocations = (originAux, destinationAux) => {
+    setOrigin(originAux);
+    setDestination(destinationAux);
+  };
+
+  const passengerSearch = async (accessToken) => {
+    if (!origin || !destination) {
+      console.log("algún null", origin, destination);
+      return;
+    }
     const url = "https://fiuber-gateway.herokuapp.com/voyage/passenger/search";
+    console.log("Origin en passengerSearch: ", origin);
+    console.log("Destination en passengerSearch: ", destination);
 
     axios
       .post(
         url,
         {
           init: {
-            longitude: origin.lng,
+            longitude: origin.long,
             latitude: origin.lat,
           },
           end: {
-            longitude: destination.lng,
+            longitude: destination.long,
             latitude: destination.lat,
           },
           is_vip: false,
@@ -44,10 +82,6 @@ export function LocationProvider({ children }) {
 
   const setDriverOnline = async (accessToken) => {
     const url = "https://fiuber-gateway.herokuapp.com/voyage/driver/searching";
-
-    console.log(driverPosition);
-    console.log(accessToken);
-
     axios
       .post(
         url,
@@ -124,6 +158,7 @@ export function LocationProvider({ children }) {
   ) => {
     const url = `https://fiuber-gateway.herokuapp.com/voyage/passenger/search/${idDriver}`;
 
+    console.log("idDriver picks driver: ", idDriver);
     axios
       .post(
         url,
@@ -160,6 +195,10 @@ export function LocationProvider({ children }) {
       setDriverOffline,
       changeDriverLocation,
       passengerPickDriver,
+      getInitialPosition,
+      origin,
+      destination,
+      setLocations,
     }),
     [
       passengerSearch,
@@ -168,6 +207,10 @@ export function LocationProvider({ children }) {
       setDriverOffline,
       changeDriverLocation,
       passengerPickDriver,
+      getInitialPosition,
+      origin,
+      destination,
+      setLocations,
     ]
   );
 

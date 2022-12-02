@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, ScrollView } from "react-native";
 import useLocation from "../../hooks/useLocation";
 import useAuth from "../../hooks/useAuth";
@@ -7,9 +7,9 @@ import DriverRow from "./DriverRow";
 import CustomButton from "../../components/CustomButton";
 import { useNavigation } from "@react-navigation/native";
 
-const DriversOptions = ({ setSearchDrivers, origin, destination }) => {
+const DriversOptions = ({ setSearchDrivers }) => {
   const [selectedDriver, setSelectedDriver] = useState(null);
-  const { drivers, passengerPickDriver } = useLocation();
+  const { drivers, passengerPickDriver, origin, destination } = useLocation();
   const { user } = useAuth();
   const navigation = useNavigation();
 
@@ -18,6 +18,7 @@ const DriversOptions = ({ setSearchDrivers, origin, destination }) => {
 
     setSearchDrivers(false);
 
+    console.log("Previo a psd: ", origin, destination);
     await passengerPickDriver(
       user.accessToken,
       selectedDriver.id,

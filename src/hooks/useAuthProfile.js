@@ -72,12 +72,6 @@ export function AuthProfileProvider({ children }) {
         },
       }
     );
-    /*.then((res) => {
-            console.log('funcionó');
-        })
-        .catch(err => {
-            console.log('Error in CompleteDriverForm: ', err);
-        })*/
 
     await getProfile(profile.id, accessToken);
   };

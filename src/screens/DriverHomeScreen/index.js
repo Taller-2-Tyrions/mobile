@@ -6,14 +6,13 @@ import usePushNotification from "../../hooks/usePushNotification";
 import useAuth from "../../hooks/useAuth";
 import styles from "./styles";
 import NewOrderPopup from "../../components/NewOrderPopUp";
-import { useNavigation } from "@react-navigation/native";
-import * as Location from "expo-location";
 import FormDriverPopUp from "../../components/FormDriverPopUp";
 import DriverPickingScreen from "../DriverPickingScreen";
 
 const DriverHomeScreen = () => {
   // debería poner el usuario online siempre que entra acá!!!
-  const { setDriverOnline } = useLocation();
+  const { setDriverOnline, getInitialPosition, setOrigin, setDestination } =
+    useLocation();
   const { notification, setNotification } = usePushNotification();
   const { profile } = useAuthProfile();
   const [order, setOrder] = useState(null);
@@ -21,17 +20,12 @@ const DriverHomeScreen = () => {
   const [location, setLocation] = useState(null);
 
   useEffect(() => {
-    (async () => {
-      let location = await Location.getCurrentPositionAsync({});
-      setLocation({
-        latitude: location.coords.latitude,
-        longitude: location.coords.longitude,
-      });
-    })();
+    const initialPosition = getInitialPosition();
+    setLocation(initialPosition);
   }, []);
 
   useEffect(() => {
-    if (profile.isDriver) setDriverOnline(user.accessToken);
+    setDriverOnline(user.accessToken);
   }, []);
 
   const onDecline = (newOrder) => {
@@ -42,6 +36,8 @@ const DriverHomeScreen = () => {
   const onAccept = (newOrder) => {
     // debería pegarle al gateway para aceptar el viaje
     setOrder(newOrder);
+    setOrigin(newOrder.init);
+    setDestination(newOrder.end);
   };
 
   useEffect(() => {
