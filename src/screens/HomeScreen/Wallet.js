@@ -2,8 +2,10 @@ import React from "react";
 import { StyleSheet, Text, View, Modal, TouchableOpacity } from "react-native";
 import tw from "tailwind-react-native-classnames";
 import { AntDesign } from "@expo/vector-icons";
+import useBalance from "../../hooks/useBalance";
 
 const Wallet = ({ walletVisible, setWalletVisible }) => {
+  const { passengerBalance } = useBalance();
   return (
     <View>
       <Modal
@@ -32,7 +34,9 @@ const Wallet = ({ walletVisible, setWalletVisible }) => {
             </View>
             <View style={styles.modalContainerButton}>
               <Text style={styles.walletText}>45s4d545s4s5</Text>
-              <Text style={styles.walletText}>Balance: $15.01</Text>
+              <Text style={styles.walletText}>
+                Balance: ${passengerBalance.balance}
+              </Text>
             </View>
           </View>
         </View>

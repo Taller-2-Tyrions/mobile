@@ -1,4 +1,10 @@
-import React, { useState, useMemo, createContext, useContext } from "react";
+import React, {
+  useState,
+  useEffect,
+  useMemo,
+  createContext,
+  useContext,
+} from "react";
 import axios from "axios";
 import { URL } from "../configUrl";
 
@@ -21,7 +27,8 @@ export function BalanceProvider({ children }) {
         },
       })
       .then((res) => {
-        // seteo el balance
+        const { balance } = res.data;
+        setPassengerBalance({ ...passengerBalance, balance: balance });
       })
       .catch((err) => {
         console.log("error in getBalance", err);
@@ -34,7 +41,7 @@ export function BalanceProvider({ children }) {
       driverBalance,
       getPassengerBalance,
     }),
-    [passengerBalance, driverBalance]
+    [passengerBalance, driverBalance, getPassengerBalance]
   );
 
   return (
@@ -44,6 +51,6 @@ export function BalanceProvider({ children }) {
   );
 }
 
-export default function useAuthProfile() {
-  return useContext(AuthProfileContext);
+export default function useBalance() {
+  return useContext(BalanceContext);
 }
