@@ -7,6 +7,8 @@ const CustomInput = ({
   name,
   placeholder,
   secureTextEntry,
+  containerStyle,
+  textStyle,
   rules = {},
   defaultValue = {},
 }) => {
@@ -22,7 +24,7 @@ const CustomInput = ({
         <>
           <View
             style={[
-              styles.container,
+              containerStyle ? containerStyle : styles.container,
               { borderColor: error ? "red" : "#e8e8e8" },
             ]}
           >
@@ -32,7 +34,7 @@ const CustomInput = ({
               onChangeText={onChange}
               onBlur={onBlur}
               placeholder={placeholder}
-              style={styles.input}
+              style={textStyle ? textStyle : styles.input}
               secureTextEntry={secureTextEntry}
             />
           </View>
