@@ -10,7 +10,7 @@ import React from "react";
 import tw from "tailwind-react-native-classnames";
 import { AntDesign } from "@expo/vector-icons";
 
-const data = [
+const data1 = [
   {
     id: "1",
     title: "Iniciar viaje",
@@ -25,8 +25,18 @@ const data = [
     screen: "DriverScreen",
     bg: "bg-gray-100",
   },
+];
+
+const data2 = [
   {
     id: "3",
+    title: "Calificaciones",
+    image: require("../../assets/images/star.png"),
+    screen: "CalificationScreen",
+    bg: "bg-gray-100",
+  },
+  {
+    id: "4",
     title: "Logout",
     image: require("../../assets/images/logout.png"),
     screen: "LoginScreen",
@@ -35,6 +45,15 @@ const data = [
 ];
 
 const NavOptions = () => {
+  return (
+    <View style={styles.navOptionsContainer}>
+      <TwoOptions data={data1} />
+      <TwoOptions data={data2} />
+    </View>
+  );
+};
+
+const TwoOptions = ({ data }) => {
   return (
     <View style={styles.container}>
       <FlatList
@@ -65,8 +84,11 @@ const NavOptions = () => {
 export default NavOptions;
 
 const styles = StyleSheet.create({
+  navOptionsContainer: {
+    paddingTop: 20,
+  },
   container: {
-    paddingTop: 30,
+    marginTop: 15,
     justifyContent: "center",
     alignItems: "center",
   },
