@@ -12,20 +12,20 @@ const LocationContext = createContext({});
 
 export function LocationProvider({ children }) {
   const [drivers, setDrivers] = useState(null);
-  const [driverPosition, setDriverPosition] = useState(null);
+  const [userPosition, setUserPosition] = useState(null);
   const [origin, setOrigin] = useState(null);
   const [destination, setDestination] = useState(null);
 
   const getInitialPosition = async () => {
-    if (driverPosition) {
-      return driverPosition;
+    if (userPosition) {
+      return userPosition;
     } else {
       const location = await Location.getCurrentPositionAsync({});
-      setDriverPosition({
+      setUserPosition({
         latitude: location.coords.latitude,
         longitude: location.coords.longitude,
       });
-      return driverPosition;
+      return userPosition;
     }
   };
 
@@ -34,13 +34,8 @@ export function LocationProvider({ children }) {
   }, []);
 
   useEffect(() => {
-    console.log("Posición seteada: ", driverPosition);
-  }, [driverPosition]);
-
-  const setLocations = (originAux, destinationAux) => {
-    setOrigin(originAux);
-    setDestination(destinationAux);
-  };
+    console.log("Posición seteada: ", userPosition);
+  }, [userPosition]);
 
   const passengerSearch = async (accessToken) => {
     if (!origin || !destination) {
@@ -86,8 +81,8 @@ export function LocationProvider({ children }) {
       .post(
         url,
         {
-          longitude: driverPosition.longitude,
-          latitude: driverPosition.latitude,
+          longitude: userPosition.longitude,
+          latitude: userPosition.latitude,
         },
         {
           headers: {
@@ -140,7 +135,7 @@ export function LocationProvider({ children }) {
         }
       )
       .then((res) => {
-        setDriverPosition({
+        setUserPosition({
           latitude: position.latitude,
           longitude: position.longitude,
         });
@@ -197,8 +192,10 @@ export function LocationProvider({ children }) {
       passengerPickDriver,
       getInitialPosition,
       origin,
+      setOrigin,
       destination,
-      setLocations,
+      setDestination,
+      userPosition,
     }),
     [
       passengerSearch,
@@ -209,8 +206,10 @@ export function LocationProvider({ children }) {
       passengerPickDriver,
       getInitialPosition,
       origin,
+      setOrigin,
       destination,
-      setLocations,
+      setDestination,
+      userPosition,
     ]
   );
 

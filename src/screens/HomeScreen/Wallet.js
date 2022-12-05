@@ -33,7 +33,7 @@ const Wallet = ({ walletVisible, setWalletVisible }) => {
               </View>
             </View>
             <View style={styles.modalContainerButton}>
-              <Text style={styles.walletText}>45s4d545s4s5</Text>
+              <Text style={styles.walletText}>{passengerBalance.address}</Text>
               <Text style={styles.walletText}>
                 Balance: ${passengerBalance.balance}
               </Text>

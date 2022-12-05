@@ -12,7 +12,7 @@ const BalanceContext = createContext({});
 
 export function BalanceProvider({ children }) {
   const [passengerBalance, setPassengerBalance] = useState({
-    id: null,
+    address: null,
     balance: null,
   });
   const [driverBalance, setDriverBalance] = useState(null);
@@ -27,8 +27,8 @@ export function BalanceProvider({ children }) {
         },
       })
       .then((res) => {
-        const { balance } = res.data;
-        setPassengerBalance({ ...passengerBalance, balance: balance });
+        const { balance, address } = res.data;
+        setPassengerBalance({ address: address, balance: balance });
       })
       .catch((err) => {
         console.log("error in getBalance", err);

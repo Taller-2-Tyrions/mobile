@@ -7,6 +7,7 @@ import SignUpScreen from "../screens/SignUpScreen";
 import InitScreen from "../screens/HomeScreen/InitScreen";
 import HomeScreen from "../screens/HomeScreen";
 import PassengerForm from "../screens/Forms/PassengerForm";
+import MapScreen from "../screens/MapScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -24,6 +25,7 @@ const HomeNavigator = () => {
           <Stack.Screen name="InitScreen" component={InitScreen} />
           <Stack.Screen name="HomeScreen" component={HomeScreen} />
           <Stack.Screen name="PassengerForm" component={PassengerForm} />
+          <Stack.Screen name="MapScreen" component={MapScreen} />
         </>
       )}
     </Stack.Navigator>

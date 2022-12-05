@@ -9,6 +9,7 @@ import {
 import React from "react";
 import tw from "tailwind-react-native-classnames";
 import { AntDesign } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 
 const data1 = [
   {
@@ -54,6 +55,13 @@ const NavOptions = () => {
 };
 
 const TwoOptions = ({ data }) => {
+  const navigation = useNavigation();
+  const changePage = (item) => {
+    if (item.screen === "MapScreen") {
+      navigation.navigate("MapScreen");
+    }
+  };
+
   return (
     <View style={styles.container}>
       <FlatList
@@ -61,7 +69,10 @@ const TwoOptions = ({ data }) => {
         keyExtractor={(item) => item.id}
         horizontal
         renderItem={({ item }) => (
-          <TouchableOpacity style={tw`p-2 pl-6 pb-8 pt-4 ${item.bg} m-2 w-40`}>
+          <TouchableOpacity
+            onPress={() => changePage(item)}
+            style={tw`p-2 pl-6 pb-8 pt-4 ${item.bg} m-2 w-40`}
+          >
             <View>
               <Image style={styles.image} source={item.image} />
               <Text style={[tw`mt-2 text-lg`, styles.titleText]}>
