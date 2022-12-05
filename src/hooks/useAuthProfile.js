@@ -1,5 +1,6 @@
 import React, { useState, useMemo, createContext, useContext } from "react";
 import axios from "axios";
+import { URL } from "../configUrl";
 
 const AuthProfileContext = createContext({});
 
@@ -17,7 +18,7 @@ export function AuthProfileProvider({ children }) {
     if (!id || !accessToken) {
       console.log("fallo un parametro");
     }
-    const url = `https://fiuber-gateway.herokuapp.com/users/${id}`;
+    const url = URL + `/users/${id}`;
 
     axios
       .get(url, {
@@ -34,8 +35,6 @@ export function AuthProfileProvider({ children }) {
           long: parseFloat(split_address[2]),
         };
 
-        console.log("Roles: ", roles);
-
         setProfile({
           id: id,
           name: name,
@@ -50,8 +49,35 @@ export function AuthProfileProvider({ children }) {
       });
   };
 
+  const editProfile = async (data, accessToken) => {
+    const url = URL + `/users/passenger/${profile.id}`;
+    const location =
+      String(data.location) + ";" + String(data.lat) + ";" + String(data.long);
+
+    await axios
+      .put(
+        url,
+        {
+          name: data.name,
+          last_name: data.lastname,
+          roles: ["Passenger"],
+          address: location,
+        },
+        {
+          headers: {
+            token: accessToken,
+          },
+        }
+      )
+      .catch((err) => {
+        console.log("Error in edit profile: ", err);
+      });
+
+    getProfile(profile?.id, accessToken);
+  };
+
   const completeDriverForm = async (accessToken, profile, data) => {
-    const url = `https://fiuber-gateway.herokuapp.com/users/driver/${profile.id}`;
+    const url = URL + `/users/driver/${profile.id}`;
 
     axios.post(
       url,
@@ -80,9 +106,10 @@ export function AuthProfileProvider({ children }) {
     () => ({
       profile,
       getProfile,
+      editProfile,
       completeDriverForm,
     }),
-    [profile, getProfile, completeDriverForm]
+    [profile, getProfile, editProfile, completeDriverForm]
   );
 
   return (
