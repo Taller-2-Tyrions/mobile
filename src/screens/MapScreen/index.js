@@ -9,6 +9,7 @@ import MapView, { PROVIDER_GOOGLE, Marker } from "react-native-maps";
 import MapViewDirections from "react-native-maps-directions";
 import { mapDarkStyle } from "../../components/MapStyles";
 import useLocation from "../../hooks/useLocation";
+import { useNavigation } from "@react-navigation/native";
 
 const GOOGLE_MAPS_APIKEY = "AIzaSyCeWGHDDYw0J5rRmoQSwJGlmfO6tlmiutc";
 
@@ -16,10 +17,10 @@ const MapScreen = () => {
   const { origin, destination, userPosition } = useLocation();
   const [modalOrigin, setModalOrigin] = useState(false);
   const [modalDestination, setModalDestination] = useState(false);
+  const navigation = useNavigation();
 
   const pickDrivers = () => {
-    // navegar a la pantalla de escoger chofer
-    console.warn("Changing screen");
+    navigation.navigate("PickDrivers");
   };
 
   return (

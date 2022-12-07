@@ -35,13 +35,22 @@ export function BalanceProvider({ children }) {
       });
   };
 
+  const cleanBalance = () => {
+    setPassengerBalance({
+      address: null,
+      balance: null,
+    });
+    setDriverBalance(null);
+  };
+
   const memoedValue = useMemo(
     () => ({
       passengerBalance,
       driverBalance,
       getPassengerBalance,
+      cleanBalance,
     }),
-    [passengerBalance, driverBalance, getPassengerBalance]
+    [passengerBalance, driverBalance, getPassengerBalance, cleanBalance]
   );
 
   return (

@@ -111,6 +111,14 @@ export function AuthProvider({ children }) {
     });
   };
 
+  const cleanAuth = () => {
+    setUser({
+      accessToken: null,
+      id: null,
+      formComplete: null,
+    });
+  };
+
   const logout = () => {
     setUser({
       accessToken: null,
@@ -128,8 +136,18 @@ export function AuthProvider({ children }) {
       logout,
       completeForm,
       editProfile,
+      cleanAuth,
     }),
-    [user, setUser, signIn, register, logout, completeForm, editProfile]
+    [
+      user,
+      setUser,
+      signIn,
+      register,
+      logout,
+      completeForm,
+      editProfile,
+      cleanAuth,
+    ]
   );
 
   return (

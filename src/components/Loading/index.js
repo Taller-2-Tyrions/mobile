@@ -10,9 +10,9 @@ const Loading = ({
   const getImage = () => {
     switch (typeLoading) {
       case "chofer":
-        return require("../../assets/images/chofer.json");
+        return require("../../assets/images/radar1.json");
       default:
-        return require("../../assets/images/loading.json");
+        return require("../../assets/images/car-loading.json");
     }
   };
 

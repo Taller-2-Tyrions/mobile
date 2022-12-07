@@ -71,13 +71,11 @@ const TextModal = ({ setPlace, profile }) => {
             } else {
               description = data.vicinity;
             }
-            console.log("details: ", details.geometry.location);
             setPlace({
               description: description,
               lat: details.geometry.location.lat,
               long: details.geometry.location.lng,
             });
-            console.log("llega acá");
           }}
           suppressDefaultStyles
           //currentLocation={true}

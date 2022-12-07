@@ -9,6 +9,7 @@ import { LocationProvider } from "../hooks/useLocation";
 import { AuthGoogleProvider } from "../hooks/useAuthGoogle";
 import { PushNotificationProvider } from "../hooks/usePushNotification";
 import { BalanceProvider } from "../hooks/useBalance";
+import { VoyageProvider } from "../hooks/useVoyage";
 
 const RootNavigator = () => {
   return (
@@ -19,7 +20,9 @@ const RootNavigator = () => {
             <AuthProfileProvider>
               <LocationProvider>
                 <BalanceProvider>
-                  <HomeNavigator />
+                  <VoyageProvider>
+                    <HomeNavigator />
+                  </VoyageProvider>
                 </BalanceProvider>
               </LocationProvider>
             </AuthProfileProvider>

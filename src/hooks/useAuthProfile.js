@@ -49,23 +49,6 @@ export function AuthProfileProvider({ children }) {
       });
   };
 
-  const getPassengerBalance = async (accessToken) => {
-    const url = URL + `/users/passenger/balance`;
-
-    axios
-      .get(url, {
-        headers: {
-          token: accessToken,
-        },
-      })
-      .then((res) => {
-        // seteo el balance
-      })
-      .catch((err) => {
-        console.log("error in getBalance", err);
-      });
-  };
-
   const editProfile = async (data, accessToken) => {
     const url = URL + `/users/passenger/${profile.id}`;
     const location =
@@ -119,14 +102,26 @@ export function AuthProfileProvider({ children }) {
     await getProfile(profile.id, accessToken);
   };
 
+  const cleanAuthProfile = () => {
+    setProfile({
+      id: null,
+      name: null,
+      lastName: null,
+      defaultAddress: null,
+      isDriver: null,
+      isBlocked: null,
+    });
+  };
+
   const memoedValue = useMemo(
     () => ({
       profile,
       getProfile,
       editProfile,
       completeDriverForm,
+      cleanAuthProfile,
     }),
-    [profile, getProfile, editProfile, completeDriverForm]
+    [profile, getProfile, editProfile, completeDriverForm, cleanAuthProfile]
   );
 
   return (
