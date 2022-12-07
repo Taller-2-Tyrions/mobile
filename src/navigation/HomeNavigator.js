@@ -10,6 +10,7 @@ import PassengerForm from "../screens/Forms/PassengerForm";
 import MapScreen from "../screens/MapScreen";
 import InitPickDriver from "../screens/PickDriver/InitPickDriver";
 import InitPassengerVoyage from "../screens/PassengerVoyage/InitPassengerVoyage";
+import InitDriverScreen from "../screens/DriverHomeScreen/InitDriverScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -33,6 +34,7 @@ const HomeNavigator = () => {
             name="PassengerVoyage"
             component={InitPassengerVoyage}
           />
+          <Stack.Screen name="DriverScreen" component={InitDriverScreen} />
         </>
       )}
     </Stack.Navigator>

@@ -9,35 +9,17 @@ import {
 import React from "react";
 import tw from "tailwind-react-native-classnames";
 import { AntDesign } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
 
-const data1 = [
+const data = [
   {
     id: "1",
-    title: "Iniciar viaje",
-    image: require("../../assets/images/map.png"),
-    screen: "MapScreen",
+    title: "FIUBER APP",
+    image: require("../../assets/images/logo.png"),
+    screen: "HomeScreen",
     bg: "bg-gray-100",
   },
   {
     id: "2",
-    title: "Driver app",
-    image: require("../../assets/images/car.png"),
-    screen: "DriverScreen",
-    bg: "bg-gray-100",
-  },
-];
-
-const data2 = [
-  {
-    id: "3",
-    title: "Calificaciones",
-    image: require("../../assets/images/star.png"),
-    screen: "CalificationScreen",
-    bg: "bg-gray-100",
-  },
-  {
-    id: "4",
     title: "Logout",
     image: require("../../assets/images/logout.png"),
     screen: "LoginScreen",
@@ -47,32 +29,13 @@ const data2 = [
 
 const NavOptions = () => {
   return (
-    <View style={styles.navOptionsContainer}>
-      <TwoOptions data={data1} />
-      <TwoOptions data={data2} />
-    </View>
-  );
-};
-
-const TwoOptions = ({ data }) => {
-  const navigation = useNavigation();
-  const changePage = (item) => {
-    if (item.screen === "MapScreen" || item.screen === "DriverScreen") {
-      navigation.navigate(item.screen);
-    }
-  };
-
-  return (
     <View style={styles.container}>
       <FlatList
         data={data}
         keyExtractor={(item) => item.id}
         horizontal
         renderItem={({ item }) => (
-          <TouchableOpacity
-            onPress={() => changePage(item)}
-            style={tw`p-2 pl-6 pb-8 pt-4 ${item.bg} m-2 w-40`}
-          >
+          <TouchableOpacity style={tw`p-2 pl-6 pb-8 pt-4 ${item.bg} m-2 w-40`}>
             <View>
               <Image style={styles.image} source={item.image} />
               <Text style={[tw`mt-2 text-lg`, styles.titleText]}>
@@ -95,11 +58,8 @@ const TwoOptions = ({ data }) => {
 export default NavOptions;
 
 const styles = StyleSheet.create({
-  navOptionsContainer: {
-    paddingTop: 20,
-  },
   container: {
-    marginTop: 15,
+    paddingTop: 10,
     justifyContent: "center",
     alignItems: "center",
   },

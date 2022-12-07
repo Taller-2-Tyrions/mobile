@@ -1,37 +1,75 @@
-import {
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-  TouchableOpacity,
-  Dimensions,
-} from "react-native";
-import React from "react";
+import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import React, { useEffect } from "react";
 import tw from "tailwind-react-native-classnames";
 import { AntDesign } from "@expo/vector-icons";
+import { useForm } from "react-hook-form";
+import CustomInput from "../../components/CustomInput";
+import useAuth from "../../hooks/useAuth";
+import useAuthProfile from "../../hooks/useAuthProfile";
 
 const DriverForm = () => {
+  const { control, handleSubmit } = useForm();
+  const { user } = useAuth();
+  const { completeDriverForm } = useAuthProfile();
+
+  const onSubmitPressed = async (data) => {
+    completeDriverForm(user.accessToken, data);
+  };
+
   return (
     <View style={styles.container}>
       <Title />
       <View style={styles.contentContainer}>
-        <InputText
-          title={"Modelo de tu vehículo"}
-          placeholder={"Ejemplo: Ford Fiesta"}
+        <CustomInput
+          name="model"
+          placeholder="Modelo"
+          control={control}
+          rules={{
+            required: "(*) Campo requerido",
+          }}
+          textStyle={styles.inputText}
+          containerStyle={{ marginBottom: 10 }}
         />
-        <Patente />
-        <Year />
-        <Capacity />
+
+        <CustomInput
+          name="year"
+          placeholder="Año"
+          control={control}
+          rules={{
+            required: "(*) Campo requerido",
+          }}
+          textStyle={styles.inputText}
+          containerStyle={{ marginBottom: 10 }}
+        />
+
+        <CustomInput
+          name="plaque"
+          placeholder="Patente"
+          control={control}
+          rules={{
+            required: "(*) Campo requerido",
+          }}
+          textStyle={styles.inputText}
+          containerStyle={{ marginBottom: 10 }}
+        />
+
+        <CustomInput
+          name="capacity"
+          placeholder="Capacidad"
+          control={control}
+          rules={{
+            required: "(*) Campo requerido",
+          }}
+          textStyle={styles.inputText}
+          containerStyle={{ marginBottom: 10 }}
+        />
       </View>
-      <TouchableOpacity
-        style={{
-          position: "absolute",
-          bottom: 20,
-          left: Dimensions.get("window").width / 2 - 20,
-        }}
-      >
-        <AntDesign name="checkcircle" size={60} color="#39cb5b" />
-      </TouchableOpacity>
+
+      <View style={styles.bottomContainer}>
+        <TouchableOpacity onPress={handleSubmit(onSubmitPressed)}>
+          <AntDesign name="checkcircle" size={60} color="#39cb5b" />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -40,55 +78,18 @@ export default DriverForm;
 
 const Title = () => {
   return (
-    <View style={tw`p-10`}>
-      <Text style={styles.titleText}>Completá tu perfil de chofer</Text>
-    </View>
-  );
-};
-
-const InputText = ({ title, placeholder }) => {
-  return (
-    <View style={tw`mb-10`}>
-      <Text style={styles.inputTitle}>{title}</Text>
-      <TextInput placeholder={placeholder} style={styles.inputText} />
-    </View>
-  );
-};
-
-const Patente = () => {
-  return (
-    <View style={styles.inputRow}>
-      <View style={{ width: "30%" }}>
-        <Text style={styles.inputTitle}>Patente</Text>
+    <View style={[tw`p-2 mt-2`, { flexDirection: "row" }]}>
+      <View style={{ width: "20%", marginTop: 6 }}>
+        <TouchableOpacity>
+          <AntDesign name="arrowleft" size={24} color="black" />
+        </TouchableOpacity>
       </View>
-      <View style={{ width: "77%" }}>
-        <TextInput placeholder={"Ejemplo: ABC123"} style={styles.inputText} />
-      </View>
-    </View>
-  );
-};
-
-const Year = () => {
-  return (
-    <View style={styles.inputRow}>
-      <View style={{ width: "30%" }}>
-        <Text style={styles.inputTitle}>Año</Text>
-      </View>
-      <View style={{ width: "77%" }}>
-        <TextInput placeholder={"Ejemplo: 2010"} style={styles.inputText} />
-      </View>
-    </View>
-  );
-};
-
-const Capacity = () => {
-  return (
-    <View style={styles.inputRow}>
-      <View style={{ width: "40%" }}>
-        <Text style={styles.inputTitle}>Capacidad</Text>
-      </View>
-      <View style={{ width: "66%" }}>
-        <TextInput placeholder={"Ejemplo: 5"} style={styles.inputText} />
+      <View
+        style={{
+          width: "80%",
+        }}
+      >
+        <Text style={styles.titleStyle}>Completá los datos de tu vehículo</Text>
       </View>
     </View>
   );
@@ -109,10 +110,17 @@ const styles = StyleSheet.create({
     height: "70%",
     padding: 5,
     marginLeft: 15,
+    marginTop: 15,
   },
-  inputTitle: {
-    fontFamily: "uber2",
-    fontSize: 24,
+  bottomContainer: {
+    width: "100%",
+    height: "15%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  titleStyle: {
+    fontFamily: "uber1",
+    fontSize: 28,
   },
   inputText: {
     borderBottomWidth: 2,
@@ -125,10 +133,5 @@ const styles = StyleSheet.create({
   separator: {
     backgroundColor: "#efefef",
     height: 1,
-  },
-  inputRow: {
-    flexDirection: "row",
-    width: "90%",
-    marginBottom: 15,
   },
 });

@@ -35,6 +35,25 @@ export function BalanceProvider({ children }) {
       });
   };
 
+  const getDriverBalance = async (accessToken) => {
+    const url = URL + `/users/driver/balance`;
+
+    axios
+      .get(url, {
+        headers: {
+          token: accessToken,
+        },
+      })
+      .then((res) => {
+        const { balance } = res.data;
+        console.log("Driver balance: ", balance);
+        setDriverBalance(balance);
+      })
+      .catch((err) => {
+        console.log("error in getBalance", err);
+      });
+  };
+
   const cleanBalance = () => {
     setPassengerBalance({
       address: null,
@@ -49,8 +68,15 @@ export function BalanceProvider({ children }) {
       driverBalance,
       getPassengerBalance,
       cleanBalance,
+      getDriverBalance,
     }),
-    [passengerBalance, driverBalance, getPassengerBalance, cleanBalance]
+    [
+      passengerBalance,
+      driverBalance,
+      getPassengerBalance,
+      cleanBalance,
+      getDriverBalance,
+    ]
   );
 
   return (

@@ -1,6 +1,4 @@
-import { Text, View } from "react-native";
-import React, { useEffect } from "react";
-import { useNavigation } from "@react-navigation/native";
+import React from "react";
 import useAuth from "../../hooks/useAuth";
 import useAuthProfile from "../../hooks/useAuthProfile";
 import useBalance from "../../hooks/useBalance";
@@ -9,14 +7,12 @@ import PassengerForm from "../Forms/PassengerForm";
 import Loading from "../../components/Loading";
 
 const InitScreen = () => {
-  const navigation = useNavigation();
   const { user } = useAuth();
   const { profile, getProfile } = useAuthProfile();
   const { getPassengerBalance } = useBalance();
 
   if (!user?.formComplete) {
     // pasajero llena su perfil
-    //navigation.navigate("PassengerForm");
     return <PassengerForm />;
   } else {
     // si completó el perfil y puedo obtenerlo

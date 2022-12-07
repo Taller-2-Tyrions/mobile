@@ -1,14 +1,8 @@
-import {
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-  TouchableOpacity,
-} from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import React, { useState, useEffect } from "react";
 import tw from "tailwind-react-native-classnames";
 import { AntDesign } from "@expo/vector-icons";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import CustomInput from "../../components/CustomInput";
 import useAuth from "../../hooks/useAuth";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
