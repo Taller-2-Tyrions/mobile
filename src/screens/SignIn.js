@@ -1,24 +1,21 @@
 import React, { useState, useEffect } from "react";
 import {
   View,
-  Text,
   Image,
   useWindowDimensions,
   ScrollView,
+  StyleSheet,
 } from "react-native";
-import Logo from "../../../assets/images/logo.png";
-import CustomInput from "../../components/CustomInput";
-import CustomButton from "../../components/CustomButton";
-import GoogleButton from "../../components/GoogleButton";
+import Logo from "../assets/images/logo.png";
 import { useForm } from "react-hook-form";
-import useAuth from "../../hooks/useAuth";
+import useAuth from "../hooks/useAuth";
 import { useNavigation } from "@react-navigation/native";
-import styles from "./styles";
-import useAuthGoogle from "../../hooks/useAuthGoogle";
-import Loading from "../../components/Loading";
+import Loading from "../components/Loading";
+import CustomInput from "../components/CustomInput";
+import CustomButton from "../components/CustomButton";
+import GoogleButton from "../components/GoogleButton";
 
 const SignInScreen = () => {
-  const { signInWithGoogle } = useAuthGoogle();
   const { signIn, logout } = useAuth();
   const { height } = useWindowDimensions();
   const navigation = useNavigation();
@@ -43,7 +40,7 @@ const SignInScreen = () => {
   };
 
   const signInGoogle = async () => {
-    await signInWithGoogle();
+    //await signInWithGoogle();
   };
 
   if (loading) {
@@ -60,33 +57,33 @@ const SignInScreen = () => {
 
           <CustomInput
             name="email"
-            placeholder="Email"
+            placeholder="Ingresá tu mail"
             control={control}
-            rules={{ required: "Email is required" }}
+            rules={{ required: "(*) Campo obligatorio" }}
           />
           <CustomInput
             name="password"
-            placeholder="Password"
+            placeholder="Ingresá tu contraseña"
             control={control}
             rules={{
-              required: "Password is required",
+              required: "(*) Campo obligatorio",
               minLength: {
                 value: 4,
-                message: "Password should be minimum 4 characters long",
+                message: "La contraseña tiene que tener al menos 4 carácteres",
               },
             }}
             secureTextEntry
           />
 
           <CustomButton
-            text="Sign in"
+            text="Iniciar sesión"
             onPress={handleSubmit(onSignInPressed)}
           />
 
           <GoogleButton onPress={signInGoogle} />
 
           <CustomButton
-            text="Don't have an account? Create one"
+            text="¿No tenés una cuenta? Creá una"
             type="TERTIARY"
             onPress={goToSignUp}
           />
@@ -97,3 +94,25 @@ const SignInScreen = () => {
 };
 
 export default SignInScreen;
+
+const styles = StyleSheet.create({
+  root: {
+    alignItems: "center",
+    padding: 20,
+  },
+  logo: {
+    width: "70%",
+    maxWidth: 300,
+    maxHeight: 200,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  loadingText: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#051C60",
+  },
+});

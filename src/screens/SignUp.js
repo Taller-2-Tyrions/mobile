@@ -1,17 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { View, Text, StyleSheet, ScrollView } from "react-native";
-import CustomInput from "../../components/CustomInput";
-import CustomButton from "../../components/CustomButton";
+import CustomInput from "../components/CustomInput";
+import CustomButton from "../components/CustomButton";
 import { useNavigation } from "@react-navigation/native";
 import { useForm } from "react-hook-form";
-import useAuth from "../../hooks/useAuth";
-import Loading from "../../components/Loading";
+import useAuth from "../hooks/useAuth";
+import Loading from "../components/Loading";
 
 const EMAIL_REGEX =
   /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
 const SignUpScreen = () => {
-  const { user, register } = useAuth();
+  const { register } = useAuth();
   const { control, handleSubmit, watch } = useForm({
     defaultValues: {
       username: "Default username",
