@@ -51,15 +51,18 @@ const CustomInput = ({
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "white",
     width: "100%",
-    borderColor: "#e8e8e8",
-    borderWidth: 1,
-    borderRadius: 5,
-    padding: 10,
     marginVertical: 5,
+    marginBottom: 15,
   },
-  input: {},
+  input: {
+    borderBottomWidth: 2,
+    borderBottomColor: "black",
+    width: "90%",
+    fontFamily: "uber2",
+    fontSize: 20,
+    marginTop: 5,
+  },
 });
 
 export default CustomInput;

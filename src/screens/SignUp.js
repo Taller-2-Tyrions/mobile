@@ -6,6 +6,8 @@ import { useNavigation } from "@react-navigation/native";
 import { useForm } from "react-hook-form";
 import useAuth from "../hooks/useAuth";
 import Loading from "../components/Loading";
+import Title from "../components/Title";
+import OkButton from "../components/OkButton";
 
 const EMAIL_REGEX =
   /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
@@ -24,10 +26,6 @@ const SignUpScreen = () => {
   const onRegisterPressed = async (data) => {
     setLoading(true);
     await register(data);
-
-    /*if (user.accessToken) {
-      navigation.navigate("Home");
-    }*/
   };
 
   const onSignInPressed = () => {
@@ -38,76 +36,92 @@ const SignUpScreen = () => {
     return <Loading />;
   } else {
     return (
-      <ScrollView showVerticalScrollIndicator={false}>
-        <View style={styles.root}>
-          <Text style={styles.title}>Create an account</Text>
+      <View style={styles.root}>
+        <Title title="Crear una cuenta" />
 
-          <CustomInput
-            name="email"
-            placeholder="Email"
-            control={control}
-            rules={{
-              required: "Email is required",
-              pattern: { value: EMAIL_REGEX, message: "Email is invalid" },
-            }}
-          />
-          <CustomInput
-            name="password"
-            placeholder="Password"
-            control={control}
-            rules={{
-              required: "Password is required",
-              minLength: {
-                value: 8,
-                message: "Password should be minimum 8 characters long",
-              },
-            }}
-            secureTextEntry
-          />
-          <CustomInput
-            name="password-repeat"
-            placeholder="Repeat password"
-            control={control}
-            rules={{
-              validate: (value) =>
-                value === pwd ? true : "Password do not match",
-            }}
-            secureTextEntry
-          />
-
+        <View style={{ height: "60%" }}>
+          <FormData control={control} pwd={pwd} />
+          <OkButton onPress={handleSubmit(onRegisterPressed)} />
+        </View>
+        <View style={{ height: "20%", justifyContent: "flex-start" }}>
           <CustomButton
-            text="Register"
-            onPress={handleSubmit(onRegisterPressed)}
-          />
-
-          <CustomButton
-            text="Have an account? Sign in"
+            text="¿Ya tenés cuenta? Iniciá sesión"
             onPress={onSignInPressed}
             type="TERTIARY"
           />
         </View>
-      </ScrollView>
+      </View>
     );
   }
 };
 
+const FormData = ({ control, pwd }) => {
+  return (
+    <View style={styles.inputContainer}>
+      <CustomInput
+        name="email"
+        placeholder="Ingresá tu mail"
+        control={control}
+        rules={{
+          required: "(*) Campo obligatorio",
+          pattern: { value: EMAIL_REGEX, message: "Email is invalid" },
+        }}
+      />
+      <CustomInput
+        name="password"
+        placeholder="Ingresá una contraseña"
+        control={control}
+        rules={{
+          required: "(*) Campo obligatorio",
+          minLength: {
+            value: 8,
+            message: "Mínimo requerido para la contraseña: 8",
+          },
+        }}
+        secureTextEntry
+      />
+      <CustomInput
+        name="password-repeat"
+        placeholder="Repetí la contraseña"
+        control={control}
+        rules={{
+          validate: (value) =>
+            value === pwd ? true : "Las contraseñas no coinciden",
+        }}
+        secureTextEntry
+      />
+    </View>
+  );
+};
+
 const styles = StyleSheet.create({
   root: {
-    alignItems: "center",
-    padding: 20,
+    padding: 10,
+    backgroundColor: "white",
+    height: "100%",
+    width: "100%",
   },
-  title: {
+  inputContainer: {
+    padding: 5,
+    marginLeft: 15,
+    width: "100%",
+    height: "30%",
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  loadingText: {
     fontSize: 24,
     fontWeight: "bold",
     color: "#051C60",
-    margin: 10,
   },
-  text: {
-    color: "gray",
-    marginVertical: 10,
-  },
-  link: {
-    color: "#FDB075",
+  line: {
+    width: "45%",
+    borderTopWidth: 1,
+    borderTopColor: "gray",
+    marginBottom: 20,
   },
 });
 

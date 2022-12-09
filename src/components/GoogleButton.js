@@ -4,7 +4,7 @@ const GoogleButton = ({ onPress }) => {
   return (
     <>
       <CustomButton
-        text="Sign In with Google"
+        text="Iniciar sesión con Google"
         onPress={onPress}
         bgColor="#FAE9EA"
         fgColor="#DD4D44"
