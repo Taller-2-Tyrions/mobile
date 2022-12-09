@@ -7,11 +7,13 @@ import PassengerVoyage from ".";
 
 const InitPassengerVoyage = () => {
   const { user } = useAuth();
-  const { status, getStatusVoyage } = useVoyage();
+  const { status, startTrackingVoyage } = useVoyage();
 
   useEffect(() => {
-    //startTrackingVoyage(user.accessToken);
-    getStatusVoyage(user.accessToken);
+    // el get status lo tengo que hacer todo el tiempo
+    // porque no tengo la push, y el conductor me puede cancelar
+    // en cualquier momento.
+    startTrackingVoyage(user.accessToken);
   }, []);
 
   if (!status) {
@@ -26,7 +28,7 @@ const InitPassengerVoyage = () => {
     return <WaitingDriver voyageId={Voyage} />;
   } else if (Status === "WAITING_DRIVER") {
     const { Voyage } = status;
-    return <PassengerVoyage voyageId={Voyage} />;
+    return <PassengerVoyage />;
   }
 };
 

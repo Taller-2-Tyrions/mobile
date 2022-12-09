@@ -13,6 +13,7 @@ const VoyageContext = createContext({});
 export function VoyageProvider({ children }) {
   const [status, setStatus] = useState(null);
   const [trackingVoyage, setTrackingVoyage] = useState(null);
+  const [locationVoyage, setLocationVoyage] = useState(null);
 
   useEffect(() => {
     if (trackingVoyage) {
@@ -43,6 +44,24 @@ export function VoyageProvider({ children }) {
       });
   };
 
+  const getLocationVoyage = async (accessToken, idVoyage) => {
+    const url = URL + `/voyage/driver/location/${idVoyage}`;
+
+    axios
+      .get(url, {
+        headers: {
+          token: accessToken,
+        },
+      })
+      .then((res) => {
+        const { latitude, longitude } = res.data;
+        setLocationVoyage({ lat: latitude, long: longitude });
+      })
+      .catch((err) => {
+        console.log("Error in getLocationVoyage: ", err);
+      });
+  };
+
   const startTrackingVoyage = (accessToken) => {
     setTrackingVoyage(accessToken);
   };
@@ -57,8 +76,17 @@ export function VoyageProvider({ children }) {
       cancelTrackingVoyage,
       status,
       getStatusVoyage,
+      locationVoyage,
+      getLocationVoyage,
     }),
-    [startTrackingVoyage, cancelTrackingVoyage, status, getStatusVoyage]
+    [
+      startTrackingVoyage,
+      cancelTrackingVoyage,
+      status,
+      getStatusVoyage,
+      locationVoyage,
+      getLocationVoyage,
+    ]
   );
 
   return (

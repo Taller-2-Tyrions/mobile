@@ -1,13 +1,28 @@
 import { StyleSheet, Text, View } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import tw from "tailwind-react-native-classnames";
+import useVoyage from "../../hooks/useVoyage";
+import useAuth from "../../hooks/useAuth";
 
-const PassengerVoyage = ({ voyageId }) => {
-  console.log("Esperando voyageId: ", voyageId);
+// lo que quiero acá es renderizar dónde está el conductor hasta
+// que llega a mi casa.
+const PassengerVoyage = () => {
+  const { user } = useAuth();
+  const { status, locationVoyage, getLocationVoyage } = useVoyage();
+
+  useEffect(() => {
+    const timer = setInterval(
+      () => getLocationVoyage(user.accessToken, status.Voyage),
+      2000
+    );
+    return () => clearInterval(timer);
+  }, [locationVoyage]);
 
   return (
     <View style={tw`h-full w-full bg-blue-200 justify-center`}>
-      <Text>Viaje iniciado</Text>
+      <Text>
+        {locationVoyage.lat} {locationVoyage.long}
+      </Text>
     </View>
   );
 };
