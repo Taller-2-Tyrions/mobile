@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import useFonts from "./src/hooks/useFonts";
 import AppLoading from "expo-app-loading";
-import RootNavigator from "./src/RootNavigator";
+import RootNavigator from "./src/navigation/RootNavigator";
 import { LogBox, StatusBar } from "react-native";
 
 export default function App() {

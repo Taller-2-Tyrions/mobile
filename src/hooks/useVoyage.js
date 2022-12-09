@@ -11,13 +11,12 @@ import { URL } from "../configUrl";
 const VoyageContext = createContext({});
 
 export function VoyageProvider({ children }) {
-  const [voyageID, setVoyageID] = useState(null);
   const [status, setStatus] = useState(null);
   const [trackingVoyage, setTrackingVoyage] = useState(null);
 
   useEffect(() => {
     if (trackingVoyage) {
-      const timer = setInterval(() => getStatusVoyage(trackingVoyage), 5000);
+      const timer = setInterval(() => getStatusVoyage(trackingVoyage), 2000);
       return () => clearInterval(timer);
     }
   }, [trackingVoyage]);
@@ -26,20 +25,21 @@ export function VoyageProvider({ children }) {
     const url = URL + "/users/status";
 
     axios
-      .post(url, {
-        headers: {
-          token: accessToken,
-        },
-      })
-      .then((res) => {
-        const { Status, Rol } = res.data;
-        if (Status === "WAITING_CONFIRMATION") {
-          const { Voyage } = res.data;
-          setVoyageID(Voyage);
+      .post(
+        url,
+        {},
+        {
+          headers: {
+            token: accessToken,
+          },
         }
+      )
+      .then((res) => {
+        console.log("New status: ", res.data);
+        setStatus(res.data);
       })
       .catch((err) => {
-        console.log("Error in passengerSearch: ", err);
+        console.log("Error in getStatus: ", err);
       });
   };
 
@@ -52,8 +52,13 @@ export function VoyageProvider({ children }) {
   };
 
   const memoedValue = useMemo(
-    () => ({ startTrackingVoyage, cancelTrackingVoyage, voyageID, status }),
-    [startTrackingVoyage, cancelTrackingVoyage, voyageID, status]
+    () => ({
+      startTrackingVoyage,
+      cancelTrackingVoyage,
+      status,
+      getStatusVoyage,
+    }),
+    [startTrackingVoyage, cancelTrackingVoyage, status, getStatusVoyage]
   );
 
   return (

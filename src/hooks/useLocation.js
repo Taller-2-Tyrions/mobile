@@ -173,12 +173,14 @@ export function LocationProvider({ children }) {
       });
   };
 
-  const passengerPickDriver = async (accessToken, idDriver) => {
+  const passengerPickDriver = async (
+    accessToken,
+    idDriver,
+    setResponse,
+    setError
+  ) => {
     const url = URL + `/voyage/passenger/search/${idDriver}`;
 
-    // cambio idDriver por driver y uso driver.id en todos lados
-    // setSelectedDriver(driver);
-    console.log("idDriver picks driver: ", idDriver);
     axios
       .post(
         url,
@@ -200,10 +202,12 @@ export function LocationProvider({ children }) {
         }
       )
       .then((res) => {
+        setResponse(res.data);
         console.log("Esperando respuesta del conductor: ", res.data);
       })
       .catch((err) => {
         console.log("Error in passengerPickDriver: ", err);
+        setError(true);
       });
   };
 

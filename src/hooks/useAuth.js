@@ -1,4 +1,10 @@
-import React, { useState, useMemo, createContext, useContext } from "react";
+import React, {
+  useEffect,
+  useState,
+  useMemo,
+  createContext,
+  useContext,
+} from "react";
 import axios from "axios";
 import usePushNotification from "./usePushNotification";
 import { URL } from "../configUrl";
@@ -11,19 +17,11 @@ export function AuthProvider({ children }) {
     id: null,
     formComplete: null,
   });
-  const [profile, setProfile] = useState({
-    id: null,
-    name: null,
-    lastName: null,
-    defaultAddress: null,
-    isDriver: null,
-    isBlocked: null,
-  });
+  const { expoToken } = usePushNotification();
   const [status, setStatus] = useState({
     Rol: null,
     Status: null,
   });
-  const { expoToken } = usePushNotification();
 
   const signIn = async (data) => {
     const url = URL + "/login";
@@ -47,11 +45,27 @@ export function AuthProvider({ children }) {
             formComplete: is_registered,
           };
 
+          console.log("User: ", userAux);
+
           setUser(userAux);
         }
       })
       .catch((err) => {
         console.log("signIn error: ", err);
+      });
+  };
+
+  const editProfile = async (data, newAddress) => {
+    const url = URL + `/users/passenger/${user.id}`;
+
+    await axios
+      .put(url, {
+        name: data.name,
+        last_name: data.lastname,
+        address: newAddress,
+      })
+      .catch((err) => {
+        console.log("Error in edit profile: ", err);
       });
   };
 
@@ -64,42 +78,43 @@ export function AuthProvider({ children }) {
         password: data.password,
       })
       .catch((err) => {
-        console.log("Error in register: ", err);
+        console.warn(err);
       });
 
     await signIn(data);
   };
 
-  const getProfile = async () => {
-    const url = URL + `/users/${user.id}`;
+  const completeForm = async (accessToken, data) => {
+    const url = URL + "/users";
 
-    axios
-      .get(url, {
+    console.log("Data completeForm: ", data);
+    const location =
+      String(data.location) + ";" + String(data.lat) + ";" + String(data.long);
+
+    axios.post(
+      url,
+      {
+        name: data.name,
+        last_name: data.lastname,
+        roles: ["Passenger"],
+        address: location,
+      },
+      {
         headers: {
-          token: user.accessToken,
+          token: accessToken,
         },
-      })
-      .then((res) => {
-        const { id, name, last_name, roles, is_blocked, address } = res.data;
-        const split_address = address.split(";");
-        const defaultAddress = {
-          location: split_address[0],
-          lat: parseFloat(split_address[1]),
-          long: parseFloat(split_address[2]),
-        };
-
-        setProfile({
-          id: id,
-          name: name,
-          lastName: last_name,
-          isDriver: roles.includes("Driver"),
-          isBlocked: is_blocked,
-          defaultAddress: defaultAddress,
-        });
-      })
-      .catch((err) => {
-        console.log("error in getProfile", err);
-      });
+      }
+    );
+    /*.then((res) => {
+                console.log('El usuario terminó el form');
+            })
+            .catch(err => {
+                console.log(err);
+            })*/
+    setUser({
+      ...user,
+      formComplete: true,
+    });
   };
 
   const getStatus = async () => {
@@ -123,6 +138,14 @@ export function AuthProvider({ children }) {
       });
   };
 
+  const cleanAuth = () => {
+    setUser({
+      accessToken: null,
+      id: null,
+      formComplete: null,
+    });
+  };
+
   const logout = () => {
     setUser({
       accessToken: null,
@@ -134,15 +157,28 @@ export function AuthProvider({ children }) {
   const memoedValue = useMemo(
     () => ({
       user,
+      setUser,
       signIn,
       register,
       logout,
-      profile,
-      getProfile,
-      getStatus,
+      completeForm,
+      editProfile,
+      cleanAuth,
       status,
+      getStatus,
     }),
-    [user, signIn, register, logout, profile, getProfile, getStatus, status]
+    [
+      user,
+      setUser,
+      signIn,
+      register,
+      logout,
+      completeForm,
+      editProfile,
+      cleanAuth,
+      status,
+      getStatus,
+    ]
   );
 
   return (

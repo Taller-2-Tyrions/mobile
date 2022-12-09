@@ -12,6 +12,7 @@ import tw from "tailwind-react-native-classnames";
 import useLocation from "../../hooks/useLocation";
 import useAuth from "../../hooks/useAuth";
 import { useNavigation } from "@react-navigation/native";
+import Loading from "../../components/Loading";
 
 const PickDriver = () => {
   const {
@@ -24,6 +25,9 @@ const PickDriver = () => {
   const { user } = useAuth();
   const navigation = useNavigation();
   const [selectedDriver, setSelectedDriver] = useState(null);
+  const [error, setError] = useState(false);
+  const [driverPicked, setDriverPicked] = useState(false);
+  const [voyage, setVoyage] = useState(null);
 
   useEffect(() => {
     if (selectedDriver) {
@@ -32,26 +36,53 @@ const PickDriver = () => {
   }, [selectedDriver]);
 
   const changePage = () => {
-    // hacer llamada a gateway de elección de pasajero
-    // y cambio y página.
+    // debería cancelarla solo cuando termina passengerPickDriver
+    setError(false);
+    setDriverPicked(true);
     cancelSearchingDrivers();
-    passengerPickDriver(user.accessToken, selectedDriver.id);
-    navigation.navigate("PassengerVoyage");
+    passengerPickDriver(
+      user.accessToken,
+      selectedDriver.id,
+      setVoyage,
+      setError
+    );
+    //navigation.navigate("PassengerVoyage");
   };
 
-  return (
-    <SafeAreaView style={tw`bg-white h-full`}>
-      <Title />
-      <DriversOptions drivers={drivers} setSelectedDriver={setSelectedDriver} />
-      {selectedDriver && (
-        <DriverInfo
-          driver={lastDriverSelected}
-          selectedDriver={selectedDriver}
+  useEffect(() => {
+    if (error) {
+      setVoyage(null);
+      setDriverPicked(false);
+    }
+  }, [error]);
+
+  useEffect(() => {
+    if (voyage && driverPicked && !error) {
+      console.log("Cambiando a PassengerVoyage");
+      navigation.navigate("PassengerVoyage");
+    }
+  }, [voyage]);
+
+  if (driverPicked) {
+    return <Loading textLoading="Construyendo pedido" />;
+  } else {
+    return (
+      <SafeAreaView style={tw`bg-white h-full`}>
+        <Title />
+        <DriversOptions
+          drivers={drivers}
+          setSelectedDriver={setSelectedDriver}
         />
-      )}
-      <OkButton driver={selectedDriver} onPress={changePage} />
-    </SafeAreaView>
-  );
+        {selectedDriver && (
+          <DriverInfo
+            driver={lastDriverSelected}
+            selectedDriver={selectedDriver}
+          />
+        )}
+        <OkButton driver={selectedDriver} onPress={changePage} />
+      </SafeAreaView>
+    );
+  }
 };
 
 const Title = () => {

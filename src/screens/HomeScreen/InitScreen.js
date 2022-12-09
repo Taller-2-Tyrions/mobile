@@ -15,10 +15,6 @@ const InitScreen = () => {
     // pasajero llena su perfil
     return <PassengerForm />;
   } else {
-    // si completó el perfil y puedo obtenerlo
-    // entonces voy al home, si no lo puedo obtener,
-    // entonces puedo probar logueando yo, y cualquier error tiro
-    // mensaje de logout.
     if (profile?.id && profile?.name) {
       getPassengerBalance(user.accessToken);
       return <HomeScreen />;
