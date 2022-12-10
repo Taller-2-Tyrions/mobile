@@ -6,22 +6,18 @@ import MapViewDirections from "react-native-maps-directions";
 import styles from "./styles";
 import { DriverMarker } from "./markers";
 import VoyageStartedScreen from "./VoyageStartedScreen";
+import useDriver from "../../hooks/useDriver";
 
 const GOOGLE_MAPS_APIKEY = "AIzaSyCeWGHDDYw0J5rRmoQSwJGlmfO6tlmiutc";
 
-const DriverPickingScreen = ({ order, setOrder, location, user }) => {
-  // recibe los datos de la push notification y la
-  // posición inicial del chófer
-  const [driverPosition, setDriverPosition] = useState({
-    latitude: location.latitude,
-    longitude: location.longitude,
-  });
-  const clientLocation = order.init;
-  const destination = order.end;
+const DriverVoyage = () => {
+  const { voyage, setVoyage, driverPosition } = useDriver();
+  const clientLocation = voyage.init;
+  const destination = voyage.end;
   const [initVoyage, setInitVoyage] = useState(false);
 
   useEffect(() => {
-    console.log("ORDEN: ", order);
+    console.log("ORDEN: ", voyage);
   }, []);
 
   const startVoyage = () => {
@@ -32,23 +28,23 @@ const DriverPickingScreen = ({ order, setOrder, location, user }) => {
   };
 
   const onDirectionFound = (event) => {
-    setOrder({
-      ...order,
+    setVoyage({
+      ...voyage,
       distance: event.distance,
       duration: event.duration,
-      pickedUp: order.pickedUp || event.distance < 0.2,
-      isFinished: order.pickedUp && event.distance < 0.2,
+      pickedUp: voyage.pickedUp || event.distance < 0.2,
+      isFinished: voyage.pickedUp && event.distance < 0.2,
     });
   };
 
   useEffect(() => {
-    if (order && order?.pickedUp) {
+    if (voyage && voyage?.pickedUp) {
       console.warn("llegando");
       // acá debería avisarle al gateway para
       // que avise a cliente que estoy
       // en la puerta
     }
-  }, [order]);
+  }, [voyage]);
 
   /*const onUserLocationChange = async (event) => {
     if (event && event.nativeEvent && event.nativeEvent.coordinate) {
@@ -100,7 +96,7 @@ const DriverPickingScreen = ({ order, setOrder, location, user }) => {
           <Marker title={"Client location"} coordinate={clientLocation} />
           <Marker title={"Destino"} coordinate={destination} />
         </MapView>
-        {order?.pickedUp ? (
+        {voyage?.pickedUp ? (
           <TouchableOpacity
             style={{ ...styles.button, backgroundColor: "#1495ff" }}
             onPress={startVoyage}
@@ -110,7 +106,7 @@ const DriverPickingScreen = ({ order, setOrder, location, user }) => {
         ) : (
           <View>
             <View style={styles.distanceContainer}>
-              <Text style={styles.distanceText}>{order?.distance} km</Text>
+              <Text style={styles.distanceText}>{voyage?.distance} km</Text>
             </View>
             <TouchableOpacity
               style={{ ...styles.button, backgroundColor: "red" }}
@@ -124,4 +120,4 @@ const DriverPickingScreen = ({ order, setOrder, location, user }) => {
   }
 };
 
-export default DriverPickingScreen;
+export default DriverVoyage;

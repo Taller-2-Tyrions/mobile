@@ -19,14 +19,6 @@ import useAuth from "../../hooks/useAuth";
 const HomeScreen = () => {
   const [walletVisible, setWalletVisible] = useState(false);
   const [profileVisible, setProfileVisible] = useState(false);
-  const { setDriverOnline, isOnline } = useLocation();
-  const { user } = useAuth();
-
-  useEffect(() => {
-    if (!isOnline) {
-      setDriverOnline(user.accessToken);
-    }
-  }, []);
 
   return (
     <SafeAreaView style={tw`bg-white h-full`}>

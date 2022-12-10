@@ -6,6 +6,7 @@ import useAuth from "../../hooks/useAuth";
 
 // lo que quiero acá es renderizar dónde está el conductor hasta
 // que llega a mi casa.
+// luego lo tengo que trackear hasta que llega al destino.
 const PassengerVoyage = () => {
   const { user } = useAuth();
   const { status, locationVoyage, getLocationVoyage } = useVoyage();

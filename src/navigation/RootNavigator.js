@@ -8,6 +8,8 @@ import { AuthGoogleProvider } from "../hooks/useAuthGoogle";
 import { PushNotificationProvider } from "../hooks/usePushNotification";
 import { BalanceProvider } from "../hooks/useBalance";
 import { VoyageProvider } from "../hooks/useVoyage";
+import { DriverProvider } from "../hooks/useDriver";
+import { PassengerProvider } from "../hooks/usePassenger";
 
 const RootNavigator = () => {
   return (
@@ -19,7 +21,11 @@ const RootNavigator = () => {
               <LocationProvider>
                 <BalanceProvider>
                   <VoyageProvider>
-                    <HomeNavigator />
+                    <DriverProvider>
+                      <PassengerProvider>
+                        <HomeNavigator />
+                      </PassengerProvider>
+                    </DriverProvider>
                   </VoyageProvider>
                 </BalanceProvider>
               </LocationProvider>

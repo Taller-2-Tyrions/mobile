@@ -10,46 +10,86 @@ import tw from "tailwind-react-native-classnames";
 import { SafeAreaView } from "react-native-safe-area-context";
 import NavOptions from "./NavOptions";
 import LastTrips from "./LastTrips";
-import { Ionicons, Entypo, FontAwesome, AntDesign } from "@expo/vector-icons";
+import { Ionicons, Entypo } from "@expo/vector-icons";
 import Wallet from "./Wallet";
 import Profile from "./Profile";
 import CarSettings from "./CarSettings";
-import useAuthProfile from "../../hooks/useAuthProfile";
-import useAuth from "../../hooks/useAuth";
+import PassengerRequest from "./PassengerRequest";
+import useDriver from "../../hooks/useDriver";
+import Loading from "../../components/Loading";
 
 const DriverHomeScreen = () => {
+  const {
+    voyage,
+    setVoyage,
+    getVoyageInfo,
+    replyVoyageRequest,
+    voyageAccepted,
+  } = useDriver();
   const [walletVisible, setWalletVisible] = useState(false);
   const [profileVisible, setProfileVisible] = useState(false);
   const [carVisible, setCarVisible] = useState(false);
-  const { getDriverProfile } = useAuthProfile();
-  const { user } = useAuth();
+  const [requestVisible, setRequestVisible] = useState(false);
+  const [responseIsProcessing, setResponseIsProcessing] = useState(false);
 
   useEffect(() => {
-    getDriverProfile(user.accessToken);
-  }, []);
+    if (voyage && voyage.voyage_id) {
+      setRequestVisible(true);
+    }
+  }, [voyage]);
 
-  return (
-    <SafeAreaView style={tw`bg-white h-full`}>
-      <ScrollView style={styles.container}>
-        <Title
-          setProfileVisible={setProfileVisible}
-          setWalletVisible={setWalletVisible}
-          setCarVisible={setCarVisible}
-        />
-        <NavOptions />
-        <LastTrips />
-        <Wallet
-          walletVisible={walletVisible}
-          setWalletVisible={setWalletVisible}
-        />
-        <Profile
-          profileVisible={profileVisible}
-          setProfileVisible={setProfileVisible}
-        />
-        <CarSettings carVisible={carVisible} setCarVisible={setCarVisible} />
-      </ScrollView>
-    </SafeAreaView>
-  );
+  useEffect(() => {
+    if (voyageAccepted && !responseIsProcessing) {
+      navigation.navigate("DriverVoyage");
+    }
+  }, [voyageAccepted, responseIsProcessing]);
+
+  const onAccept = () => {
+    setResponseIsProcessing(true);
+    replyVoyageRequest(true, setResponseIsProcessing);
+    // debería ver que no salga error...
+    getVoyageInfo();
+    setRequestVisible(false);
+  };
+
+  const onDecline = () => {
+    setResponseIsProcessing(true);
+    replyVoyageRequest(false, setResponseIsProcessing);
+    setVoyage(null);
+    setRequestVisible(false);
+  };
+
+  if (responseIsProcessing) {
+    return <Loading textLoading="Procesando tu respuesta" />;
+  } else {
+    return (
+      <SafeAreaView style={tw`bg-white h-full`}>
+        <ScrollView style={styles.container}>
+          <Title
+            setProfileVisible={setProfileVisible}
+            setWalletVisible={setWalletVisible}
+            setCarVisible={setCarVisible}
+          />
+          <NavOptions />
+          <LastTrips />
+          <Wallet
+            walletVisible={walletVisible}
+            setWalletVisible={setWalletVisible}
+          />
+          <Profile
+            profileVisible={profileVisible}
+            setProfileVisible={setProfileVisible}
+          />
+          <CarSettings carVisible={carVisible} setCarVisible={setCarVisible} />
+          <PassengerRequest
+            modalVisible={requestVisible}
+            onAccept={onAccept}
+            onDecline={onDecline}
+          />
+        </ScrollView>
+      </SafeAreaView>
+    );
+  }
 };
 
 const Title = ({ setWalletVisible, setProfileVisible, setCarVisible }) => {
