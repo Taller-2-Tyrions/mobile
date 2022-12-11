@@ -1,13 +1,14 @@
 import React, { useEffect } from "react";
+import { View, Text } from "react-native";
 import useBalance from "../../hooks/useBalance";
 import useAuth from "../../hooks/useAuth";
 import useAuthProfile from "../../hooks/useAuthProfile";
 import useLocation from "../../hooks/useLocation";
-import DriverHomeScreen from ".";
 import DriverForm from "../Forms/DriverForm";
 import Loading from "../../components/Loading";
-import useVoyage from "../../hooks/useVoyage";
 import useDriver from "../../hooks/useDriver";
+import { useNavigation } from "@react-navigation/native";
+import tw from "tailwind-react-native-classnames";
 
 const InitDriverScreen = () => {
   const { user } = useAuth();
@@ -15,13 +16,6 @@ const InitDriverScreen = () => {
   const { profile, driverFormCompleted, getDriverProfile, carData } =
     useAuthProfile();
   const { setDriverOnline, isOnline } = useLocation();
-  const { startTrackingVoyage } = useVoyage();
-  const { startTrackingDriverPosition } = useDriver();
-
-  useEffect(() => {
-    startTrackingVoyage(user.accessToken);
-    startTrackingDriverPosition();
-  }, []);
 
   useEffect(() => {
     if (carData && !isOnline) {
@@ -42,21 +36,42 @@ const InitDriverScreen = () => {
 };
 
 const Redirect = () => {
-  const { status } = useVoyage();
-  const { voyage, setVoyage } = useDriver();
+  const navigation = useNavigation();
+  const { status, getStatusDriver } = useDriver();
 
   useEffect(() => {
-    if (status.Status === "WAITING") {
-      setVoyage({ ...voyage, voyage_id: status.Voyage });
+    if (status?.Status !== "WAITING") {
+      const timer = setInterval(() => getStatusDriver(), 2000);
+      return () => clearInterval(timer);
+    } else {
+      console.log("Llegó un request");
     }
   }, [status]);
 
-  // esto no debería pasar porque ya puse al conductor en línea.
-  if (status?.Rol !== "Driver") {
-    // en realidad debería volver a la pantalla de pasajero.
-    return <Loading textLoading="Cargando perfil de conductor" />;
-  }
-  return <DriverHomeScreen />;
+  useEffect(() => {
+    if (!status) return;
+
+    if (status?.Rol === "Driver" && status?.Status === "SEARCHING") {
+      navigation.navigate("DriverHome");
+    } else if (status?.Rol === "Driver" && status?.Status === "WAITING") {
+      navigation.navigate("DriverRequest");
+    }
+  }, [status]);
+
+  return (
+    <View style={tw`h-full w-full bg-white`}>
+      <View
+        style={{
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100%",
+          width: "100%",
+        }}
+      >
+        <Text style={{ fontSize: 30 }}>Cargando...</Text>
+      </View>
+    </View>
+  );
 };
 
 export default InitDriverScreen;

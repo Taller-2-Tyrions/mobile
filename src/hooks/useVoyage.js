@@ -14,18 +14,21 @@ export function VoyageProvider({ children }) {
   const [status, setStatus] = useState(null);
   const [trackingVoyage, setTrackingVoyage] = useState(null);
   const [locationVoyage, setLocationVoyage] = useState(null);
+  // para que no se superpongan dos llamados
+  const [statusObtained, setStatusObtained] = useState(true);
 
   useEffect(() => {
-    if (trackingVoyage) {
+    if (trackingVoyage && statusObtained) {
       const timer = setInterval(() => getStatusVoyage(trackingVoyage), 2000);
       return () => clearInterval(timer);
     }
-  }, [trackingVoyage]);
+  }, [trackingVoyage, statusObtained]);
 
   const getStatusVoyage = async (accessToken) => {
     const url = URL + "/users/status";
+    setStatusObtained(false);
 
-    axios
+    await axios
       .post(
         url,
         {},
@@ -42,6 +45,8 @@ export function VoyageProvider({ children }) {
       .catch((err) => {
         console.log("Error in getStatus: ", err);
       });
+
+    setStatusObtained(true);
   };
 
   const getLocationVoyage = async (accessToken, idVoyage) => {

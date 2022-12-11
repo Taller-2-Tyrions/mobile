@@ -1,10 +1,36 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View, Modal, TouchableOpacity } from "react-native";
 import tw from "tailwind-react-native-classnames";
 import { AntDesign } from "@expo/vector-icons";
 import { CountdownCircleTimer } from "react-native-countdown-circle-timer";
+import { useNavigation } from "@react-navigation/native";
+import useDriver from "../../hooks/useDriver";
 
-const PassengerRequest = ({ modalVisible, onAccept, onDecline }) => {
+const PassengerRequest = () => {
+  const navigation = useNavigation();
+  const { status, replyVoyageRequest } = useDriver();
+  const [modalVisible, setModalVisible] = useState(true);
+
+  const onDecline = () => {
+    if (status) {
+      console.log("Rechazando viaje...");
+      setModalVisible(false);
+      replyVoyageRequest(status.Voyage, false);
+    }
+  };
+
+  const onAccept = () => {
+    if (status) {
+      console.warn("Todavía no está implementado...");
+    }
+  };
+
+  useEffect(() => {
+    if (!status) {
+      navigation.navigate("DriverScreen");
+    }
+  }, [status]);
+
   return (
     <View>
       <Modal
