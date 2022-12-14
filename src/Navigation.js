@@ -1,10 +1,15 @@
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { UserProvider } from "./useUser";
+import { PassengerProvider } from "./Passenger/usePassenger";
+import { DriverProvider } from "./Driver/useDriver";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import LoginHome from "./Home/Login";
 import PassengerForm from "./Home/PassengerForm";
 import Home from "./Home/Home";
+import HomePassenger from "./Passenger/HomePassenger";
+import HomeDriver from "./Driver/HomeDriver";
+import { Redirect } from "./Passenger/HomePassenger";
 
 const Stack = createNativeStackNavigator();
 
@@ -12,11 +17,18 @@ const Navigation = () => {
   return (
     <NavigationContainer>
       <UserProvider>
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="Root" component={LoginHome} />
-          <Stack.Screen name="PassengerForm" component={PassengerForm} />
-          <Stack.Screen name="Home" component={Home} />
-        </Stack.Navigator>
+        <PassengerProvider>
+          <DriverProvider>
+            <Stack.Navigator screenOptions={{ headerShown: false }}>
+              <Stack.Screen name="Root" component={LoginHome} />
+              <Stack.Screen name="PassengerForm" component={PassengerForm} />
+              <Stack.Screen name="Home" component={Home} />
+              <Stack.Screen name="Passenger" component={Redirect} />
+              <Stack.Screen name="HomePassenger" component={HomePassenger} />
+              <Stack.Screen name="Driver" component={HomeDriver} />
+            </Stack.Navigator>
+          </DriverProvider>
+        </PassengerProvider>
       </UserProvider>
     </NavigationContainer>
   );
