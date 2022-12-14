@@ -10,6 +10,7 @@ import Home from "./Home/Home";
 import HomePassenger from "./Passenger/HomePassenger/HomePassenger";
 import HomeDriver from "./Driver/HomeDriver";
 import Redirect from "./Passenger/Redirect";
+import MapScreen from "./Passenger/MapScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -26,6 +27,7 @@ const Navigation = () => {
               <Stack.Screen name="Passenger" component={Redirect} />
               <Stack.Screen name="HomePassenger" component={HomePassenger} />
               <Stack.Screen name="Driver" component={HomeDriver} />
+              <Stack.Screen name="MapScreen" component={MapScreen} />
             </Stack.Navigator>
           </DriverProvider>
         </PassengerProvider>

@@ -66,8 +66,22 @@ export function UserProvider({ children }) {
         },
       })
       .then((res) => {
-        console.log("Perfil: ", res.data);
-        setProfile(res.data);
+        const { id, name, last_name, roles, is_blocked, address } = res.data;
+        const split_address = address.split(";");
+        const defaultAddress = {
+          location: split_address[0],
+          lat: parseFloat(split_address[1]),
+          long: parseFloat(split_address[2]),
+        };
+
+        setProfile({
+          id: id,
+          name: name,
+          lastName: last_name,
+          isDriver: roles.includes("Driver"),
+          isBlocked: is_blocked,
+          defaultAddress: defaultAddress,
+        });
       })
       .catch((err) => {
         console.log("Error in getProfile: ", err);
@@ -139,6 +153,7 @@ export function UserProvider({ children }) {
       register,
       completePassengerForm,
       setUser,
+      setProfile,
     }),
     [
       user,
@@ -150,6 +165,7 @@ export function UserProvider({ children }) {
       register,
       completePassengerForm,
       setUser,
+      setProfile,
     ]
   );
 

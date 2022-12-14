@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -10,23 +10,33 @@ import {
 import { AntDesign, FontAwesome } from "@expo/vector-icons";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import PlaceRow from "../../Components/PlaceRow";
+import usePassenger from "../usePassenger";
 import useUser from "../../useUser";
 
 const Profile = ({ profileVisible, setProfileVisible }) => {
-  //const { profile, editProfile } = useAuthProfile();
-  const profile = {};
-  const editProfile = () => {};
-  const { user } = useUser();
-  const [name, setName] = useState(profile.name);
-  const [lastName, setLastName] = useState(profile.lastName);
-  const [defaultAddress, setDefaultAddress] = useState(profile.defaultAddress);
+  const { editPassengerProfile, passengerProfile, getPassengerProfile } =
+    usePassenger();
+  const [name, setName] = useState(null);
+  const [lastName, setLastName] = useState(null);
+  const [defaultAddress, setDefaultAddress] = useState(null);
+
+  useEffect(() => {
+    if (!passengerProfile) {
+      const timer = setInterval(() => getPassengerProfile(), 2000);
+      return () => clearInterval(timer);
+    } else {
+      setName(passengerProfile.name);
+      setLastName(passengerProfile.lastName);
+      setDefaultAddress(passengerProfile.defaultAddress);
+    }
+  }, [passengerProfile]);
 
   const onClose = () => {
     setProfileVisible(!profileVisible);
     if (
-      name === profile.name &&
-      lastName === profile.lastName &&
-      defaultAddress === profile.defaultAddress
+      name === passengerProfile.name &&
+      lastName === passengerProfile.lastName &&
+      defaultAddress === passengerProfile.defaultAddress
     ) {
       return;
     }
@@ -39,7 +49,7 @@ const Profile = ({ profileVisible, setProfileVisible }) => {
       long: defaultAddress.long,
     };
 
-    editProfile(data, user.accessToken);
+    editPassengerProfile(data);
   };
 
   const isVip = false;
@@ -54,41 +64,54 @@ const Profile = ({ profileVisible, setProfileVisible }) => {
           setProfileVisible(!profileVisible);
         }}
       >
-        <View style={styles.container}>
-          <View style={styles.modalView}>
-            <View style={styles.modalContainerTop}>
-              <View style={{ width: "50%" }}>
-                <Text style={styles.modalText}>Tu perfil</Text>
-              </View>
-              <View style={styles.closeButton}>
-                <TouchableOpacity style={{ padding: 5 }} onPress={onClose}>
-                  <AntDesign name="closecircleo" size={24} color="black" />
-                </TouchableOpacity>
-              </View>
-            </View>
-            <View style={styles.modalContainerButton}>
-              <TextProfile text={name} setText={setName} />
-              <TextProfile text={lastName} setText={setLastName} />
-              <DirectionProfile
-                address={defaultAddress}
-                setAddress={setDefaultAddress}
-              />
-              {isVip ? (
-                <View
-                  style={{ justifyContent: "center", alignItems: "center" }}
-                >
-                  <Text style={[styles.vipText, { color: "black" }]}>
-                    Sos pasajero vip
-                  </Text>
+        {passengerProfile ? (
+          <View style={styles.container}>
+            <View style={styles.modalView}>
+              <View style={styles.modalContainerTop}>
+                <View style={{ width: "50%" }}>
+                  <Text style={styles.modalText}>Tu perfil</Text>
                 </View>
-              ) : (
-                <TouchableOpacity style={styles.vipContainer}>
-                  <Text style={styles.vipText}>Suscribirse a vip</Text>
-                </TouchableOpacity>
-              )}
+                <View style={styles.closeButton}>
+                  <TouchableOpacity style={{ padding: 5 }} onPress={onClose}>
+                    <AntDesign name="closecircleo" size={24} color="black" />
+                  </TouchableOpacity>
+                </View>
+              </View>
+              <View style={styles.modalContainerButton}>
+                <TextProfile text={name} setText={setName} />
+                <TextProfile text={lastName} setText={setLastName} />
+                <DirectionProfile
+                  address={defaultAddress}
+                  setAddress={setDefaultAddress}
+                />
+                {isVip ? (
+                  <View
+                    style={{ justifyContent: "center", alignItems: "center" }}
+                  >
+                    <Text style={[styles.vipText, { color: "black" }]}>
+                      Sos pasajero vip
+                    </Text>
+                  </View>
+                ) : (
+                  <TouchableOpacity style={styles.vipContainer}>
+                    <Text style={styles.vipText}>Suscribirse a vip</Text>
+                  </TouchableOpacity>
+                )}
+              </View>
             </View>
           </View>
-        </View>
+        ) : (
+          <View
+            style={[
+              styles.container,
+              { justifyContent: "center", alignItems: "center" },
+            ]}
+          >
+            <Text style={{ fontFamily: "uber1", fontSize: 30, color: "white" }}>
+              Cargando perfil
+            </Text>
+          </View>
+        )}
       </Modal>
     </View>
   );
@@ -125,6 +148,8 @@ const TextProfile = ({ text, setText }) => {
 
 const DirectionProfile = ({ address, setAddress }) => {
   const [edit, setEdit] = useState(false);
+
+  if (!address) return;
 
   return (
     <View style={{ flexDirection: "row" }}>

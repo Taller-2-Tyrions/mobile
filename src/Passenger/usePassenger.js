@@ -1,13 +1,8 @@
-import React, {
-  useState,
-  useEffect,
-  useMemo,
-  createContext,
-  useContext,
-} from "react";
+import React, { useState, useMemo, createContext, useContext } from "react";
 import axios from "axios";
 import { URL } from "../configUrl";
 import useUser from "../useUser";
+import * as Location from "expo-location";
 
 const PassengerContext = createContext({});
 
@@ -18,6 +13,11 @@ export function PassengerProvider({ children }) {
   const [driverLocation, setDriverLocation] = useState(null);
   const [driverProfile, setDriverProfile] = useState(null);
   const [passengerStatus, setPassengerStatus] = useState(null);
+  const [passengerProfile, setPassengerProfile] = useState(null);
+  const [passengerBalance, setPassengerBalance] = useState(null);
+  const [passengerLocation, setPassengerLocation] = useState(null);
+  const [origin, setOrigin] = useState(null);
+  const [destination, setDestination] = useState(null);
 
   const requestDriver = async (init, end, id_driver) => {
     const url = URL + `/voyage/passenger/search/${id_driver}`;
@@ -146,6 +146,64 @@ export function PassengerProvider({ children }) {
       });
   };
 
+  const getPassengerProfile = async () => {
+    if (!user) return;
+    const url = URL + `/users/passenger/${user.id}`;
+
+    await axios
+      .get(url, {
+        headers: {
+          token: user.accessToken,
+        },
+      })
+      .then((res) => {
+        const { id, name, last_name, roles, is_blocked, address } = res.data;
+        const split_address = address.split(";");
+        const defaultAddress = {
+          location: split_address[0],
+          lat: parseFloat(split_address[1]),
+          long: parseFloat(split_address[2]),
+        };
+
+        setPassengerProfile({
+          id: id,
+          name: name,
+          lastName: last_name,
+          isDriver: roles.includes("Driver"),
+          isBlocked: is_blocked,
+          defaultAddress: defaultAddress,
+        });
+      })
+      .catch((err) => {
+        console.log("Error in getPassengerProfile: ", err);
+      });
+  };
+
+  const editPassengerProfile = async (data) => {
+    const url = URL + `/users/passenger/${user.id}`;
+    const location =
+      String(data.location) + ";" + String(data.lat) + ";" + String(data.long);
+
+    await axios
+      .put(
+        url,
+        {
+          name: data.name,
+          last_name: data.lastname,
+          roles: ["Passenger"],
+          address: location,
+        },
+        {
+          headers: {
+            token: user.accessToken,
+          },
+        }
+      )
+      .catch((err) => {
+        console.log("Error in edit profile: ", err);
+      });
+  };
+
   const getPassengerStatus = async () => {
     const url = URL + "/users/status";
 
@@ -165,6 +223,32 @@ export function PassengerProvider({ children }) {
       .catch((err) => {
         console.log("Error in setPassengerStatus: ", err.response.status);
       });
+  };
+
+  const getPassengerBalance = async () => {
+    const url = URL + "/users/passenger/balance";
+
+    axios
+      .get(url, {
+        headers: {
+          token: user.accessToken,
+        },
+      })
+      .then((res) => {
+        const { balance, address } = res.data;
+        setPassengerBalance({ address: address, balance: balance });
+      })
+      .catch((err) => {
+        console.log("error in getPassengerBalance", err.response.status);
+      });
+  };
+
+  const getPassengerLocation = async () => {
+    const location = await Location.getCurrentPositionAsync({});
+    setPassengerLocation({
+      latitude: location.coords.latitude,
+      longitude: location.coords.longitude,
+    });
   };
 
   const clearVoyage = () => {
@@ -188,6 +272,19 @@ export function PassengerProvider({ children }) {
       getPassengerStatus,
       passengerStatus,
       setVoyageId,
+      editPassengerProfile,
+      passengerProfile,
+      getPassengerProfile,
+      setPassengerProfile,
+      passengerBalance,
+      setPassengerBalance,
+      getPassengerBalance,
+      origin,
+      setOrigin,
+      destination,
+      setDestination,
+      passengerLocation,
+      getPassengerLocation,
     }),
     [
       requestDriver,
@@ -204,6 +301,19 @@ export function PassengerProvider({ children }) {
       getPassengerStatus,
       passengerStatus,
       setVoyageId,
+      editPassengerProfile,
+      passengerProfile,
+      getPassengerProfile,
+      setPassengerProfile,
+      passengerBalance,
+      setPassengerBalance,
+      getPassengerBalance,
+      origin,
+      setOrigin,
+      destination,
+      setDestination,
+      passengerLocation,
+      getPassengerLocation,
     ]
   );
 

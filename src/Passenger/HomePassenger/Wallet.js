@@ -1,10 +1,18 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { StyleSheet, Text, View, Modal, TouchableOpacity } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
+import usePassenger from "../usePassenger";
 
 const Wallet = ({ walletVisible, setWalletVisible }) => {
-  //const { passengerBalance } = useBalance();
-  const passengerBalance = {};
+  const { passengerBalance, getPassengerBalance } = usePassenger();
+
+  useEffect(() => {
+    if (!passengerBalance) {
+      const timer = setInterval(() => getPassengerBalance(), 2000);
+      return () => clearInterval(timer);
+    }
+  }, [passengerBalance]);
+
   return (
     <View>
       <Modal
@@ -16,29 +24,58 @@ const Wallet = ({ walletVisible, setWalletVisible }) => {
           setWalletVisible(!walletVisible);
         }}
       >
-        <View style={styles.container}>
-          <View style={styles.modalView}>
-            <View style={styles.modalContainerTop}>
-              <View style={{ width: "50%" }}>
-                <Text style={styles.modalText}>Tu billetera</Text>
+        {passengerBalance ? (
+          <View style={styles.container}>
+            <View style={styles.modalView}>
+              <View style={styles.modalContainerTop}>
+                <View style={{ width: "50%" }}>
+                  <Text style={styles.modalText}>Tu billetera</Text>
+                </View>
+                <View style={styles.closeButton}>
+                  <TouchableOpacity
+                    style={{ padding: 5 }}
+                    onPress={() => setWalletVisible(!walletVisible)}
+                  >
+                    <AntDesign name="closecircleo" size={24} color="black" />
+                  </TouchableOpacity>
+                </View>
               </View>
-              <View style={styles.closeButton}>
-                <TouchableOpacity
-                  style={{ padding: 5 }}
-                  onPress={() => setWalletVisible(!walletVisible)}
-                >
-                  <AntDesign name="closecircleo" size={24} color="black" />
-                </TouchableOpacity>
+              <View style={styles.modalContainerButton}>
+                <Text style={styles.walletText}>
+                  {passengerBalance.address}
+                </Text>
+                <Text style={styles.walletText}>
+                  Balance: ${passengerBalance.balance}
+                </Text>
               </View>
             </View>
-            <View style={styles.modalContainerButton}>
-              <Text style={styles.walletText}>{passengerBalance.address}</Text>
-              <Text style={styles.walletText}>
-                Balance: ${passengerBalance.balance}
+          </View>
+        ) : (
+          <View
+            style={[
+              styles.container,
+              { justifyContent: "center", alignItems: "center" },
+            ]}
+          >
+            <View
+              style={{
+                height: "20%",
+                width: "80%",
+                backgroundColor: "#00000099",
+                justifyContent: "center",
+                alignItems: "center",
+                borderRadius: 40,
+                padding: 2,
+              }}
+            >
+              <Text
+                style={{ fontFamily: "uber1", fontSize: 30, color: "white" }}
+              >
+                Cargando billetera
               </Text>
             </View>
           </View>
-        </View>
+        )}
       </Modal>
     </View>
   );

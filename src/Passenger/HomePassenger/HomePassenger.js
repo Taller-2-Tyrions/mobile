@@ -15,6 +15,7 @@ import Wallet from "./Wallet";
 import Profile from "./Profile";
 import { useNavigation } from "@react-navigation/native";
 import usePassenger from "../usePassenger";
+import useUser from "../../useUser";
 
 // si llega acá es porque la última actividad fue de pasajero
 // sí o sí.
@@ -22,8 +23,18 @@ const HomePassenger = () => {
   const navigation = useNavigation();
   const [walletVisible, setWalletVisible] = useState(false);
   const [profileVisible, setProfileVisible] = useState(false);
-  const { requestDriver, voyageStatus, getVoyageStatus, voyageId } =
+  const { voyageStatus, voyageId, setPassengerProfile, setPassengerBalance } =
     usePassenger();
+
+  const onPressProfile = () => {
+    setPassengerProfile(null);
+    setProfileVisible(true);
+  };
+
+  const onPressWallet = () => {
+    setPassengerBalance(null);
+    setWalletVisible(true);
+  };
 
   // el que me dice a qué pantalla tengo que ir
   useEffect(() => {
@@ -47,10 +58,7 @@ const HomePassenger = () => {
         keyboardShouldPersistTaps="always"
         listViewDisplayed={false}
       >
-        <Title
-          setProfileVisible={setProfileVisible}
-          setWalletVisible={setWalletVisible}
-        />
+        <Title onPressProfile={onPressProfile} onPressWallet={onPressWallet} />
         <NavOptions />
         <LastTrips />
         <Wallet
@@ -66,21 +74,15 @@ const HomePassenger = () => {
   );
 };
 
-const Title = ({ setWalletVisible, setProfileVisible }) => {
+const Title = ({ onPressWallet, onPressProfile }) => {
   return (
     <View style={styles.titleContainer}>
       <Text style={styles.titleText}>Bienvenido</Text>
       <View style={styles.icons}>
-        <TouchableOpacity
-          style={tw`mt-3`}
-          onPress={() => setWalletVisible(true)}
-        >
+        <TouchableOpacity style={tw`mt-3`} onPress={onPressWallet}>
           <Entypo name="wallet" size={30} color="black" />
         </TouchableOpacity>
-        <TouchableOpacity
-          style={tw`mt-3 ml-2`}
-          onPress={() => setProfileVisible(true)}
-        >
+        <TouchableOpacity style={tw`mt-3 ml-2`} onPress={onPressProfile}>
           <Ionicons name="person-circle-outline" size={30} color="black" />
         </TouchableOpacity>
       </View>
