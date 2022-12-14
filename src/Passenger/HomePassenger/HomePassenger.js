@@ -23,8 +23,13 @@ const HomePassenger = () => {
   const navigation = useNavigation();
   const [walletVisible, setWalletVisible] = useState(false);
   const [profileVisible, setProfileVisible] = useState(false);
-  const { voyageStatus, voyageId, setPassengerProfile, setPassengerBalance } =
-    usePassenger();
+  const {
+    getPassengerStatus,
+    passengerStatus,
+    setVoyageId,
+    setPassengerProfile,
+    setPassengerBalance,
+  } = usePassenger();
 
   const onPressProfile = () => {
     setPassengerProfile(null);
@@ -36,20 +41,21 @@ const HomePassenger = () => {
     setWalletVisible(true);
   };
 
-  // el que me dice a qué pantalla tengo que ir
   useEffect(() => {
-    // la idea sería que una pantalla antes de esta
-    // tire el status, y si el status del pasajero es !== "CHOOSING"
-    // entonces vengo acá, con el voyageId seteado en lo que me tire
-    // el getPassengerStatus.
-    if (!voyageId) return;
+    if (!passengerStatus || passengerStatus.Rol !== "Passenger") return;
 
-    if (voyageStatus?.status === "WAITING") {
-      navigation.navigate("Test1");
-    } else {
-      navigation.navigate("Test2");
+    if (passengerStatus.Status !== "CHOOSING") {
+      setVoyageId(passengerStatus.Voyage);
+      navigation.navigate("SendRequest");
     }
-  }, [voyageStatus, voyageId]);
+  }, [passengerStatus]);
+
+  useEffect(() => {
+    if (!passengerStatus) {
+      const timer = setInterval(() => getPassengerStatus(), 2000);
+      return () => clearInterval(timer);
+    }
+  }, [passengerStatus]);
 
   return (
     <SafeAreaView style={tw`bg-white h-full`}>

@@ -90,7 +90,7 @@ const MapScreen = () => {
 const Title = ({ navigation }) => {
   return (
     <View style={[tw`p-2 mt-2`, { flexDirection: "row" }]}>
-      <View style={{ width: "20%", marginTop: 6 }}>
+      <View style={{ width: "20%", justifyContent: "center" }}>
         <TouchableOpacity onPress={() => navigation.navigate("HomePassenger")}>
           <AntDesign name="arrowleft" size={24} color="black" />
         </TouchableOpacity>
@@ -148,9 +148,7 @@ const InputPlace = ({ place, defaultText, setModalVisible }) => {
 const MapRoute = ({ origin, destination, userPosition }) => {
   if (!userPosition) {
     return (
-      <View
-        style={[tw`h-full w-full justify-center`, { alignItems: "center" }]}
-      >
+      <View style={[tw`h-full w-full`, { alignItems: "center" }]}>
         <Text style={{ fontFamily: "uber2", fontSize: 22 }}>Cargando mapa</Text>
       </View>
     );
@@ -164,20 +162,20 @@ const MapRoute = ({ origin, destination, userPosition }) => {
         customMapStyle={mapDarkStyle}
         style={styles.map}
         initialRegion={{
-          latitude: origin.lat,
-          longitude: origin.long,
+          latitude: origin.latitude,
+          longitude: origin.longitude,
           latitudeDelta: 0.0522,
           longitudeDelta: 0.0521,
         }}
       >
         <MapViewDirections
           origin={{
-            latitude: origin.lat,
-            longitude: origin.long,
+            latitude: origin.latitude,
+            longitude: origin.longitude,
           }}
           destination={{
-            latitude: destination.lat,
-            longitude: destination.long,
+            latitude: destination.latitude,
+            longitude: destination.longitude,
           }}
           apikey={GOOGLE_MAPS_APIKEY}
           strokeWidth={5}
@@ -186,15 +184,15 @@ const MapRoute = ({ origin, destination, userPosition }) => {
         <Marker
           title={"Origin"}
           coordinate={{
-            latitude: origin.lat,
-            longitude: origin.long,
+            latitude: origin.latitude,
+            longitude: origin.longitude,
           }}
         />
         <Marker
           title={"Destination"}
           coordinate={{
-            latitude: destination.lat,
-            longitude: destination.long,
+            latitude: destination.latitude,
+            longitude: destination.longitude,
           }}
         />
       </MapView>

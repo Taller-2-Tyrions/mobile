@@ -13,8 +13,14 @@ import usePassenger from "../usePassenger";
 
 const PickDriver = () => {
   const navigation = useNavigation();
-  const { driverProfile, getDriverProfile, drivers, getDrivers, setDrivers } =
-    usePassenger();
+  const {
+    driverProfile,
+    getDriverProfile,
+    drivers,
+    getDrivers,
+    setDrivers,
+    setDriver,
+  } = usePassenger();
   const [selectedDriver, setSelectedDriver] = useState(null);
 
   useEffect(() => {
@@ -31,8 +37,8 @@ const PickDriver = () => {
   }, [drivers]);
 
   const changePage = () => {
-    setDrivers(null);
-    // navigation.navigate(...);
+    setDriver(selectedDriver);
+    navigation.navigate("SendRequest");
   };
 
   const onPress = () => {
@@ -51,7 +57,9 @@ const PickDriver = () => {
             width: "100%",
           }}
         >
-          <Text style={{ fontSize: 30 }}>Cargando conductores...</Text>
+          <Text style={{ fontSize: 30, fontFamily: "uber1" }}>
+            Cargando conductores...
+          </Text>
         </View>
       </View>
     );
@@ -75,7 +83,7 @@ const PickDriver = () => {
 const Title = ({ onPress }) => {
   return (
     <View style={[tw`p-2 mt-2`, tw`flex-row`]}>
-      <View style={{ width: "20%", marginTop: 6 }}>
+      <View style={{ width: "20%", justifyContent: "center" }}>
         <TouchableOpacity onPress={onPress}>
           <AntDesign name="arrowleft" size={24} color="black" />
         </TouchableOpacity>

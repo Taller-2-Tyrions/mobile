@@ -57,6 +57,8 @@ const PlaceModal = ({ modalVisible, setModalVisible, text, isOrigin }) => {
 };
 
 const TextModal = ({ setPlace, profile }) => {
+  if (!profile) return;
+
   return (
     <View style={{ flexDirection: "row" }}>
       <View style={{ width: "90%" }}>
@@ -71,8 +73,8 @@ const TextModal = ({ setPlace, profile }) => {
             }
             setPlace({
               description: description,
-              lat: details.geometry.location.lat,
-              long: details.geometry.location.lng,
+              latitude: details.geometry.location.lat,
+              longitude: details.geometry.location.lng,
             });
           }}
           suppressDefaultStyles

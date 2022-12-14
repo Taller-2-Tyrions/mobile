@@ -12,6 +12,9 @@ import HomeDriver from "./Driver/HomeDriver";
 import Redirect from "./Passenger/Redirect";
 import MapScreen from "./Passenger/MapScreen";
 import PickDriver from "./Passenger/PickDriver";
+import SendRequest from "./Passenger/Voyage/SendRequest";
+import WaitResponse from "./Passenger/Voyage/WaitResponse";
+import PassengerVoyage from "./Passenger/Voyage/PassengerVoyage";
 
 const Stack = createNativeStackNavigator();
 
@@ -30,6 +33,12 @@ const Navigation = () => {
               <Stack.Screen name="Driver" component={HomeDriver} />
               <Stack.Screen name="MapScreen" component={MapScreen} />
               <Stack.Screen name="PickDriver" component={PickDriver} />
+              <Stack.Screen name="SendRequest" component={SendRequest} />
+              <Stack.Screen name="WaitResponse" component={WaitResponse} />
+              <Stack.Screen
+                name="PassengerVoyage"
+                component={PassengerVoyage}
+              />
             </Stack.Navigator>
           </DriverProvider>
         </PassengerProvider>

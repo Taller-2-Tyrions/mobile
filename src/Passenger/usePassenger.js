@@ -19,16 +19,18 @@ export function PassengerProvider({ children }) {
   const [origin, setOrigin] = useState(null);
   const [destination, setDestination] = useState(null);
   const [drivers, setDrivers] = useState(null);
+  const [driver, setDriver] = useState(null);
 
-  const requestDriver = async (init, end, id_driver) => {
-    const url = URL + `/voyage/passenger/search/${id_driver}`;
+  const requestDriver = async () => {
+    if (!origin || !destination || !driver) return;
+    const url = URL + `/voyage/passenger/search/${driver.id}`;
 
     await axios
       .post(
         url,
         {
-          init: init,
-          end: end,
+          init: origin,
+          end: destination,
           is_vip: false,
         },
         {
@@ -265,12 +267,12 @@ export function PassengerProvider({ children }) {
         url,
         {
           init: {
-            longitude: origin.long,
-            latitude: origin.lat,
+            longitude: origin.longitude,
+            latitude: origin.latitude,
           },
           end: {
-            longitude: destination.long,
-            latitude: destination.lat,
+            longitude: destination.longitude,
+            latitude: destination.latitude,
           },
           is_vip: false,
         },
@@ -325,6 +327,8 @@ export function PassengerProvider({ children }) {
       drivers,
       getDrivers,
       setDrivers,
+      driver,
+      setDriver,
     }),
     [
       requestDriver,
@@ -357,6 +361,8 @@ export function PassengerProvider({ children }) {
       drivers,
       getDrivers,
       setDrivers,
+      driver,
+      setDriver,
     ]
   );
 
