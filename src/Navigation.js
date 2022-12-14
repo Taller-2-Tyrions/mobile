@@ -7,9 +7,9 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import LoginHome from "./Home/Login";
 import PassengerForm from "./Home/PassengerForm";
 import Home from "./Home/Home";
-import HomePassenger from "./Passenger/HomePassenger";
+import HomePassenger from "./Passenger/HomePassenger/HomePassenger";
 import HomeDriver from "./Driver/HomeDriver";
-import { Redirect } from "./Passenger/HomePassenger";
+import Redirect from "./Passenger/Redirect";
 
 const Stack = createNativeStackNavigator();
 
