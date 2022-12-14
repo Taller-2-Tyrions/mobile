@@ -18,6 +18,7 @@ export function PassengerProvider({ children }) {
   const [passengerLocation, setPassengerLocation] = useState(null);
   const [origin, setOrigin] = useState(null);
   const [destination, setDestination] = useState(null);
+  const [drivers, setDrivers] = useState(null);
 
   const requestDriver = async (init, end, id_driver) => {
     const url = URL + `/voyage/passenger/search/${id_driver}`;
@@ -251,6 +252,42 @@ export function PassengerProvider({ children }) {
     });
   };
 
+  const getDrivers = async () => {
+    if (!origin || !destination) {
+      console.log("Posiciones no seteadas.");
+      return;
+    }
+
+    const url = URL + "/voyage/passenger/search";
+
+    await axios
+      .post(
+        url,
+        {
+          init: {
+            longitude: origin.long,
+            latitude: origin.lat,
+          },
+          end: {
+            longitude: destination.long,
+            latitude: destination.lat,
+          },
+          is_vip: false,
+        },
+        {
+          headers: {
+            token: user.accessToken,
+          },
+        }
+      )
+      .then((res) => {
+        setDrivers(Object.values(res.data));
+      })
+      .catch((err) => {
+        console.log("Error in passengerSearch: ", err);
+      });
+  };
+
   const clearVoyage = () => {
     setVoyageStatus(null);
     setVoyageId(null);
@@ -285,6 +322,9 @@ export function PassengerProvider({ children }) {
       setDestination,
       passengerLocation,
       getPassengerLocation,
+      drivers,
+      getDrivers,
+      setDrivers,
     }),
     [
       requestDriver,
@@ -314,6 +354,9 @@ export function PassengerProvider({ children }) {
       setDestination,
       passengerLocation,
       getPassengerLocation,
+      drivers,
+      getDrivers,
+      setDrivers,
     ]
   );
 

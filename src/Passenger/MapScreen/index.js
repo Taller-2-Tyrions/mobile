@@ -28,13 +28,13 @@ const MapScreen = () => {
   }, [passengerLocation]);
 
   const pickDrivers = () => {
-    navigation.navigate("PickDrivers");
+    navigation.navigate("PickDriver");
   };
 
   return (
     <SafeAreaView style={tw`bg-white h-full`}>
       <View style={{ flex: 1, flexDirection: "column" }}>
-        <Title />
+        <Title navigation={navigation} />
         <View style={styles.container}>
           <InputPlace
             place={origin}
@@ -87,11 +87,11 @@ const MapScreen = () => {
   );
 };
 
-const Title = () => {
+const Title = ({ navigation }) => {
   return (
     <View style={[tw`p-2 mt-2`, { flexDirection: "row" }]}>
       <View style={{ width: "20%", marginTop: 6 }}>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate("HomePassenger")}>
           <AntDesign name="arrowleft" size={24} color="black" />
         </TouchableOpacity>
       </View>
