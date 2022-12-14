@@ -7,6 +7,7 @@ import React, {
 } from "react";
 import axios from "axios";
 import usePushNotification from "./usePushNotification";
+import { URL } from "../configUrl";
 
 const AuthContext = createContext({});
 
@@ -17,9 +18,13 @@ export function AuthProvider({ children }) {
     formComplete: null,
   });
   const { expoToken } = usePushNotification();
+  const [status, setStatus] = useState({
+    Rol: null,
+    Status: null,
+  });
 
   const signIn = async (data) => {
-    const url = "https://fiuber-gateway.herokuapp.com/login";
+    const url = URL + "/login";
     console.log("Token que llega a signIn: ", expoToken);
 
     axios
@@ -40,6 +45,8 @@ export function AuthProvider({ children }) {
             formComplete: is_registered,
           };
 
+          console.log("User: ", userAux);
+
           setUser(userAux);
         }
       })
@@ -49,7 +56,7 @@ export function AuthProvider({ children }) {
   };
 
   const editProfile = async (data, newAddress) => {
-    const url = `https://fiuber-gateway.herokuapp.com/users/passenger/${user.id}`;
+    const url = URL + `/users/passenger/${user.id}`;
 
     await axios
       .put(url, {
@@ -63,7 +70,7 @@ export function AuthProvider({ children }) {
   };
 
   const register = async (data) => {
-    const url = "https://fiuber-gateway.herokuapp.com/signup";
+    const url = URL + "/signup";
 
     await axios
       .post(url, {
@@ -71,14 +78,14 @@ export function AuthProvider({ children }) {
         password: data.password,
       })
       .catch((err) => {
-        console.warn(err.detail.message);
+        console.warn(err);
       });
 
     await signIn(data);
   };
 
   const completeForm = async (accessToken, data) => {
-    const url = "https://fiuber-gateway.herokuapp.com/users";
+    const url = URL + "/users";
 
     console.log("Data completeForm: ", data);
     const location =
@@ -110,6 +117,35 @@ export function AuthProvider({ children }) {
     });
   };
 
+  const getStatus = async () => {
+    const url = URL + "/users/status";
+
+    axios
+      .post(url, {
+        headers: {
+          token: user.accessToken,
+        },
+      })
+      .then((res) => {
+        const { Rol, Status } = res.data;
+        setStatus({
+          Rol: Rol,
+          Status: Status,
+        });
+      })
+      .catch((err) => {
+        console.log("Error in getStatus: ", err);
+      });
+  };
+
+  const cleanAuth = () => {
+    setUser({
+      accessToken: null,
+      id: null,
+      formComplete: null,
+    });
+  };
+
   const logout = () => {
     setUser({
       accessToken: null,
@@ -127,8 +163,22 @@ export function AuthProvider({ children }) {
       logout,
       completeForm,
       editProfile,
+      cleanAuth,
+      status,
+      getStatus,
     }),
-    [user, setUser, signIn, register, logout, completeForm, editProfile]
+    [
+      user,
+      setUser,
+      signIn,
+      register,
+      logout,
+      completeForm,
+      editProfile,
+      cleanAuth,
+      status,
+      getStatus,
+    ]
   );
 
   return (

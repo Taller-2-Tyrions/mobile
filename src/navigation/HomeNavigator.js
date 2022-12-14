@@ -1,15 +1,19 @@
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import useAuth from "../hooks/useAuth";
+
 import SignInScreen from "../screens/SignInScreen";
 import SignUpScreen from "../screens/SignUpScreen";
+import InitScreen from "../screens/HomeScreen/InitScreen";
 import HomeScreen from "../screens/HomeScreen";
-import useAuth from "../hooks/useAuth";
-import SearchScreen from "../screens/SearchScreen";
-import SearchResultsScreen from "../screens/SearchResultsScreen";
-import ProfileScreen from "../screens/ProfileScreen";
-import EditProfileScreen from "../screens/EditProfileScreen";
-import ChooseDriverScreen from "../screens/ChooseDriverScreen";
-import WaitingDriverScreen from "../screens/WaitingDriverScreen";
+import PassengerForm from "../screens/Forms/PassengerForm";
+import MapScreen from "../screens/MapScreen";
+import InitPickDriver from "../screens/PickDriver/InitPickDriver";
+import InitPassengerVoyage from "../screens/PassengerVoyage/InitPassengerVoyage";
+import InitDriverScreen from "../screens/DriverHomeScreen/InitDriverScreen";
+import DriverVoyage from "../screens/DriverVoyage";
+import DriverHomeScreen from "../screens/DriverHomeScreen";
+import PassengerRequest from "../screens/DriverHomeScreen/PassengerRequest";
 
 const Stack = createNativeStackNavigator();
 
@@ -24,25 +28,18 @@ const HomeNavigator = () => {
         </>
       ) : (
         <>
+          <Stack.Screen name="InitScreen" component={InitScreen} />
           <Stack.Screen name="HomeScreen" component={HomeScreen} />
-          <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
+          <Stack.Screen name="PassengerForm" component={PassengerForm} />
+          <Stack.Screen name="MapScreen" component={MapScreen} />
+          <Stack.Screen name="PickDrivers" component={InitPickDriver} />
           <Stack.Screen
-            name="EditProfileScreen"
-            component={EditProfileScreen}
+            name="PassengerVoyage"
+            component={InitPassengerVoyage}
           />
-          <Stack.Screen name="SearchScreen" component={SearchScreen} />
-          <Stack.Screen
-            name="SearchResultsScreen"
-            component={SearchResultsScreen}
-          />
-          <Stack.Screen
-            name="ChooseDriverScreen"
-            component={ChooseDriverScreen}
-          />
-          <Stack.Screen
-            name="WaitingDriverScreen"
-            component={WaitingDriverScreen}
-          />
+          <Stack.Screen name="DriverScreen" component={InitDriverScreen} />
+          <Stack.Screen name="DriverHome" component={DriverHomeScreen} />
+          <Stack.Screen name="DriverRequest" component={PassengerRequest} />
         </>
       )}
     </Stack.Navigator>

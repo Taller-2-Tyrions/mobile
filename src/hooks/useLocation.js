@@ -7,25 +7,29 @@ import React, {
 } from "react";
 import axios from "axios";
 import * as Location from "expo-location";
+import { URL } from "../configUrl";
 
 const LocationContext = createContext({});
 
 export function LocationProvider({ children }) {
   const [drivers, setDrivers] = useState(null);
-  const [driverPosition, setDriverPosition] = useState(null);
+  const [userPosition, setUserPosition] = useState(null);
   const [origin, setOrigin] = useState(null);
   const [destination, setDestination] = useState(null);
+  const [searchDrivers, setSearchDrivers] = useState(null);
+  const [lastDriverSelected, setLastDriverSelected] = useState(null);
+  const [isOnline, setIsOnline] = useState(false);
 
   const getInitialPosition = async () => {
-    if (driverPosition) {
-      return driverPosition;
+    if (userPosition) {
+      return userPosition;
     } else {
       const location = await Location.getCurrentPositionAsync({});
-      setDriverPosition({
+      setUserPosition({
         latitude: location.coords.latitude,
         longitude: location.coords.longitude,
       });
-      return driverPosition;
+      return userPosition;
     }
   };
 
@@ -34,12 +38,25 @@ export function LocationProvider({ children }) {
   }, []);
 
   useEffect(() => {
-    console.log("Posición seteada: ", driverPosition);
-  }, [driverPosition]);
+    console.log("Posición seteada: ", userPosition);
+  }, [userPosition]);
 
-  const setLocations = (originAux, destinationAux) => {
-    setOrigin(originAux);
-    setDestination(destinationAux);
+  useEffect(() => {
+    // searchDrivers tiene el accessToken del usuario
+    if (searchDrivers) {
+      const timer = setInterval(() => passengerSearch(searchDrivers), 10000);
+      return () => clearInterval(timer);
+    }
+  }, [searchDrivers]);
+
+  const startSearchingDrivers = (accessToken) => {
+    console.log("Empezando a buscar conductores");
+    setSearchDrivers(accessToken);
+  };
+
+  const cancelSearchingDrivers = () => {
+    console.log("Finalizando búsqueda de conductores");
+    setSearchDrivers(null);
   };
 
   const passengerSearch = async (accessToken) => {
@@ -47,9 +64,7 @@ export function LocationProvider({ children }) {
       console.log("algún null", origin, destination);
       return;
     }
-    const url = "https://fiuber-gateway.herokuapp.com/voyage/passenger/search";
-    console.log("Origin en passengerSearch: ", origin);
-    console.log("Destination en passengerSearch: ", destination);
+    const url = URL + "/voyage/passenger/search";
 
     axios
       .post(
@@ -72,8 +87,15 @@ export function LocationProvider({ children }) {
         }
       )
       .then((res) => {
-        console.log("Drivers: ", res.data);
-        setDrivers(Object.values(res.data));
+        console.log(
+          "Cantidad de conductores encontrados: ",
+          Object.values(res.data).length
+        );
+        if (searchDrivers) {
+          setDrivers(Object.values(res.data));
+        } else {
+          setDrivers(null);
+        }
       })
       .catch((err) => {
         console.log("Error in passengerSearch: ", err);
@@ -81,13 +103,13 @@ export function LocationProvider({ children }) {
   };
 
   const setDriverOnline = async (accessToken) => {
-    const url = "https://fiuber-gateway.herokuapp.com/voyage/driver/searching";
+    const url = URL + "/voyage/driver/searching";
     axios
       .post(
         url,
         {
-          longitude: driverPosition.longitude,
-          latitude: driverPosition.latitude,
+          longitude: userPosition.longitude,
+          latitude: userPosition.latitude,
         },
         {
           headers: {
@@ -97,6 +119,7 @@ export function LocationProvider({ children }) {
       )
       .then((res) => {
         console.log("Driver searching: ", res.data);
+        setIsOnline(true);
       })
       .catch((err) => {
         console.log("Error setDriverOnline: ", err);
@@ -104,7 +127,7 @@ export function LocationProvider({ children }) {
   };
 
   const setDriverOffline = async (accessToken) => {
-    const url = "https://fiuber-gateway.herokuapp.com/voyage/driver/offline";
+    const url = URL + "/voyage/driver/offline";
 
     axios
       .post(
@@ -117,7 +140,7 @@ export function LocationProvider({ children }) {
         }
       )
       .then((res) => {
-        console.log("éxito");
+        setIsOnline(false);
       })
       .catch((err) => {
         console.log("Error setDriverOffline: ", err);
@@ -125,7 +148,7 @@ export function LocationProvider({ children }) {
   };
 
   const changeDriverLocation = async (accessToken, position) => {
-    const url = "https://fiuber-gateway.herokuapp.com/voyage/driver/location";
+    const url = URL + "/voyage/driver/location";
     axios
       .post(
         url,
@@ -140,7 +163,7 @@ export function LocationProvider({ children }) {
         }
       )
       .then((res) => {
-        setDriverPosition({
+        setUserPosition({
           latitude: position.latitude,
           longitude: position.longitude,
         });
@@ -153,12 +176,11 @@ export function LocationProvider({ children }) {
   const passengerPickDriver = async (
     accessToken,
     idDriver,
-    origin,
-    destination
+    setResponse,
+    setError
   ) => {
-    const url = `https://fiuber-gateway.herokuapp.com/voyage/passenger/search/${idDriver}`;
+    const url = URL + `/voyage/passenger/search/${idDriver}`;
 
-    console.log("idDriver picks driver: ", idDriver);
     axios
       .post(
         url,
@@ -180,11 +202,45 @@ export function LocationProvider({ children }) {
         }
       )
       .then((res) => {
-        console.log("Driver response: ", res.data);
+        setResponse(res.data);
+        console.log("Esperando respuesta del conductor: ", res.data);
       })
       .catch((err) => {
         console.log("Error in passengerPickDriver: ", err);
+        setError(true);
       });
+  };
+
+  const getDriverProfile = async (accessToken, idDriver) => {
+    const url = URL + `/users/driver/${idDriver}`;
+
+    axios
+      .get(url, {
+        headers: {
+          token: accessToken,
+        },
+      })
+      .then((res) => {
+        const { id, name, last_name, car, calification, reviews } = res.data;
+        setLastDriverSelected({
+          id: id,
+          name: name,
+          last_name: last_name,
+          car: car,
+          calification: calification,
+          reviews: reviews,
+        });
+      })
+      .catch((err) => {
+        console.log("error in getProfile", err);
+      });
+  };
+
+  const cleanLocation = () => {
+    setDrivers(null);
+    setUserPosition(null);
+    setOrigin(null);
+    setDestination(null);
   };
 
   const memoedValue = useMemo(
@@ -197,8 +253,16 @@ export function LocationProvider({ children }) {
       passengerPickDriver,
       getInitialPosition,
       origin,
+      setOrigin,
       destination,
-      setLocations,
+      setDestination,
+      userPosition,
+      cleanLocation,
+      startSearchingDrivers,
+      cancelSearchingDrivers,
+      getDriverProfile,
+      lastDriverSelected,
+      isOnline,
     }),
     [
       passengerSearch,
@@ -209,8 +273,16 @@ export function LocationProvider({ children }) {
       passengerPickDriver,
       getInitialPosition,
       origin,
+      setOrigin,
       destination,
-      setLocations,
+      setDestination,
+      userPosition,
+      cleanLocation,
+      startSearchingDrivers,
+      cancelSearchingDrivers,
+      getDriverProfile,
+      lastDriverSelected,
+      isOnline,
     ]
   );
 

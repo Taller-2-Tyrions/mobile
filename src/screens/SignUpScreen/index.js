@@ -25,9 +25,9 @@ const SignUpScreen = () => {
     setLoading(true);
     await register(data);
 
-    if (user.accessToken) {
+    /*if (user.accessToken) {
       navigation.navigate("Home");
-    }
+    }*/
   };
 
   const onSignInPressed = () => {

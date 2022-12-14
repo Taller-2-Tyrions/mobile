@@ -7,13 +7,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   textContainer: {
-    marginTop: 400,
-    height: "100%",
     justifyContent: "center",
     alignItems: "center",
+    position: "absolute",
+    bottom: 150,
   },
   textStyle: {
-    fontSize: 24,
+    fontFamily: "uber2",
+    fontSize: 18,
   },
 });
 
