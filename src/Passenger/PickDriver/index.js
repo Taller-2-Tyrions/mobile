@@ -114,20 +114,25 @@ const DriversOptions = ({ drivers, setSelectedDriver }) => {
             <Text style={[tw`mt-2 text-lg`, { fontFamily: "uber2" }]}>
               {item.name} {item.last_name}
             </Text>
-            <View style={styles.carInfo}>
-              <View style={tw`flex-row`}>
-                <AntDesign name="clockcircle" size={16} color="black" />
-                <Text style={styles.textInfo}> {item.duration} min</Text>
-              </View>
-              <View style={{ marginLeft: 15, flexDirection: "row" }}>
+            <View style={[styles.carInfo, { alignItems: "center" }]}>
+              <View style={{ flexDirection: "row" }}>
+                <View style={tw`flex-row mr-2`}>
+                  <FontAwesome5 name="car-side" size={16} color="black" />
+                  <Text style={styles.textInfo}> {item.car.model}</Text>
+                </View>
                 <Ionicons name="person" size={16} color="black" />
                 <Text style={styles.textInfo}> {item.car.capacity}</Text>
               </View>
             </View>
             <View style={styles.price}>
               <Text style={styles.priceText}>
-                Precio estimado: ${item.prices.Standard.toFixed(2)}
+                Precio estimado: ${item.prices.Standard.toFixed(4)}
               </Text>
+              {item.prices.VIP && (
+                <Text style={[styles.priceText, { color: "#330BFF" }]}>
+                  Precio VIP: ${item.prices.VIP.toFixed(4)}
+                </Text>
+              )}
             </View>
           </TouchableOpacity>
         )}
