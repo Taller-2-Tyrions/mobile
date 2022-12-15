@@ -28,8 +28,6 @@ const HomePassenger = () => {
     setVoyageId,
     setPassengerProfile,
     setPassengerBalance,
-    passengerProfile,
-    getPassengerProfile,
   } = usePassenger();
 
   const onPressProfile = () => {

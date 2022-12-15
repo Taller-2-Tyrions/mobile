@@ -12,6 +12,7 @@ const Redirect = () => {
     if (!passengerStatus || passengerStatus.Rol !== "Passenger") return;
 
     if (passengerStatus.Status !== "CHOOSING") {
+      console.log("[PASSENGER] voyageId seteado");
       setVoyageId(passengerStatus.Voyage);
     }
     navigation.navigate("HomePassenger");

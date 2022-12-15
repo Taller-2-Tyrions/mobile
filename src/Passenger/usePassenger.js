@@ -21,6 +21,7 @@ export function PassengerProvider({ children }) {
   const [drivers, setDrivers] = useState(null);
   const [driver, setDriver] = useState(null);
   const [lastsVoyages, setLastsVoyages] = useState(null);
+  const [screen, setScreen] = useState(null);
 
   const requestDriver = async (setError) => {
     if (!origin || !destination || !driver || !passengerProfile) return;
@@ -32,7 +33,7 @@ export function PassengerProvider({ children }) {
         {
           init: origin,
           end: destination,
-          is_vip: passengerProfile.is_vip,
+          is_vip: passengerProfile.is_vip && driverProfile.is_vip,
         },
         {
           headers: {
@@ -73,6 +74,7 @@ export function PassengerProvider({ children }) {
       console.log("No hay voyageId");
       return;
     }
+    console.log("Voyage id: ", voyageId);
     const url = URL + `/voyage/passenger/info/${voyageId}`;
 
     await axios
@@ -325,6 +327,10 @@ export function PassengerProvider({ children }) {
   const clearVoyage = () => {
     setVoyageStatus(null);
     setVoyageId(null);
+    setDrivers(null);
+    setDriverProfile(null);
+    setDriver(null);
+    setScreen(null);
   };
 
   const suscribeVip = async () => {
@@ -468,6 +474,8 @@ export function PassengerProvider({ children }) {
       setLastsVoyages,
       addReview,
       addComplaint,
+      screen,
+      setScreen,
     }),
     [
       requestDriver,
@@ -510,6 +518,8 @@ export function PassengerProvider({ children }) {
       setLastsVoyages,
       addReview,
       addComplaint,
+      screen,
+      setScreen,
     ]
   );
 

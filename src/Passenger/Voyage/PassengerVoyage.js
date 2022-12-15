@@ -38,7 +38,7 @@ const PassengerVoyage = () => {
 
   const goHome = () => {
     if (voyageStatus) clearVoyage();
-    navigation.navigate("HomePassenger");
+    navigation.navigate("SendRequest");
   };
 
   const onCancel = () => {
@@ -223,7 +223,7 @@ const DriverArriving = () => {
     >
       <View style={styles.arrivingContainer}>
         <Text style={styles.textStyle}>
-          Miguel está llegando a tu ubicación.
+          El conductor está llegando a tu ubicación.
         </Text>
         <Text style={[styles.textStyle2]}>
           El viaje comenzará una vez que te subas al vehículo.

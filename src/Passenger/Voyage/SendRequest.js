@@ -7,21 +7,32 @@ import { AntDesign } from "@expo/vector-icons";
 
 const SendRequest = () => {
   const navigation = useNavigation();
-  const { requestDriver, voyageStatus, getVoyageStatus, voyageId } =
-    usePassenger();
+  const {
+    requestDriver,
+    voyageStatus,
+    getVoyageStatus,
+    voyageId,
+    driverProfile,
+    getDriverProfile,
+    driver,
+    screen,
+    setScreen,
+  } = usePassenger();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  const onRequest = () => {
+    setLoading(true);
+    requestDriver(setError);
+  };
 
   useEffect(() => {
     // la idea sería que una pantalla antes de esta
     // tire el status, y si el status del pasajero es !== "CHOOSING"
     // entonces vengo acá, con el voyageId seteado en lo que me tire
     // el getPassengerStatus.
-    if (!voyageId) {
-      setLoading(true);
-      requestDriver(setError);
-      return;
-    }
+    if (!screen) return;
+    if (!voyageId || !driverProfile) return;
 
     if (voyageStatus?.status === "WAITING") {
       navigation.navigate("WaitResponse");
@@ -30,7 +41,17 @@ const SendRequest = () => {
       navigation.navigate("PassengerVoyage");
       setLoading(false);
     }
-  }, [voyageStatus, voyageId]);
+  }, [voyageStatus, voyageId, screen, driverProfile]);
+
+  useEffect(() => {
+    if (!screen) return;
+    if (!driver) return;
+
+    if (!driverProfile) {
+      const timer = setInterval(() => getDriverProfile(driver), 2000);
+      return () => clearInterval(timer);
+    }
+  }, [driverProfile]);
 
   useEffect(() => {
     if (voyageStatus && voyageStatus.status !== "WAITING") return;
@@ -48,6 +69,23 @@ const SendRequest = () => {
 
   if (error && error.response.status === 400) {
     return <VoyageError goHome={goHome} />;
+  } else if (!driverProfile) {
+    return (
+      <View style={tw`h-full w-full bg-white`}>
+        <View
+          style={{
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100%",
+            width: "100%",
+          }}
+        >
+          <Text style={{ fontSize: 30, fontFamily: "uber1" }}>
+            Construyendo pedido...
+          </Text>
+        </View>
+      </View>
+    );
   } else {
     return (
       <View style={tw`h-full w-full bg-white`}>
@@ -64,9 +102,18 @@ const SendRequest = () => {
               Enviando request...
             </Text>
           ) : (
-            <Text style={{ fontSize: 30, fontFamily: "uber1" }}>
-              Cargando...
-            </Text>
+            <TouchableOpacity
+              onPress={onRequest}
+              style={{
+                padding: 15,
+                backgroundColor: "#1495ff",
+                borderRadius: 25,
+              }}
+            >
+              <Text style={{ fontSize: 30, fontFamily: "uber1" }}>
+                Solicitar viaje
+              </Text>
+            </TouchableOpacity>
           )}
         </View>
       </View>
@@ -83,7 +130,7 @@ const VoyageError = ({ goHome }) => {
       ]}
     >
       <View style={styles.arrivingContainer}>
-        <Text style={styles.textStyle}>El viaje ha sido cancelado.</Text>
+        <Text style={styles.textStyle}>No tenés los fondos suficientes.</Text>
         <TouchableOpacity onPress={goHome}>
           <AntDesign
             style={tw`p-2 bg-black rounded-full`}

@@ -71,7 +71,7 @@ const TripsDriver = () => {
         <Title
           goBack={() => {
             setLastsVoyages(null);
-            navigation.navigate("HomePassenger");
+            navigation.navigate("HomeDriver");
           }}
         />
         <View style={[tw`pt-5 w-full`, { height: "90%" }]}>

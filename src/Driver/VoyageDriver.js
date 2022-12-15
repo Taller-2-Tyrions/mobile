@@ -232,7 +232,7 @@ const DriverArriving = ({ startVoyage }) => {
     >
       <View style={driverArrivingStyles.arrivingContainer}>
         <Text style={driverArrivingStyles.textStyle}>
-          Llegando a la ubicación de Pedro.
+          Llegando a la ubicación del Pasajero.
         </Text>
         <TouchableOpacity onPress={startVoyage}>
           <AntDesign

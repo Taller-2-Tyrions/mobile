@@ -145,6 +145,22 @@ export function UserProvider({ children }) {
       });
   };
 
+  const passwordRecovery = async (email) => {
+    if (!email) return;
+    const url = URL + "/login/password-recovery";
+
+    await axios
+      .post(url, {
+        email: email,
+      })
+      .then((res) => {
+        console.log("Mail mandado.");
+      })
+      .catch((err) => {
+        console.log("Error in passwordRecovery: ", err);
+      });
+  };
+
   const clearUser = () => {
     setUser(null);
     setProfile(null);
@@ -165,6 +181,7 @@ export function UserProvider({ children }) {
       setProfile,
       setStatus,
       clearUser,
+      passwordRecovery,
     }),
     [
       user,
@@ -179,6 +196,7 @@ export function UserProvider({ children }) {
       setProfile,
       setStatus,
       clearUser,
+      passwordRecovery,
     ]
   );
 

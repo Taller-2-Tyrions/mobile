@@ -16,11 +16,12 @@ import useAuthGoogle from "../useAuthGoogle";
 
 const LoginHome = () => {
   const [screen, setScreen] = useState(null);
-  const { login, register, user } = useUser();
+  const { login, register, user, passwordRecovery } = useUser();
   const [error, setError] = useState(null);
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
   const { signInWithGoogle } = useAuthGoogle();
+  const [mail, setMail] = useState(null);
 
   const onLogin = (data) => {
     setLoading(true);
@@ -47,6 +48,15 @@ const LoginHome = () => {
     setScreen(null);
   };
 
+  const pwdRecovery = () => {
+    setScreen("Recovery");
+  };
+
+  const onPress = () => {
+    passwordRecovery(mail);
+    goBack();
+  };
+
   const signInGoogle = async () => {
     await signInWithGoogle();
   };
@@ -68,7 +78,16 @@ const LoginHome = () => {
   if (!screen)
     return <Options setScreen={setScreen} signInWithGoogle={signInGoogle} />;
   else if (screen === "Login")
-    return <Login onPress={onLogin} goBack={goBack} error={error} />;
+    return (
+      <Login
+        onPress={onLogin}
+        goBack={goBack}
+        error={error}
+        pwdRecovery={pwdRecovery}
+      />
+    );
+  else if (screen === "Recovery")
+    return <Recovery onPress={onPress} setMail={setMail} mail={mail} />;
   else return <Register onPress={onRegister} goBack={goBack} error={error} />;
 };
 
@@ -100,7 +119,7 @@ const Options = ({ setScreen, signInWithGoogle }) => {
   );
 };
 
-const Login = ({ onPress, error, goBack }) => {
+const Login = ({ onPress, error, goBack, pwdRecovery }) => {
   const { control, handleSubmit } = useForm();
   return (
     <View style={styles.container}>
@@ -126,6 +145,11 @@ const Login = ({ onPress, error, goBack }) => {
           }}
           secureTextEntry
         />
+        <TouchableOpacity style={{ marginTop: 15 }} onPress={pwdRecovery}>
+          <Text style={{ fontFamily: "uber2", fontSize: 17 }}>
+            Recuperar contraseña
+          </Text>
+        </TouchableOpacity>
       </View>
       <View style={styles.bottomContainer}>
         <TouchableOpacity onPress={handleSubmit(onPress)}>
@@ -133,6 +157,44 @@ const Login = ({ onPress, error, goBack }) => {
             style={tw`p-2 bg-black rounded-full`}
             name="arrowright"
             size={60}
+            color="white"
+          />
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+};
+
+const Recovery = ({ onPress, mail, setMail }) => {
+  return (
+    <View
+      style={[
+        tw`h-full w-full bg-gray-400`,
+        { justifyContent: "center", alignItems: "center" },
+      ]}
+    >
+      <View style={styles.recoveryContainer}>
+        <Text style={styles.textStyle}>
+          Se enviará un mail a tu casilla de correo.
+        </Text>
+        <TextInput
+          placeholder="Mail"
+          value={mail}
+          onChangeText={setMail}
+          style={{
+            fontFamily: "uber2",
+            fontSize: 20,
+            borderBottomColor: "black",
+            borderBottomWidth: 2,
+            height: "10%",
+            width: "70%",
+          }}
+        />
+        <TouchableOpacity onPress={onPress}>
+          <AntDesign
+            style={tw`p-2 bg-black rounded-full`}
+            name="arrowright"
+            size={50}
             color="white"
           />
         </TouchableOpacity>
@@ -311,6 +373,31 @@ const styles = StyleSheet.create({
     height: "20%",
     justifyContent: "center",
     alignItems: "center",
+  },
+  recoveryContainer: {
+    height: "60%",
+    width: "80%",
+    backgroundColor: "white",
+    borderRadius: 15,
+    justifyContent: "space-around",
+    alignItems: "center",
+    padding: 15,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 15,
+  },
+  textStyle: {
+    fontFamily: "uber1",
+    fontSize: 24,
+  },
+  textStyle2: {
+    fontFamily: "uber2",
+    fontSize: 18,
   },
 });
 

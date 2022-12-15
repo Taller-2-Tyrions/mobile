@@ -12,7 +12,7 @@ const WaitResponse = () => {
 
   const goHome = () => {
     if (voyageStatus) clearVoyage();
-    navigation.navigate("SendRequest");
+    navigation.navigate("HomePassenger");
   };
 
   const sendCancel = () => {

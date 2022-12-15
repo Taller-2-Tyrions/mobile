@@ -20,6 +20,7 @@ const PickDriver = () => {
     getDrivers,
     setDrivers,
     setDriver,
+    setScreen,
   } = usePassenger();
   const [selectedDriver, setSelectedDriver] = useState(null);
 
@@ -38,6 +39,7 @@ const PickDriver = () => {
 
   const changePage = () => {
     setDriver(selectedDriver);
+    setScreen("SendRequest");
     navigation.navigate("SendRequest");
   };
 
