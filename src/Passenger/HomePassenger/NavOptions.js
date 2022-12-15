@@ -23,7 +23,7 @@ const data1 = [
     id: "2",
     title: "Driver app",
     image: require("../../assets/images/car.png"),
-    screen: "DriverScreen",
+    screen: "Driver",
     bg: "bg-gray-100",
   },
 ];
@@ -57,7 +57,7 @@ const NavOptions = () => {
 const TwoOptions = ({ data }) => {
   const navigation = useNavigation();
   const changePage = (item) => {
-    if (item.screen === "MapScreen" || item.screen === "DriverScreen") {
+    if (item.screen === "MapScreen" || item.screen === "Driver") {
       navigation.navigate(item.screen);
     }
   };

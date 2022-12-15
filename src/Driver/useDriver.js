@@ -8,15 +8,17 @@ import React, {
 import axios from "axios";
 import { URL } from "../configUrl";
 import useUser from "../useUser";
+import * as Location from "expo-location";
 
 const DriverContext = createContext({});
 
 export function DriverProvider({ children }) {
-  const { user } = useUser();
+  const { user, profile, getProfile } = useUser();
   const [voyageId, setVoyageId] = useState(null);
   const [voyageStatus, setVoyageStatus] = useState(null);
   const [status, setStatus] = useState(null);
   const [position, setPosition] = useState(null);
+  const [driverProfile, setDriverProfile] = useState(null);
 
   const replyVoyageRequest = async (response) => {
     if (!voyageId) return;
@@ -168,6 +170,91 @@ export function DriverProvider({ children }) {
       });
   };
 
+  const getActualPosition = async (setActualPosition) => {
+    const location = await Location.getCurrentPositionAsync({});
+    setActualPosition({
+      latitude: location.coords.latitude,
+      longitude: location.coords.longitude,
+    });
+  };
+
+  const driverOnline = async (actualPosition) => {
+    if (!actualPosition) return;
+    const url = URL + "/voyage/driver/searching";
+
+    await axios
+      .post(
+        url,
+        {
+          longitude: actualPosition.longitude,
+          latitude: actualPosition.latitude,
+        },
+        {
+          headers: {
+            token: user.accessToken,
+          },
+        }
+      )
+      .then((res) => {
+        console.log("Conductor en línea: ", res.data);
+      })
+      .catch((err) => {
+        console.log("Error driverOnline: ", err);
+      });
+  };
+
+  const driverOffline = async () => {
+    const url = URL + "/voyage/driver/offline";
+
+    await axios
+      .post(
+        url,
+        {},
+        {
+          headers: {
+            token: user.accessToken,
+          },
+        }
+      )
+      .then((res) => {
+        console.log("Conductor fuera de línea.");
+      })
+      .catch((err) => {
+        console.log("Error driverOffline: ", err);
+      });
+  };
+
+  const completeDriverForm = async (data) => {
+    const url = URL + `/users/driver/${user.id}`;
+
+    await axios
+      .post(
+        url,
+        {
+          name: profile.name,
+          last_name: profile.lastName,
+          roles: ["Driver"],
+          car: {
+            model: data.model,
+            year: data.year,
+            plaque: data.plaque,
+            capacity: data.capacity,
+          },
+        },
+        {
+          headers: {
+            token: user.accessToken,
+          },
+        }
+      )
+      .then((res) => {
+        getProfile();
+      })
+      .catch((err) => {
+        console.log("Error in completeDriverForm: ", err);
+      });
+  };
+
   const clearDriver = () => {
     setVoyageId(null);
     setVoyageStatus(null);
@@ -190,6 +277,12 @@ export function DriverProvider({ children }) {
       setStatus,
       cancelVoyage,
       clearDriver,
+      driverOnline,
+      driverOffline,
+      getActualPosition,
+      driverProfile,
+      setDriverProfile,
+      completeDriverForm,
     }),
     [
       voyageId,
@@ -206,6 +299,12 @@ export function DriverProvider({ children }) {
       setStatus,
       cancelVoyage,
       clearDriver,
+      driverOnline,
+      driverOffline,
+      getActualPosition,
+      driverProfile,
+      setDriverProfile,
+      completeDriverForm,
     ]
   );
 
