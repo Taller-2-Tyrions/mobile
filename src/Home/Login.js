@@ -12,6 +12,7 @@ import { Controller } from "react-hook-form";
 import { useForm } from "react-hook-form";
 import { useNavigation } from "@react-navigation/native";
 import useUser from "../useUser";
+import useAuthGoogle from "../useAuthGoogle";
 
 const LoginHome = () => {
   const [screen, setScreen] = useState(null);
@@ -19,6 +20,7 @@ const LoginHome = () => {
   const [error, setError] = useState(null);
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
+  const { signInWithGoogle } = useAuthGoogle();
 
   const onLogin = (data) => {
     setLoading(true);
@@ -45,6 +47,10 @@ const LoginHome = () => {
     setScreen(null);
   };
 
+  const signInGoogle = async () => {
+    await signInWithGoogle();
+  };
+
   useEffect(() => {
     if (!user) return;
 
@@ -59,13 +65,14 @@ const LoginHome = () => {
     }
   }, [user]);
 
-  if (!screen) return <Options setScreen={setScreen} />;
+  if (!screen)
+    return <Options setScreen={setScreen} signInWithGoogle={signInGoogle} />;
   else if (screen === "Login")
     return <Login onPress={onLogin} goBack={goBack} error={error} />;
   else return <Register onPress={onRegister} goBack={goBack} error={error} />;
 };
 
-const Options = ({ setScreen }) => {
+const Options = ({ setScreen, signInWithGoogle }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.titleText}>FIUBER</Text>
@@ -77,6 +84,7 @@ const Options = ({ setScreen }) => {
           <Text style={styles.textButton}>Iniciar sesión</Text>
         </TouchableOpacity>
         <TouchableOpacity
+          onPress={signInWithGoogle}
           style={{ ...styles.button, borderWidth: 2, borderColor: "gray" }}
         >
           <AntDesign name="google" size={24} color="red" />
