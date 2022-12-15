@@ -318,6 +318,52 @@ export function DriverProvider({ children }) {
       });
   };
 
+  const suscribeVip = async () => {
+    if (!driverProfile) return;
+    const url = URL + "/voyage/driver/vip/subscription";
+
+    await axios
+      .post(
+        url,
+        {},
+        {
+          headers: {
+            token: user.accessToken,
+          },
+        }
+      )
+      .then((res) => {
+        console.log("Conductor es vip.");
+        setDriverProfile({ ...driverProfile, is_vip: true });
+      })
+      .catch((err) => {
+        console.log("Error in suscribeVip: ", err);
+      });
+  };
+
+  const unsuscribeVip = async () => {
+    if (!driverProfile) return;
+    const url = URL + "/voyage/driver/vip/unsubscription";
+
+    await axios
+      .post(
+        url,
+        {},
+        {
+          headers: {
+            token: user.accessToken,
+          },
+        }
+      )
+      .then((res) => {
+        console.log("Conductor deja de ser vip.");
+        setDriverProfile({ ...driverProfile, is_vip: false });
+      })
+      .catch((err) => {
+        console.log("Error in unsuscribeVip: ", err);
+      });
+  };
+
   const clearDriver = () => {
     setVoyageId(null);
     setVoyageStatus(null);
@@ -352,6 +398,8 @@ export function DriverProvider({ children }) {
       setDriverBalance,
       getDriverBalance,
       editDriverProfile,
+      suscribeVip,
+      unsuscribeVip,
     }),
     [
       voyageId,
@@ -380,6 +428,8 @@ export function DriverProvider({ children }) {
       setDriverBalance,
       getDriverBalance,
       editDriverProfile,
+      suscribeVip,
+      unsuscribeVip,
     ]
   );
 

@@ -9,25 +9,64 @@ import {
 import React from "react";
 import tw from "tailwind-react-native-classnames";
 import { AntDesign } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
+import useDriver from "../useDriver";
+import useUser from "../../useUser";
 
-const data = [
+const data1 = [
   {
     id: "1",
     title: "FIUBER APP",
     image: require("../../assets/images/logo.png"),
-    screen: "HomeScreen",
+    screen: "Home",
     bg: "bg-gray-100",
   },
   {
     id: "2",
-    title: "Logout",
-    image: require("../../assets/images/logout.png"),
-    screen: "LoginScreen",
-    bg: "bg-red-100",
+    title: "Calificaciones",
+    image: require("../../assets/images/star.png"),
+    screen: "CalificationsDriver",
+    bg: "bg-gray-100",
+  },
+];
+
+const data2 = [
+  {
+    id: "3",
+    title: "Historial viajes",
+    image: require("../../assets/images/history.png"),
+    screen: "TripsDriver",
+    bg: "bg-gray-100",
   },
 ];
 
 const NavOptions = () => {
+  return (
+    <View style={styles.navOptionsContainer}>
+      <TwoOptions data={data1} />
+      <TwoOptions data={data2} />
+    </View>
+  );
+};
+
+const TwoOptions = ({ data }) => {
+  const navigation = useNavigation();
+  const { driverOffline, clearDriver } = useDriver();
+  const { setStatus, clearUser } = useUser();
+
+  const changeScreen = (item) => {
+    if (item.screen === "Home") {
+      driverOffline();
+      setStatus(null);
+      clearDriver();
+      navigation.navigate("Home");
+    } else if (item.screen === "Root") {
+      clearDriver();
+      clearUser();
+      navigation.navigate("Root");
+    }
+  };
+
   return (
     <View style={styles.container}>
       <FlatList
@@ -35,7 +74,10 @@ const NavOptions = () => {
         keyExtractor={(item) => item.id}
         horizontal
         renderItem={({ item }) => (
-          <TouchableOpacity style={tw`p-2 pl-6 pb-8 pt-4 ${item.bg} m-2 w-40`}>
+          <TouchableOpacity
+            onPress={() => changeScreen(item)}
+            style={tw`p-2 pl-6 pb-8 pt-4 ${item.bg} m-2 w-40`}
+          >
             <View>
               <Image style={styles.image} source={item.image} />
               <Text style={[tw`mt-2 text-lg`, styles.titleText]}>
@@ -58,6 +100,9 @@ const NavOptions = () => {
 export default NavOptions;
 
 const styles = StyleSheet.create({
+  navOptionsContainer: {
+    paddingTop: 20,
+  },
   container: {
     paddingTop: 10,
     justifyContent: "center",

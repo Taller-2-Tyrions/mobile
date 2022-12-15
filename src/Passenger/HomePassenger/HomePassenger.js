@@ -9,7 +9,7 @@ import React, { useState, useEffect } from "react";
 import tw from "tailwind-react-native-classnames";
 import { SafeAreaView } from "react-native-safe-area-context";
 import NavOptions from "./NavOptions";
-import LastTrips from "./LastTrips";
+import Logout from "./Logout";
 import { Ionicons, Entypo } from "@expo/vector-icons";
 import Wallet from "./Wallet";
 import Profile from "./Profile";
@@ -28,6 +28,8 @@ const HomePassenger = () => {
     setVoyageId,
     setPassengerProfile,
     setPassengerBalance,
+    passengerProfile,
+    getPassengerProfile,
   } = usePassenger();
 
   const onPressProfile = () => {
@@ -65,7 +67,7 @@ const HomePassenger = () => {
       >
         <Title onPressProfile={onPressProfile} onPressWallet={onPressWallet} />
         <NavOptions />
-        <LastTrips />
+        <Logout />
         <Wallet
           walletVisible={walletVisible}
           setWalletVisible={setWalletVisible}

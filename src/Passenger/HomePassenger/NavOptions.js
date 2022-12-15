@@ -33,15 +33,15 @@ const data2 = [
     id: "3",
     title: "Calificaciones",
     image: require("../../assets/images/star.png"),
-    screen: "CalificationScreen",
+    screen: "CalificationsPassenger",
     bg: "bg-gray-100",
   },
   {
     id: "4",
-    title: "Logout",
-    image: require("../../assets/images/logout.png"),
-    screen: "LoginScreen",
-    bg: "bg-red-100",
+    title: "Historial viajes",
+    image: require("../../assets/images/history.png"),
+    screen: "TripsPassenger",
+    bg: "bg-gray-100",
   },
 ];
 
@@ -57,9 +57,7 @@ const NavOptions = () => {
 const TwoOptions = ({ data }) => {
   const navigation = useNavigation();
   const changePage = (item) => {
-    if (item.screen === "MapScreen" || item.screen === "Driver") {
-      navigation.navigate(item.screen);
-    }
+    navigation.navigate(item.screen);
   };
 
   return (

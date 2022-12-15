@@ -12,13 +12,17 @@ import { AntDesign, FontAwesome } from "@expo/vector-icons";
 import useDriver from "../useDriver";
 
 const CarSettings = ({ carVisible, setCarVisible }) => {
-  const { driverProfile, editDriverProfile, getDriverProfile } = useDriver();
+  const {
+    driverProfile,
+    editDriverProfile,
+    getDriverProfile,
+    suscribeVip,
+    unsuscribeVip,
+  } = useDriver();
   const [model, setModel] = useState(null);
   const [year, setYear] = useState(null);
   const [plaque, setPlaque] = useState(null);
   const [capacity, setCapacity] = useState(null);
-
-  const isVip = false;
 
   const onClose = () => {
     setCarVisible(!carVisible);
@@ -94,16 +98,20 @@ const CarSettings = ({ carVisible, setCarVisible }) => {
                   text={capacity}
                   setText={setCapacity}
                 />
-                {isVip ? (
-                  <View
+                {driverProfile?.is_vip ? (
+                  <TouchableOpacity
+                    onPress={() => unsuscribeVip()}
                     style={{ justifyContent: "center", alignItems: "center" }}
                   >
                     <Text style={[styles.vipText, { color: "black" }]}>
-                      Sos chófer vip
+                      Desuscribirse a vip
                     </Text>
-                  </View>
+                  </TouchableOpacity>
                 ) : (
-                  <TouchableOpacity style={styles.vipContainer}>
+                  <TouchableOpacity
+                    style={styles.vipContainer}
+                    onPress={() => suscribeVip()}
+                  >
                     <Text style={styles.vipText}>Suscribirse a vip</Text>
                   </TouchableOpacity>
                 )}

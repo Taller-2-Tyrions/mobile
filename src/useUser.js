@@ -145,6 +145,12 @@ export function UserProvider({ children }) {
       });
   };
 
+  const clearUser = () => {
+    setUser(null);
+    setProfile(null);
+    setStatus(null);
+  };
+
   const memoedValue = useMemo(
     () => ({
       user,
@@ -157,6 +163,8 @@ export function UserProvider({ children }) {
       completePassengerForm,
       setUser,
       setProfile,
+      setStatus,
+      clearUser,
     }),
     [
       user,
@@ -169,6 +177,8 @@ export function UserProvider({ children }) {
       completePassengerForm,
       setUser,
       setProfile,
+      setStatus,
+      clearUser,
     ]
   );
 

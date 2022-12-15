@@ -10,9 +10,18 @@ const InitDriver = () => {
 
   useEffect(() => {
     if (status?.Rol === "Passenger") {
-      const timer = setInterval(() => driverOnline(), 2000);
+      const timer = setInterval(() => {
+        driverOnline();
+        getStatusDriver();
+      }, 2000);
       return () => clearInterval(timer);
-    } else if (status?.Status === "SEARCHING" || !status) {
+    }
+  }, [status]);
+
+  useEffect(() => {
+    if (status?.Rol === "Passenger") return;
+
+    if (status?.Status === "SEARCHING" || !status) {
       const timer = setInterval(() => getStatusDriver(), 2000);
       return () => clearInterval(timer);
     }

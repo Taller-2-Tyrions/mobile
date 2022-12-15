@@ -8,8 +8,7 @@ import useDriver from "./useDriver";
 const RedirectDriver = () => {
   const navigation = useNavigation();
   const { profile } = useUser();
-  const { status, getStatusDriver, driverOnline, position, getActualPosition } =
-    useDriver();
+  const { position, getActualPosition } = useDriver();
 
   useEffect(() => {
     if (!profile) return;
@@ -24,20 +23,6 @@ const RedirectDriver = () => {
   useEffect(() => {
     if (!position) getActualPosition();
   }, [position]);
-
-  /*useEffect(() => {
-    if (!status || status.Rol === "Passenger") {
-      const timer = setInterval(() => {
-        getStatusDriver();
-        if (status?.Rol === "Passenger" && position) {
-          driverOnline();
-        }
-      }, 2000);
-      return () => clearInterval(timer);
-    } else {
-      navigation.navigate("InitDriver");
-    }
-  }, [status, position]);*/
 
   return (
     <View style={tw`h-full w-full bg-white`}>

@@ -9,7 +9,7 @@ import React, { useState, useEffect } from "react";
 import tw from "tailwind-react-native-classnames";
 import { SafeAreaView } from "react-native-safe-area-context";
 import NavOptions from "./NavOptions";
-import LastTrips from "./LastTrips";
+import Logout from "./Logout";
 import { Ionicons, Entypo } from "@expo/vector-icons";
 import Wallet from "./Wallet";
 import CarSettings from "./CarSettings";
@@ -43,7 +43,7 @@ const HomeDriver = () => {
       <ScrollView style={styles.container}>
         <Title onPressProfile={onPressProfile} onPressWallet={onPressWallet} />
         <NavOptions />
-        <LastTrips />
+        <Logout />
         <Wallet
           walletVisible={walletVisible}
           setWalletVisible={setWalletVisible}

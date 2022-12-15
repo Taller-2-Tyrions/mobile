@@ -14,8 +14,13 @@ import usePassenger from "../usePassenger";
 import useUser from "../../useUser";
 
 const Profile = ({ profileVisible, setProfileVisible }) => {
-  const { editPassengerProfile, passengerProfile, getPassengerProfile } =
-    usePassenger();
+  const {
+    editPassengerProfile,
+    passengerProfile,
+    getPassengerProfile,
+    suscribeVip,
+    unsuscribeVip,
+  } = usePassenger();
   const [name, setName] = useState(null);
   const [lastName, setLastName] = useState(null);
   const [defaultAddress, setDefaultAddress] = useState(null);
@@ -52,7 +57,6 @@ const Profile = ({ profileVisible, setProfileVisible }) => {
     editPassengerProfile(data);
   };
 
-  const isVip = false;
   return (
     <View>
       <Modal
@@ -84,16 +88,20 @@ const Profile = ({ profileVisible, setProfileVisible }) => {
                   address={defaultAddress}
                   setAddress={setDefaultAddress}
                 />
-                {isVip ? (
-                  <View
+                {passengerProfile?.is_vip ? (
+                  <TouchableOpacity
                     style={{ justifyContent: "center", alignItems: "center" }}
+                    onPress={() => unsuscribeVip()}
                   >
                     <Text style={[styles.vipText, { color: "black" }]}>
-                      Sos pasajero vip
+                      Desuscribirse a vip
                     </Text>
-                  </View>
+                  </TouchableOpacity>
                 ) : (
-                  <TouchableOpacity style={styles.vipContainer}>
+                  <TouchableOpacity
+                    style={styles.vipContainer}
+                    onPress={() => suscribeVip()}
+                  >
                     <Text style={styles.vipText}>Suscribirse a vip</Text>
                   </TouchableOpacity>
                 )}

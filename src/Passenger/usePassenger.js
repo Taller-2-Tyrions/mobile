@@ -22,7 +22,7 @@ export function PassengerProvider({ children }) {
   const [driver, setDriver] = useState(null);
 
   const requestDriver = async () => {
-    if (!origin || !destination || !driver) return;
+    if (!origin || !destination || !driver || !passengerProfile) return;
     const url = URL + `/voyage/passenger/search/${driver.id}`;
 
     await axios
@@ -31,7 +31,7 @@ export function PassengerProvider({ children }) {
         {
           init: origin,
           end: destination,
-          is_vip: false,
+          is_vip: passengerProfile.is_vip,
         },
         {
           headers: {
@@ -160,7 +160,17 @@ export function PassengerProvider({ children }) {
         },
       })
       .then((res) => {
-        const { id, name, last_name, roles, is_blocked, address } = res.data;
+        const {
+          id,
+          name,
+          last_name,
+          roles,
+          is_blocked,
+          address,
+          is_vip,
+          calification,
+          reviews,
+        } = res.data;
         const split_address = address.split(";");
         const defaultAddress = {
           location: split_address[0],
@@ -175,6 +185,9 @@ export function PassengerProvider({ children }) {
           isDriver: roles.includes("Driver"),
           isBlocked: is_blocked,
           defaultAddress: defaultAddress,
+          is_vip: is_vip,
+          reviews: reviews,
+          calification: calification,
         });
       })
       .catch((err) => {
@@ -255,8 +268,8 @@ export function PassengerProvider({ children }) {
   };
 
   const getDrivers = async () => {
-    if (!origin || !destination) {
-      console.log("Posiciones no seteadas.");
+    if (!origin || !destination || !passengerProfile) {
+      console.log("Posiciones o perfil no seteados.");
       return;
     }
 
@@ -274,7 +287,7 @@ export function PassengerProvider({ children }) {
             longitude: destination.longitude,
             latitude: destination.latitude,
           },
-          is_vip: false,
+          is_vip: passengerProfile.is_vip,
         },
         {
           headers: {
@@ -286,13 +299,64 @@ export function PassengerProvider({ children }) {
         setDrivers(Object.values(res.data));
       })
       .catch((err) => {
-        console.log("Error in passengerSearch: ", err);
+        console.log("Error in getDrivers: ", err);
       });
   };
 
   const clearVoyage = () => {
     setVoyageStatus(null);
     setVoyageId(null);
+  };
+
+  const suscribeVip = async () => {
+    if (!passengerProfile) return;
+    const url = URL + "/voyage/passenger/vip/subscription";
+
+    await axios
+      .post(
+        url,
+        {},
+        {
+          headers: {
+            token: user.accessToken,
+          },
+        }
+      )
+      .then((res) => {
+        console.log("Pasajero es vip.");
+        setPassengerProfile({ ...passengerProfile, is_vip: true });
+      })
+      .catch((err) => {
+        console.log("Error in suscribeVip: ", err);
+      });
+  };
+
+  const unsuscribeVip = async () => {
+    if (!passengerProfile) return;
+    const url = URL + "/voyage/passenger/vip/unsubscription";
+
+    await axios
+      .post(
+        url,
+        {},
+        {
+          headers: {
+            token: user.accessToken,
+          },
+        }
+      )
+      .then((res) => {
+        console.log("Pasajero deja de ser vip.");
+        setPassengerProfile({ ...passengerProfile, is_vip: false });
+      })
+      .catch((err) => {
+        console.log("Error in unsuscribeVip: ", err);
+      });
+  };
+
+  const clearPassenger = () => {
+    clearVoyage();
+    setPassengerStatus(null);
   };
 
   const memoedValue = useMemo(
@@ -329,6 +393,9 @@ export function PassengerProvider({ children }) {
       setDrivers,
       driver,
       setDriver,
+      clearPassenger,
+      suscribeVip,
+      unsuscribeVip,
     }),
     [
       requestDriver,
@@ -363,6 +430,9 @@ export function PassengerProvider({ children }) {
       setDrivers,
       driver,
       setDriver,
+      clearPassenger,
+      suscribeVip,
+      unsuscribeVip,
     ]
   );
 
