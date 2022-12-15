@@ -32,6 +32,9 @@ export function UserProvider({ children }) {
           formComplete: is_registered,
           id: id,
         });
+
+        console.log("Access token: ", token);
+        console.log("Id: ", id);
       })
       .catch((err) => {
         console.log("Error en login: ", err);

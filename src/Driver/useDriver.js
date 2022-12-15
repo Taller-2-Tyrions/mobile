@@ -170,24 +170,24 @@ export function DriverProvider({ children }) {
       });
   };
 
-  const getActualPosition = async (setActualPosition) => {
+  const getActualPosition = async () => {
     const location = await Location.getCurrentPositionAsync({});
-    setActualPosition({
+    setPosition({
       latitude: location.coords.latitude,
       longitude: location.coords.longitude,
     });
   };
 
-  const driverOnline = async (actualPosition) => {
-    if (!actualPosition) return;
+  const driverOnline = async () => {
+    if (!position) return;
     const url = URL + "/voyage/driver/searching";
 
     await axios
       .post(
         url,
         {
-          longitude: actualPosition.longitude,
-          latitude: actualPosition.latitude,
+          longitude: position.longitude,
+          latitude: position.latitude,
         },
         {
           headers: {
@@ -196,7 +196,7 @@ export function DriverProvider({ children }) {
         }
       )
       .then((res) => {
-        console.log("Conductor en línea: ", res.data);
+        console.log("Conductor en línea");
       })
       .catch((err) => {
         console.log("Error driverOnline: ", err);

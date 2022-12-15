@@ -1,15 +1,21 @@
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
-import React, { useState, useEffect } from "react";
+import { StyleSheet, Text, View, Dimensions } from "react-native";
+import React, { useEffect, useState } from "react";
 import tw from "tailwind-react-native-classnames";
-import { useNavigation } from "@react-navigation/native";
 import useDriver from "../useDriver";
+import { useNavigation } from "@react-navigation/native";
 
 const HomeDriver = () => {
   const navigation = useNavigation();
-  const { status, getStatusDriver, setVoyageId } = useDriver();
+  const { status } = useDriver();
+
+  useEffect(() => {
+    if (!status) {
+      navigation.navigate("Home");
+    }
+  }, [status]);
 
   return (
-    <View style={tw`h-full w-full bg-white`}>
+    <View style={tw`h-full w-full bg-blue-200`}>
       <View
         style={{
           justifyContent: "center",
@@ -18,9 +24,7 @@ const HomeDriver = () => {
           width: "100%",
         }}
       >
-        <Text style={{ fontSize: 30, fontFamily: "uber1" }}>
-          Iniciando FIUBER DRIVER...
-        </Text>
+        <Text style={{ fontSize: 30 }}>Home</Text>
       </View>
     </View>
   );

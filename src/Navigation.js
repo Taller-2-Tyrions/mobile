@@ -8,7 +8,7 @@ import LoginHome from "./Home/Login";
 import PassengerForm from "./Home/PassengerForm";
 import Home from "./Home/Home";
 import HomePassenger from "./Passenger/HomePassenger/HomePassenger";
-import HomeDriver from "./Driver/HomeDriver/HomeDriver";
+import InitDriver from "./Driver/InitDriver";
 import Redirect from "./Passenger/Redirect";
 import MapScreen from "./Passenger/MapScreen";
 import PickDriver from "./Passenger/PickDriver";
@@ -17,6 +17,8 @@ import WaitResponse from "./Passenger/Voyage/WaitResponse";
 import PassengerVoyage from "./Passenger/Voyage/PassengerVoyage";
 import RedirectDriver from "./Driver/RedirectDriver";
 import DriverForm from "./Driver/DriverForm";
+import HomeDriver from "./Driver/HomeDriver/HomeDriver";
+import VoyageDriver from "./Driver/VoyageDriver";
 
 const Stack = createNativeStackNavigator();
 
@@ -42,7 +44,9 @@ const Navigation = () => {
               />
               <Stack.Screen name="Driver" component={RedirectDriver} />
               <Stack.Screen name="DriverForm" component={DriverForm} />
+              <Stack.Screen name="InitDriver" component={InitDriver} />
               <Stack.Screen name="HomeDriver" component={HomeDriver} />
+              <Stack.Screen name="VoyageDriver" component={VoyageDriver} />
             </Stack.Navigator>
           </DriverProvider>
         </PassengerProvider>
