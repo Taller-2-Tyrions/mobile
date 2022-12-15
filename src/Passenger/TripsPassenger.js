@@ -14,10 +14,19 @@ import { AntDesign } from "@expo/vector-icons";
 import { Rating } from "react-native-ratings";
 import { useNavigation } from "@react-navigation/native";
 import usePassenger from "./usePassenger";
+import { CustomInput } from "../Home/Login";
+import { useForm } from "react-hook-form";
+import DropDownPicker from "react-native-dropdown-picker";
 
 const TripsPassenger = () => {
   const navigation = useNavigation();
-  const { getLastsVoyages, lastsVoyages, setLastsVoyages } = usePassenger();
+  const {
+    getLastsVoyages,
+    lastsVoyages,
+    setLastsVoyages,
+    addReview,
+    addComplaint,
+  } = usePassenger();
   const [calificationVisible, setCalificationVisible] = useState(false);
   const [complaintVisible, setComplaintVisible] = useState(false);
 
@@ -77,65 +86,73 @@ const TripsPassenger = () => {
         <View style={[tw`pt-5 w-full`, { height: "90%" }]}>
           <FlatList
             data={lastsVoyages}
-            keyExtractor={(item) => item.voyage_id}
+            keyExtractor={(item) => item.id}
             renderItem={({ item }) =>
               item.price > 0 && (
-                <View style={{ alignItems: "center" }}>
-                  <View style={[styles.trip]}>
-                    <Text style={styles.text}>Conductor: {item.driver_id}</Text>
-                    <Text style={styles.text}>Precio: ${item.price}</Text>
-                    <Text style={styles.text}>
-                      Fecha: {item.start_time.split("T")[0]}
-                    </Text>
-                    <Text style={styles.text}>
-                      Hora: {item.start_time.split("T")[1].split(".")[0]}
-                    </Text>
+                <>
+                  <View style={{ alignItems: "center" }}>
+                    <View style={[styles.trip]}>
+                      <Text style={[styles.text, { fontFamily: "uber1" }]}>
+                        {item.driver_id}
+                      </Text>
+                      <Text style={styles.text}>Precio: ${item.price}</Text>
+                      <Text style={styles.text}>
+                        Fecha: {item.start_time.split("T")[0]}
+                      </Text>
+                      <Text style={styles.text}>
+                        Hora: {item.start_time.split("T")[1].split(".")[0]}
+                      </Text>
 
-                    <View style={tw`mt-5 flex-row justify-center`}>
-                      <TouchableOpacity
-                        style={[
-                          tw`mr-3`,
-                          {
-                            borderRadius: 25,
-                            backgroundColor: "#1495ff",
-                            padding: 15,
-                          },
-                        ]}
-                        onPress={() => setCalificationVisible(true)}
-                      >
-                        <Text style={styles.text}>Calificar</Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        style={[
-                          tw`ml-3`,
-                          {
-                            borderRadius: 25,
-                            padding: 15,
-                            borderWidth: 1,
-                            borderColor: "gray",
-                          },
-                        ]}
-                        onPress={() => setComplaintVisible(true)}
-                      >
-                        <Text style={[styles.text, { color: "red" }]}>
-                          Denunciar
-                        </Text>
-                      </TouchableOpacity>
+                      <View style={tw`mt-5 flex-row justify-center`}>
+                        <TouchableOpacity
+                          style={[
+                            tw`mr-3`,
+                            {
+                              borderRadius: 25,
+                              backgroundColor: "#1495ff",
+                              padding: 15,
+                            },
+                          ]}
+                          onPress={() => setCalificationVisible(true)}
+                        >
+                          <Text style={styles.buttonText}>Calificar</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                          style={[
+                            tw`ml-3`,
+                            {
+                              borderRadius: 25,
+                              padding: 15,
+                              borderWidth: 1,
+                              borderColor: "gray",
+                            },
+                          ]}
+                          onPress={() => setComplaintVisible(true)}
+                        >
+                          <Text style={[styles.buttonText, { color: "red" }]}>
+                            Denunciar
+                          </Text>
+                        </TouchableOpacity>
+                      </View>
                     </View>
                   </View>
-                </View>
+                  <Calification
+                    calificationVisible={calificationVisible}
+                    setCalificationVisible={setCalificationVisible}
+                    addReview={addReview}
+                    voyage_id={item.id}
+                  />
+                  <Complaint
+                    complaintVisible={complaintVisible}
+                    setComplaintVisible={setComplaintVisible}
+                    voyage_id={item.id}
+                    addComplaint={addComplaint}
+                  />
+                </>
               )
             }
           />
         </View>
-        <Calification
-          calificationVisible={calificationVisible}
-          setCalificationVisible={setCalificationVisible}
-        />
-        <Complaint
-          complaintVisible={complaintVisible}
-          setComplaintVisible={setComplaintVisible}
-        />
       </View>
     );
   }
@@ -161,9 +178,27 @@ const Title = ({ goBack }) => {
   );
 };
 
-const Calification = ({ calificationVisible, setCalificationVisible }) => {
+const Calification = ({
+  calificationVisible,
+  setCalificationVisible,
+  addReview,
+  voyage_id,
+}) => {
+  const { control, handleSubmit } = useForm();
+  const [rating, setRating] = useState(0);
+
   const ratingCompleted = (rating) => {
-    console.log("Rating: ", rating);
+    setRating(rating);
+  };
+
+  const onSubmit = (data) => {
+    const data_aux = {
+      rating: rating,
+      comentary: data.comentary,
+    };
+    addReview(voyage_id, data_aux);
+    setCalificationVisible(false);
+    setRating(3.5);
   };
 
   return (
@@ -196,12 +231,22 @@ const Calification = ({ calificationVisible, setCalificationVisible }) => {
             </View>
             <View style={modalStyles.modalContainerButton}>
               <Rating onFinishRating={ratingCompleted} />
-              <InputText placeholder={"Comentario"} />
+              <CustomInput
+                name="comentary"
+                placeholder="Comentario"
+                control={control}
+                rules={{
+                  required: "(*) Campo obligatorio",
+                }}
+                textStyle={modalStyles.inputText}
+                containerStyle={tw`mt-5`}
+              />
               <TouchableOpacity
                 style={{
                   marginTop: 10,
                   left: Dimensions.get("window").width / 2 - 60,
                 }}
+                onPress={handleSubmit(onSubmit)}
               >
                 <AntDesign
                   style={tw`p-2 bg-black rounded-full w-10 mt-4`}
@@ -218,7 +263,24 @@ const Calification = ({ calificationVisible, setCalificationVisible }) => {
   );
 };
 
-const Complaint = ({ complaintVisible, setComplaintVisible }) => {
+const Complaint = ({
+  complaintVisible,
+  setComplaintVisible,
+  addComplaint,
+  voyage_id,
+}) => {
+  const { control, handleSubmit } = useForm();
+  const [value, setValue] = useState(null);
+
+  const onSubmit = (data) => {
+    const data_aux = {
+      type: value,
+      description: data.description,
+    };
+    addComplaint(voyage_id, data_aux);
+    setComplaintVisible(false);
+  };
+
   return (
     <View>
       <Modal
@@ -246,13 +308,23 @@ const Complaint = ({ complaintVisible, setComplaintVisible }) => {
               </View>
             </View>
             <View style={modalStyles.modalContainerButton}>
-              <InputText placeholder={"Tipo de denuncia"} />
-              <InputText placeholder={"Descripción"} />
+              <DropDown value={value} setValue={setValue} />
+              <CustomInput
+                name="description"
+                placeholder="Descripción"
+                control={control}
+                rules={{
+                  required: "(*) Campo obligatorio",
+                }}
+                textStyle={modalStyles.inputText}
+                containerStyle={tw`mt-5`}
+              />
               <TouchableOpacity
                 style={{
                   marginTop: 10,
                   left: Dimensions.get("window").width / 2 - 60,
                 }}
+                onPress={handleSubmit(onSubmit)}
               >
                 <AntDesign
                   style={tw`p-2 bg-black rounded-full w-10 mt-4`}
@@ -273,6 +345,46 @@ const InputText = ({ placeholder }) => {
   return (
     <View style={tw`mt-5`}>
       <TextInput placeholder={placeholder} style={modalStyles.inputText} />
+    </View>
+  );
+};
+
+const DropDown = ({ value, setValue }) => {
+  const [open, setOpen] = useState(false);
+  const [items, setItems] = useState([
+    { value: "STEAL", label: "Robo" },
+    { value: "SEXUAL", label: "Sexual" },
+    { value: "UNSAFE_DRIVING", label: "Maneja de forma insegura" },
+    { value: "UNSAFE_CAR", label: "Su auto es inseguro" },
+    { value: "UNDER_INFLUENCE", label: "No estaba apto para manejar" },
+    { value: "AGGRESIVE", label: "Fue agresivo" },
+  ]);
+
+  return (
+    <View>
+      <DropDownPicker
+        open={open}
+        value={value}
+        items={items}
+        setOpen={setOpen}
+        setValue={setValue}
+        setItems={setItems}
+        placeholder="Tipo de denuncia"
+        textStyle={{
+          fontFamily: "uber2",
+          fontSize: 20,
+        }}
+        style={{
+          borderColor: "white",
+          borderBottomColor: "black",
+          borderBottomWidth: 2,
+          borderRadius: 0,
+        }}
+        containerStyle={{
+          width: "90%",
+          marginTop: 10,
+        }}
+      />
     </View>
   );
 };
@@ -302,6 +414,11 @@ const styles = StyleSheet.create({
   text: {
     fontFamily: "uber2",
     fontSize: 20,
+  },
+  buttonText: {
+    fontFamily: "uber1",
+    fontSize: 20,
+    color: "white",
   },
   map: {
     flex: 1,

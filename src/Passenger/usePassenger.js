@@ -373,6 +373,54 @@ export function PassengerProvider({ children }) {
       });
   };
 
+  const addReview = async (voyage_id, data) => {
+    const url = URL + `/voyage/passenger/review/${voyage_id}`;
+
+    await axios
+      .post(
+        url,
+        {
+          score: data.rating,
+          comment: data.comentary,
+        },
+        {
+          headers: {
+            token: user.accessToken,
+          },
+        }
+      )
+      .then((res) => {
+        console.log("Review agregada.");
+      })
+      .catch((err) => {
+        console.log("Error in addReview: ", err);
+      });
+  };
+
+  const addComplaint = async (voyage_id, data) => {
+    const url = URL + `/voyage/passenger/complaint/${voyage_id}`;
+
+    await axios
+      .post(
+        url,
+        {
+          complaint_type: data.type,
+          description: data.description,
+        },
+        {
+          headers: {
+            token: user.accessToken,
+          },
+        }
+      )
+      .then((res) => {
+        console.log("Denuncia agregada.");
+      })
+      .catch((err) => {
+        console.log("Error in addComplaint: ", err);
+      });
+  };
+
   const clearPassenger = () => {
     clearVoyage();
     setPassengerStatus(null);
@@ -418,6 +466,8 @@ export function PassengerProvider({ children }) {
       getLastsVoyages,
       lastsVoyages,
       setLastsVoyages,
+      addReview,
+      addComplaint,
     }),
     [
       requestDriver,
@@ -458,6 +508,8 @@ export function PassengerProvider({ children }) {
       getLastsVoyages,
       lastsVoyages,
       setLastsVoyages,
+      addReview,
+      addComplaint,
     ]
   );
 
