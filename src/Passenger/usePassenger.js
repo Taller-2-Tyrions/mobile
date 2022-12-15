@@ -21,7 +21,7 @@ export function PassengerProvider({ children }) {
   const [drivers, setDrivers] = useState(null);
   const [driver, setDriver] = useState(null);
 
-  const requestDriver = async () => {
+  const requestDriver = async (setError) => {
     if (!origin || !destination || !driver || !passengerProfile) return;
     const url = URL + `/voyage/passenger/search/${driver.id}`;
 
@@ -46,6 +46,7 @@ export function PassengerProvider({ children }) {
       })
       .catch((err) => {
         console.log("Error in requestDriver: ", err);
+        setError(err);
       });
   };
 
