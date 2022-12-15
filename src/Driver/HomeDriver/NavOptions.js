@@ -52,7 +52,7 @@ const NavOptions = () => {
 const TwoOptions = ({ data }) => {
   const navigation = useNavigation();
   const { driverOffline, clearDriver } = useDriver();
-  const { setStatus, clearUser } = useUser();
+  const { setStatus } = useUser();
 
   const changeScreen = (item) => {
     if (item.screen === "Home") {
@@ -60,10 +60,8 @@ const TwoOptions = ({ data }) => {
       setStatus(null);
       clearDriver();
       navigation.navigate("Home");
-    } else if (item.screen === "Root") {
-      clearDriver();
-      clearUser();
-      navigation.navigate("Root");
+    } else {
+      navigation.navigate(item.screen);
     }
   };
 

@@ -20,6 +20,7 @@ export function PassengerProvider({ children }) {
   const [destination, setDestination] = useState(null);
   const [drivers, setDrivers] = useState(null);
   const [driver, setDriver] = useState(null);
+  const [lastsVoyages, setLastsVoyages] = useState(null);
 
   const requestDriver = async (setError) => {
     if (!origin || !destination || !driver || !passengerProfile) return;
@@ -304,6 +305,23 @@ export function PassengerProvider({ children }) {
       });
   };
 
+  const getLastsVoyages = async () => {
+    const url = URL + "/voyage/passenger/last";
+
+    await axios
+      .get(url, {
+        headers: {
+          token: user.accessToken,
+        },
+      })
+      .then((res) => {
+        setLastsVoyages(res.data);
+      })
+      .catch((err) => {
+        console.log("Error in gestLastVoyages: ", err);
+      });
+  };
+
   const clearVoyage = () => {
     setVoyageStatus(null);
     setVoyageId(null);
@@ -397,6 +415,9 @@ export function PassengerProvider({ children }) {
       clearPassenger,
       suscribeVip,
       unsuscribeVip,
+      getLastsVoyages,
+      lastsVoyages,
+      setLastsVoyages,
     }),
     [
       requestDriver,
@@ -434,6 +455,9 @@ export function PassengerProvider({ children }) {
       clearPassenger,
       suscribeVip,
       unsuscribeVip,
+      getLastsVoyages,
+      lastsVoyages,
+      setLastsVoyages,
     ]
   );
 

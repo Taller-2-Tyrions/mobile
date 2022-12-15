@@ -20,6 +20,7 @@ export function DriverProvider({ children }) {
   const [position, setPosition] = useState(null);
   const [driverProfile, setDriverProfile] = useState(null);
   const [driverBalance, setDriverBalance] = useState(null);
+  const [lastsVoyages, setLastsVoyages] = useState(null);
 
   const replyVoyageRequest = async (response) => {
     if (!voyageId) return;
@@ -364,6 +365,23 @@ export function DriverProvider({ children }) {
       });
   };
 
+  const getLastsVoyages = async () => {
+    const url = URL + "/voyage/driver/last";
+
+    await axios
+      .get(url, {
+        headers: {
+          token: user.accessToken,
+        },
+      })
+      .then((res) => {
+        setLastsVoyages(res.data);
+      })
+      .catch((err) => {
+        console.log("Error in gestLastVoyages: ", err);
+      });
+  };
+
   const clearDriver = () => {
     setVoyageId(null);
     setVoyageStatus(null);
@@ -400,6 +418,9 @@ export function DriverProvider({ children }) {
       editDriverProfile,
       suscribeVip,
       unsuscribeVip,
+      lastsVoyages,
+      setLastsVoyages,
+      getLastsVoyages,
     }),
     [
       voyageId,
@@ -430,6 +451,9 @@ export function DriverProvider({ children }) {
       editDriverProfile,
       suscribeVip,
       unsuscribeVip,
+      lastsVoyages,
+      setLastsVoyages,
+      getLastsVoyages,
     ]
   );
 

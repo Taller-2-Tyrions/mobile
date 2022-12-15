@@ -125,10 +125,11 @@ const DriversOptions = ({ drivers, setSelectedDriver }) => {
               </View>
             </View>
             <View style={styles.price}>
-              <Text style={styles.priceText}>
-                Precio estimado: ${item.prices.Standard.toFixed(4)}
-              </Text>
-              {item.prices.VIP && (
+              {!item.prices.VIP ? (
+                <Text style={styles.priceText}>
+                  Precio estimado: ${item.prices.Standard.toFixed(4)}
+                </Text>
+              ) : (
                 <Text style={[styles.priceText, { color: "#330BFF" }]}>
                   Precio VIP: ${item.prices.VIP.toFixed(4)}
                 </Text>

@@ -20,6 +20,8 @@ import RedirectDriver from "./Driver/RedirectDriver";
 import DriverForm from "./Driver/DriverForm";
 import HomeDriver from "./Driver/HomeDriver/HomeDriver";
 import VoyageDriver from "./Driver/VoyageDriver";
+import TripsPassenger from "./Passenger/TripsPassenger";
+import TripsDriver from "./Driver/TripsDriver";
 
 const Stack = createNativeStackNavigator();
 
@@ -40,6 +42,11 @@ const Navigation = () => {
                 <Stack.Screen name="PickDriver" component={PickDriver} />
                 <Stack.Screen name="SendRequest" component={SendRequest} />
                 <Stack.Screen name="WaitResponse" component={WaitResponse} />
+                <Stack.Screen
+                  name="TripsPassenger"
+                  component={TripsPassenger}
+                />
+                <Stack.Screen name="TripsDriver" component={TripsDriver} />
                 <Stack.Screen
                   name="PassengerVoyage"
                   component={PassengerVoyage}
