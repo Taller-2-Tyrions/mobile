@@ -15,7 +15,6 @@ import Wallet from "./Wallet";
 import Profile from "./Profile";
 import { useNavigation } from "@react-navigation/native";
 import usePassenger from "../usePassenger";
-import useUser from "../../useUser";
 
 // si llega acá es porque la última actividad fue de pasajero
 // sí o sí.

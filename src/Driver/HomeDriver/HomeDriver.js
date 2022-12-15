@@ -1,12 +1,26 @@
-import { StyleSheet, Text, View, Dimensions } from "react-native";
-import React, { useEffect, useState } from "react";
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  ScrollView,
+} from "react-native";
+import React, { useState, useEffect } from "react";
 import tw from "tailwind-react-native-classnames";
-import useDriver from "../useDriver";
+import { SafeAreaView } from "react-native-safe-area-context";
+import NavOptions from "./NavOptions";
+import LastTrips from "./LastTrips";
+import { Ionicons, Entypo } from "@expo/vector-icons";
+import Wallet from "./Wallet";
+import CarSettings from "./CarSettings";
 import { useNavigation } from "@react-navigation/native";
+import useDriver from "../useDriver";
 
 const HomeDriver = () => {
   const navigation = useNavigation();
-  const { status } = useDriver();
+  const { status, setDriverProfile, setDriverBalance } = useDriver();
+  const [walletVisible, setWalletVisible] = useState(false);
+  const [carVisible, setCarVisible] = useState(false);
 
   useEffect(() => {
     if (!status) {
@@ -14,20 +28,65 @@ const HomeDriver = () => {
     }
   }, [status]);
 
+  const onPressProfile = () => {
+    setDriverProfile(null);
+    setCarVisible(true);
+  };
+
+  const onPressWallet = () => {
+    setDriverBalance(null);
+    setWalletVisible(true);
+  };
+
   return (
-    <View style={tw`h-full w-full bg-blue-200`}>
-      <View
-        style={{
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100%",
-          width: "100%",
-        }}
-      >
-        <Text style={{ fontSize: 30 }}>Home</Text>
+    <SafeAreaView style={tw`bg-white h-full`}>
+      <ScrollView style={styles.container}>
+        <Title onPressProfile={onPressProfile} onPressWallet={onPressWallet} />
+        <NavOptions />
+        <LastTrips />
+        <Wallet
+          walletVisible={walletVisible}
+          setWalletVisible={setWalletVisible}
+        />
+        <CarSettings carVisible={carVisible} setCarVisible={setCarVisible} />
+      </ScrollView>
+    </SafeAreaView>
+  );
+};
+
+const Title = ({ onPressWallet, onPressProfile }) => {
+  return (
+    <View style={styles.titleContainer}>
+      <Text style={styles.titleText}>Bienvenido</Text>
+      <View style={styles.icons}>
+        <TouchableOpacity style={tw`mt-3`} onPress={onPressWallet}>
+          <Entypo name="wallet" size={30} color="black" />
+        </TouchableOpacity>
+
+        <TouchableOpacity style={tw`mt-3 ml-2`} onPress={onPressProfile}>
+          <Ionicons name="car-sport-sharp" size={30} color="black" />
+        </TouchableOpacity>
       </View>
     </View>
   );
 };
 
 export default HomeDriver;
+
+const styles = StyleSheet.create({
+  container: {
+    padding: 10,
+  },
+  titleContainer: {
+    flexDirection: "row",
+  },
+  titleText: {
+    fontFamily: "uber1",
+    fontSize: 40,
+  },
+  icons: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    width: 150,
+  },
+});

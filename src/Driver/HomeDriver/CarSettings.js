@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   Text,
@@ -7,69 +7,69 @@ import {
   TouchableOpacity,
   TextInput,
 } from "react-native";
+import tw from "tailwind-react-native-classnames";
 import { AntDesign, FontAwesome } from "@expo/vector-icons";
-import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
-import PlaceRow from "../../Components/PlaceRow";
-import usePassenger from "../usePassenger";
-import useUser from "../../useUser";
+import useDriver from "../useDriver";
 
-const Profile = ({ profileVisible, setProfileVisible }) => {
-  const { editPassengerProfile, passengerProfile, getPassengerProfile } =
-    usePassenger();
-  const [name, setName] = useState(null);
-  const [lastName, setLastName] = useState(null);
-  const [defaultAddress, setDefaultAddress] = useState(null);
+const CarSettings = ({ carVisible, setCarVisible }) => {
+  const { driverProfile, editDriverProfile, getDriverProfile } = useDriver();
+  const [model, setModel] = useState(null);
+  const [year, setYear] = useState(null);
+  const [plaque, setPlaque] = useState(null);
+  const [capacity, setCapacity] = useState(null);
 
-  useEffect(() => {
-    if (!passengerProfile) {
-      const timer = setInterval(() => getPassengerProfile(), 2000);
-      return () => clearInterval(timer);
-    } else {
-      setName(passengerProfile.name);
-      setLastName(passengerProfile.lastName);
-      setDefaultAddress(passengerProfile.defaultAddress);
-    }
-  }, [passengerProfile]);
+  const isVip = false;
 
   const onClose = () => {
-    setProfileVisible(!profileVisible);
+    setCarVisible(!carVisible);
     if (
-      name === passengerProfile.name &&
-      lastName === passengerProfile.lastName &&
-      defaultAddress === passengerProfile.defaultAddress
+      model === driverProfile.car.model &&
+      year === driverProfile.car.year &&
+      plaque === driverProfile.car.plaque &&
+      capacity === driverProfile.car.capacity
     ) {
       return;
     }
 
     const data = {
-      name: name,
-      lastname: lastName,
-      location: defaultAddress.location,
-      lat: defaultAddress.lat,
-      long: defaultAddress.long,
+      model: model,
+      year: year,
+      plaque: plaque,
+      capacity: capacity,
     };
 
-    editPassengerProfile(data);
+    editDriverProfile(data);
   };
 
-  const isVip = false;
+  useEffect(() => {
+    if (!driverProfile) {
+      const timer = setInterval(() => getDriverProfile(), 2000);
+      return () => clearInterval(timer);
+    } else {
+      setModel(driverProfile.car.model);
+      setYear(driverProfile.car.year);
+      setPlaque(driverProfile.car.plaque);
+      setCapacity(driverProfile.car.capacity);
+    }
+  }, [driverProfile]);
+
   return (
     <View>
       <Modal
         animationType="fade"
         transparent={true}
-        visible={profileVisible}
+        visible={carVisible}
         onRequestClose={() => {
           Alert.alert("Modal has been closed.");
-          setProfileVisible(!profileVisible);
+          setCarVisible(!carVisible);
         }}
       >
-        {passengerProfile ? (
+        {driverProfile ? (
           <View style={styles.container}>
             <View style={styles.modalView}>
               <View style={styles.modalContainerTop}>
                 <View style={{ width: "50%" }}>
-                  <Text style={styles.modalText}>Tu perfil</Text>
+                  <Text style={styles.modalText}>Datos de tu vehículo</Text>
                 </View>
                 <View style={styles.closeButton}>
                   <TouchableOpacity style={{ padding: 5 }} onPress={onClose}>
@@ -78,18 +78,28 @@ const Profile = ({ profileVisible, setProfileVisible }) => {
                 </View>
               </View>
               <View style={styles.modalContainerButton}>
-                <TextProfile text={name} setText={setName} />
-                <TextProfile text={lastName} setText={setLastName} />
-                <DirectionProfile
-                  address={defaultAddress}
-                  setAddress={setDefaultAddress}
+                <TextCarSettings
+                  title={"Modelo"}
+                  text={model}
+                  setText={setModel}
+                />
+                <TextCarSettings title={"Año"} text={year} setText={setYear} />
+                <TextCarSettings
+                  title={"Placa"}
+                  text={plaque}
+                  setText={setPlaque}
+                />
+                <TextCarSettings
+                  title={"Capacidad"}
+                  text={capacity}
+                  setText={setCapacity}
                 />
                 {isVip ? (
                   <View
                     style={{ justifyContent: "center", alignItems: "center" }}
                   >
                     <Text style={[styles.vipText, { color: "black" }]}>
-                      Sos pasajero vip
+                      Sos chófer vip
                     </Text>
                   </View>
                 ) : (
@@ -131,12 +141,15 @@ const Profile = ({ profileVisible, setProfileVisible }) => {
   );
 };
 
-const TextProfile = ({ text, setText }) => {
+const TextCarSettings = ({ title, text, setText }) => {
   const [edit, setEdit] = useState(false);
 
   return (
     <View style={{ flexDirection: "row" }}>
-      <View style={{ width: "80%" }}>
+      <View style={{ width: "40%" }}>
+        <Text style={styles.profileText}>{title}</Text>
+      </View>
+      <View style={{ width: "40%" }}>
         {edit ? (
           <TextInput
             style={styles.inputText}
@@ -160,64 +173,7 @@ const TextProfile = ({ text, setText }) => {
   );
 };
 
-const DirectionProfile = ({ address, setAddress }) => {
-  const [edit, setEdit] = useState(false);
-
-  if (!address) return;
-
-  return (
-    <View style={{ flexDirection: "row" }}>
-      <View style={{ width: "80%" }}>
-        {edit ? (
-          <GooglePlacesAutocomplete
-            placeholder="Ingresá una ubicación favorita"
-            onPress={(data, details = null) => {
-              var description;
-              if (data.description) {
-                description = data.description;
-              } else {
-                description = data.vicinity;
-              }
-              setAddress({
-                location: description,
-                lat: details.geometry.location.lat,
-                long: details.geometry.location.lng,
-              });
-            }}
-            suppressDefaultStyles
-            enablePoweredByContainer={false}
-            styles={{
-              textInput: styles.inputText,
-              listView: styles.listView,
-              separator: styles.separator,
-            }}
-            fetchDetails
-            query={{
-              key: "AIzaSyCeWGHDDYw0J5rRmoQSwJGlmfO6tlmiutc",
-              language: "es",
-              components: "country:ar",
-            }}
-            renderRow={(data) => <PlaceRow data={data} />}
-            renderDescription={(data) => data.description || data.vicinity}
-          />
-        ) : (
-          <Text style={styles.profileText}>{address.location}</Text>
-        )}
-      </View>
-      <View style={[styles.editButton]}>
-        <TouchableOpacity onPress={() => setEdit(!edit)}>
-          {edit ? (
-            <AntDesign name="checkcircle" size={24} color="black" />
-          ) : (
-            <FontAwesome name="pencil" size={24} color="black" />
-          )}
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
-};
-
-export default Profile;
+export default CarSettings;
 
 const styles = StyleSheet.create({
   container: {

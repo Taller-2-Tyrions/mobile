@@ -19,6 +19,7 @@ export function DriverProvider({ children }) {
   const [status, setStatus] = useState(null);
   const [position, setPosition] = useState(null);
   const [driverProfile, setDriverProfile] = useState(null);
+  const [driverBalance, setDriverBalance] = useState(null);
 
   const replyVoyageRequest = async (response) => {
     if (!voyageId) return;
@@ -178,6 +179,23 @@ export function DriverProvider({ children }) {
     });
   };
 
+  const getDriverProfile = async () => {
+    const url = URL + `/users/driver/${user.id}`;
+
+    await axios
+      .get(url, {
+        headers: {
+          token: user.accessToken,
+        },
+      })
+      .then((res) => {
+        setDriverProfile(res.data);
+      })
+      .catch((err) => {
+        console.log("Error in getDriverProfile: ", err);
+      });
+  };
+
   const driverOnline = async () => {
     if (!position) return;
     const url = URL + "/voyage/driver/searching";
@@ -255,6 +273,51 @@ export function DriverProvider({ children }) {
       });
   };
 
+  const getDriverBalance = async () => {
+    const url = URL + "/users/driver/balance";
+
+    await axios
+      .get(url, {
+        headers: {
+          token: user.accessToken,
+        },
+      })
+      .then((res) => {
+        setDriverBalance(res.data);
+      })
+      .catch((err) => {
+        console.log("Error in getDriverBalance: ", err);
+      });
+  };
+
+  const editDriverProfile = async (data) => {
+    const url = URL + `/users/driver/${user.id}`;
+
+    await axios
+      .put(
+        url,
+        {
+          name: driverProfile.name,
+          last_name: driverProfile.last_name,
+          roles: ["Driver", "Passenger"],
+          car: {
+            model: data.model,
+            year: data.year,
+            plaque: data.plaque,
+            capacity: data.capacity,
+          },
+        },
+        {
+          headers: {
+            token: user.accessToken,
+          },
+        }
+      )
+      .catch((err) => {
+        console.log("Error in editDriverProfile: ", err);
+      });
+  };
+
   const clearDriver = () => {
     setVoyageId(null);
     setVoyageStatus(null);
@@ -283,6 +346,12 @@ export function DriverProvider({ children }) {
       driverProfile,
       setDriverProfile,
       completeDriverForm,
+      getDriverProfile,
+      setDriverProfile,
+      driverBalance,
+      setDriverBalance,
+      getDriverBalance,
+      editDriverProfile,
     }),
     [
       voyageId,
@@ -305,6 +374,12 @@ export function DriverProvider({ children }) {
       driverProfile,
       setDriverProfile,
       completeDriverForm,
+      getDriverProfile,
+      setDriverProfile,
+      driverBalance,
+      setDriverBalance,
+      getDriverBalance,
+      editDriverProfile,
     ]
   );
 
