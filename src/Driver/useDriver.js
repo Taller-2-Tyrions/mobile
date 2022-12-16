@@ -382,6 +382,30 @@ export function DriverProvider({ children }) {
       });
   };
 
+  const addReview = async (voyage_id, data) => {
+    const url = URL + `/voyage/driver/review/${voyage_id}`;
+
+    await axios
+      .post(
+        url,
+        {
+          score: data.rating,
+          comment: data.comentary,
+        },
+        {
+          headers: {
+            token: user.accessToken,
+          },
+        }
+      )
+      .then((res) => {
+        console.log("Review agregada.");
+      })
+      .catch((err) => {
+        console.log("Error in addReview: ", err);
+      });
+  };
+
   const clearDriver = () => {
     setVoyageId(null);
     setVoyageStatus(null);
@@ -421,6 +445,7 @@ export function DriverProvider({ children }) {
       lastsVoyages,
       setLastsVoyages,
       getLastsVoyages,
+      addReview,
     }),
     [
       voyageId,
@@ -454,6 +479,7 @@ export function DriverProvider({ children }) {
       lastsVoyages,
       setLastsVoyages,
       getLastsVoyages,
+      addReview,
     ]
   );
 

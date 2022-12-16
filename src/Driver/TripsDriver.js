@@ -14,10 +14,13 @@ import { AntDesign } from "@expo/vector-icons";
 import { Rating } from "react-native-ratings";
 import { useNavigation } from "@react-navigation/native";
 import useDriver from "./useDriver";
+import { CustomInput } from "../Home/Login";
+import { useForm } from "react-hook-form";
 
 const TripsDriver = () => {
   const navigation = useNavigation();
-  const { getLastsVoyages, lastsVoyages, setLastsVoyages } = useDriver();
+  const { getLastsVoyages, lastsVoyages, setLastsVoyages, addReview } =
+    useDriver();
   const [calificationVisible, setCalificationVisible] = useState(false);
   const [complaintVisible, setComplaintVisible] = useState(false);
 
@@ -50,7 +53,7 @@ const TripsDriver = () => {
         <Title
           goBack={() => {
             setLastsVoyages(null);
-            navigation.navigate("HomeDriver");
+            navigation.navigate("HomePassenger");
           }}
         />
         <View
@@ -77,65 +80,51 @@ const TripsDriver = () => {
         <View style={[tw`pt-5 w-full`, { height: "90%" }]}>
           <FlatList
             data={lastsVoyages}
-            keyExtractor={(item) => item.voyage_id}
+            keyExtractor={(item) => item.id}
             renderItem={({ item }) =>
               item.price > 0 && (
-                <View style={{ alignItems: "center" }}>
-                  <View style={[styles.trip]}>
-                    <Text style={styles.text}>Conductor: {item.driver_id}</Text>
-                    <Text style={styles.text}>Precio: ${item.price}</Text>
-                    <Text style={styles.text}>
-                      Fecha: {item.start_time.split("T")[0]}
-                    </Text>
-                    <Text style={styles.text}>
-                      Hora: {item.start_time.split("T")[1].split(".")[0]}
-                    </Text>
+                <>
+                  <View style={{ alignItems: "center" }}>
+                    <View style={[styles.trip]}>
+                      <Text style={[styles.text, { fontFamily: "uber1" }]}>
+                        {item.passenger_id}
+                      </Text>
+                      <Text style={styles.text}>Precio: ${item.price}</Text>
+                      <Text style={styles.text}>
+                        Fecha: {item.start_time.split("T")[0]}
+                      </Text>
+                      <Text style={styles.text}>
+                        Hora: {item.start_time.split("T")[1].split(".")[0]}
+                      </Text>
 
-                    <View style={tw`mt-5 flex-row justify-center`}>
-                      <TouchableOpacity
-                        style={[
-                          tw`mr-3`,
-                          {
-                            borderRadius: 25,
-                            backgroundColor: "#1495ff",
-                            padding: 15,
-                          },
-                        ]}
-                        onPress={() => setCalificationVisible(true)}
-                      >
-                        <Text style={styles.text}>Calificar</Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        style={[
-                          tw`ml-3`,
-                          {
-                            borderRadius: 25,
-                            padding: 15,
-                            borderWidth: 1,
-                            borderColor: "gray",
-                          },
-                        ]}
-                        onPress={() => setComplaintVisible(true)}
-                      >
-                        <Text style={[styles.text, { color: "red" }]}>
-                          Denunciar
-                        </Text>
-                      </TouchableOpacity>
+                      <View style={tw`mt-5 flex-row justify-center`}>
+                        <TouchableOpacity
+                          style={[
+                            tw`mr-3`,
+                            {
+                              borderRadius: 25,
+                              backgroundColor: "#1495ff",
+                              padding: 15,
+                            },
+                          ]}
+                          onPress={() => setCalificationVisible(true)}
+                        >
+                          <Text style={styles.buttonText}>Calificar</Text>
+                        </TouchableOpacity>
+                      </View>
                     </View>
                   </View>
-                </View>
+                  <Calification
+                    calificationVisible={calificationVisible}
+                    setCalificationVisible={setCalificationVisible}
+                    addReview={addReview}
+                    voyage_id={item.id}
+                  />
+                </>
               )
             }
           />
         </View>
-        <Calification
-          calificationVisible={calificationVisible}
-          setCalificationVisible={setCalificationVisible}
-        />
-        <Complaint
-          complaintVisible={complaintVisible}
-          setComplaintVisible={setComplaintVisible}
-        />
       </View>
     );
   }
@@ -161,9 +150,27 @@ const Title = ({ goBack }) => {
   );
 };
 
-const Calification = ({ calificationVisible, setCalificationVisible }) => {
+const Calification = ({
+  calificationVisible,
+  setCalificationVisible,
+  addReview,
+  voyage_id,
+}) => {
+  const { control, handleSubmit } = useForm();
+  const [rating, setRating] = useState(0);
+
   const ratingCompleted = (rating) => {
-    console.log("Rating: ", rating);
+    setRating(rating);
+  };
+
+  const onSubmit = (data) => {
+    const data_aux = {
+      rating: rating,
+      comentary: data.comentary,
+    };
+    addReview(voyage_id, data_aux);
+    setCalificationVisible(false);
+    setRating(3.5);
   };
 
   return (
@@ -196,12 +203,22 @@ const Calification = ({ calificationVisible, setCalificationVisible }) => {
             </View>
             <View style={modalStyles.modalContainerButton}>
               <Rating onFinishRating={ratingCompleted} />
-              <InputText placeholder={"Comentario"} />
+              <CustomInput
+                name="comentary"
+                placeholder="Comentario"
+                control={control}
+                rules={{
+                  required: "(*) Campo obligatorio",
+                }}
+                textStyle={modalStyles.inputText}
+                containerStyle={tw`mt-5`}
+              />
               <TouchableOpacity
                 style={{
                   marginTop: 10,
                   left: Dimensions.get("window").width / 2 - 60,
                 }}
+                onPress={handleSubmit(onSubmit)}
               >
                 <AntDesign
                   style={tw`p-2 bg-black rounded-full w-10 mt-4`}
@@ -214,65 +231,6 @@ const Calification = ({ calificationVisible, setCalificationVisible }) => {
           </View>
         </View>
       </Modal>
-    </View>
-  );
-};
-
-const Complaint = ({ complaintVisible, setComplaintVisible }) => {
-  return (
-    <View>
-      <Modal
-        animationType="fade"
-        transparent={true}
-        visible={complaintVisible}
-        onRequestClose={() => {
-          Alert.alert("Modal has been closed.");
-          setProfileVisible(!complaintVisible);
-        }}
-      >
-        <View style={modalStyles.container}>
-          <View style={modalStyles.modalView}>
-            <View style={modalStyles.modalContainerTop}>
-              <View style={{ width: "50%" }}>
-                <Text style={modalStyles.modalText}>Denunciar conductor</Text>
-              </View>
-              <View style={modalStyles.closeButton}>
-                <TouchableOpacity
-                  style={{ padding: 5 }}
-                  onPress={() => setComplaintVisible(false)}
-                >
-                  <AntDesign name="closecircleo" size={24} color="black" />
-                </TouchableOpacity>
-              </View>
-            </View>
-            <View style={modalStyles.modalContainerButton}>
-              <InputText placeholder={"Tipo de denuncia"} />
-              <InputText placeholder={"Descripción"} />
-              <TouchableOpacity
-                style={{
-                  marginTop: 10,
-                  left: Dimensions.get("window").width / 2 - 60,
-                }}
-              >
-                <AntDesign
-                  style={tw`p-2 bg-black rounded-full w-10 mt-4`}
-                  name="arrowright"
-                  size={24}
-                  color="white"
-                />
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
-    </View>
-  );
-};
-
-const InputText = ({ placeholder }) => {
-  return (
-    <View style={tw`mt-5`}>
-      <TextInput placeholder={placeholder} style={modalStyles.inputText} />
     </View>
   );
 };
@@ -302,6 +260,11 @@ const styles = StyleSheet.create({
   text: {
     fontFamily: "uber2",
     fontSize: 20,
+  },
+  buttonText: {
+    fontFamily: "uber1",
+    fontSize: 20,
+    color: "white",
   },
   map: {
     flex: 1,
