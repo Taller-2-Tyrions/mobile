@@ -204,9 +204,26 @@ const Reviews = ({ reviews }) => {
     return (
       <FlatList
         data={reviews}
-        keyExtractor={(item) => item.id}
-        horizontal
-        renderItem={({ item }) => <Text>{item}</Text>}
+        keyExtractor={(item) => {
+          return item.reviews.comment + item.reviews.score;
+        }}
+        renderItem={({ item }) => (
+          <View style={{ alignItems: "center" }}>
+            <View style={[styles.trip]}>
+              <Text style={{ fontFamily: "uber2", fontSize: 24 }}>
+                "{item.reviews.comment}"
+              </Text>
+              <View style={tw`flex-row mt-2`}>
+                <Text style={{ fontFamily: "uber2" }}>
+                  Puntuación: {item.reviews.score}
+                </Text>
+                <View style={{ justifyContent: "center", marginLeft: 2 }}>
+                  <AntDesign name="star" size={16} color="#f09f35" />
+                </View>
+              </View>
+            </View>
+          </View>
+        )}
       />
     );
   } else {
@@ -262,6 +279,21 @@ const styles = StyleSheet.create({
       height: 2,
     },
     elevation: 5,
+  },
+  trip: {
+    backgroundColor: "white",
+    borderRadius: 20,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+    width: "99%",
+    padding: 15,
+    marginVertical: 20,
   },
   carInfo: {
     flexDirection: "row",

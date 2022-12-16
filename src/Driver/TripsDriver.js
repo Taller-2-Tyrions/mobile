@@ -130,7 +130,7 @@ const TripsDriver = () => {
   }
 };
 
-const Title = ({ goBack }) => {
+export const Title = ({ goBack, text = "Tus últimos viajes" }) => {
   return (
     <View style={tw`flex-row`}>
       <View style={{ width: "20%", justifyContent: "center" }}>
@@ -144,7 +144,7 @@ const Title = ({ goBack }) => {
           justifyContent: "center",
         }}
       >
-        <Text style={styles.titleText}>Tus últimos viajes</Text>
+        <Text style={styles.titleText}>{text}</Text>
       </View>
     </View>
   );

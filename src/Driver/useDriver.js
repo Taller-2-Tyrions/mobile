@@ -21,6 +21,7 @@ export function DriverProvider({ children }) {
   const [driverProfile, setDriverProfile] = useState(null);
   const [driverBalance, setDriverBalance] = useState(null);
   const [lastsVoyages, setLastsVoyages] = useState(null);
+  const [reviews, setReviews] = useState(null);
 
   const replyVoyageRequest = async (response) => {
     if (!voyageId) return;
@@ -446,6 +447,8 @@ export function DriverProvider({ children }) {
       setLastsVoyages,
       getLastsVoyages,
       addReview,
+      reviews,
+      setReviews,
     }),
     [
       voyageId,
@@ -480,6 +483,8 @@ export function DriverProvider({ children }) {
       setLastsVoyages,
       getLastsVoyages,
       addReview,
+      reviews,
+      setReviews,
     ]
   );
 

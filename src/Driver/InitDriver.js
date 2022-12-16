@@ -6,8 +6,14 @@ import useDriver from "./useDriver";
 
 const InitDriver = () => {
   const navigation = useNavigation();
-  const { status, getStatusDriver, setVoyageId, driverOnline, lastsVoyages } =
-    useDriver();
+  const {
+    status,
+    getStatusDriver,
+    setVoyageId,
+    driverOnline,
+    lastsVoyages,
+    reviews,
+  } = useDriver();
 
   useEffect(() => {
     if (status?.Rol === "Passenger") {
@@ -31,6 +37,9 @@ const InitDriver = () => {
   useEffect(() => {
     if (lastsVoyages) {
       navigation.navigate("TripsDriver");
+      return;
+    } else if (reviews) {
+      navigation.navigate("CalificationsDriver");
       return;
     }
     if (!status) return;

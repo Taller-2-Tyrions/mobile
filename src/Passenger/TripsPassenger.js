@@ -158,7 +158,7 @@ const TripsPassenger = () => {
   }
 };
 
-const Title = ({ goBack }) => {
+export const Title = ({ goBack }) => {
   return (
     <View style={tw`flex-row`}>
       <View style={{ width: "20%", justifyContent: "center" }}>
