@@ -11,16 +11,25 @@ import {
 import tw from "tailwind-react-native-classnames";
 import { AntDesign } from "@expo/vector-icons";
 import useDriver from "../useDriver";
+import { CustomInput } from "../../Home/Login";
+import { useForm } from "react-hook-form";
 
 const Wallet = ({ walletVisible, setWalletVisible }) => {
-  const { driverBalance, getDriverBalance } = useDriver();
+  const { driverBalance, getDriverBalance, widthdraw } = useDriver();
+  const { control, handleSubmit } = useForm();
 
   useEffect(() => {
     if (!driverBalance && walletVisible) {
+      console.log("Obteniendo balance");
       const timer = setInterval(() => getDriverBalance(), 2000);
       return () => clearInterval(timer);
     }
-  }, [driverBalance]);
+  }, [driverBalance, walletVisible]);
+
+  const onWidthdraw = (data) => {
+    widthdraw(data);
+    setWalletVisible(false);
+  };
 
   return (
     <View>
@@ -53,13 +62,32 @@ const Wallet = ({ walletVisible, setWalletVisible }) => {
                 <Text style={styles.balanceText}>
                   Balance: ${driverBalance}
                 </Text>
-                <InputText placeholder={"Id para extracción"} />
-                <InputText placeholder={"Monto de extracción"} />
+                <CustomInput
+                  name="address"
+                  placeholder="Id para extracción"
+                  control={control}
+                  rules={{
+                    required: "(*) Campo obligatorio",
+                  }}
+                  textStyle={styles.inputText}
+                  containerStyle={{ marginBottom: 20 }}
+                />
+                <CustomInput
+                  name="amount"
+                  placeholder="Monto de extracción"
+                  control={control}
+                  rules={{
+                    required: "(*) Campo obligatorio",
+                  }}
+                  textStyle={styles.inputText}
+                  containerStyle={{ marginBottom: 20 }}
+                />
                 <TouchableOpacity
                   style={{
                     marginTop: 10,
                     left: Dimensions.get("window").width / 2 - 60,
                   }}
+                  onPress={handleSubmit(onWidthdraw)}
                 >
                   <AntDesign
                     style={tw`p-2 bg-black rounded-full w-10 mt-4`}
@@ -132,6 +160,7 @@ const styles = StyleSheet.create({
     elevation: 5,
     position: "absolute",
     top: 100,
+    width: "90%",
   },
   modalContainerTop: {
     flexDirection: "row",

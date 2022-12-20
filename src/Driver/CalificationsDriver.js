@@ -64,7 +64,9 @@ const CalificationsDriver = () => {
             ]}
           >
             <Text style={{ fontSize: 30, fontFamily: "uber1" }}>
-              {driverProfile.calification}
+              {driverProfile.calification !== "No Calification"
+                ? driverProfile.calification
+                : "0 (sin calificaciones)"}
             </Text>
             <View style={{ justifyContent: "center", marginLeft: 2 }}>
               <AntDesign name="star" size={30} color="#f09f35" />

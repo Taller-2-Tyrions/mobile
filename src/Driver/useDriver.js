@@ -285,7 +285,9 @@ export function DriverProvider({ children }) {
         },
       })
       .then((res) => {
-        setDriverBalance(res.data);
+        const { balance } = res.data;
+        console.log("Obtenido: ", balance);
+        setDriverBalance(balance);
       })
       .catch((err) => {
         console.log("Error in getDriverBalance: ", err);
@@ -407,6 +409,27 @@ export function DriverProvider({ children }) {
       });
   };
 
+  const widthdraw = async (data) => {
+    const url = URL + "/users/driver/withdraw";
+
+    await axios
+      .post(
+        url,
+        {
+          id_user: user.id,
+          receiver_address: data.address,
+          amount_in_ethers: data.amount,
+        },
+        {
+          headers: {
+            token: user.accessToken,
+          },
+        }
+      )
+      .then((res) => console.log("Transferencia completada"))
+      .catch((err) => console.log("Error in widthdraw: ", err));
+  };
+
   const clearDriver = () => {
     setVoyageId(null);
     setVoyageStatus(null);
@@ -449,6 +472,7 @@ export function DriverProvider({ children }) {
       addReview,
       reviews,
       setReviews,
+      widthdraw,
     }),
     [
       voyageId,
@@ -485,6 +509,7 @@ export function DriverProvider({ children }) {
       addReview,
       reviews,
       setReviews,
+      widthdraw,
     ]
   );
 

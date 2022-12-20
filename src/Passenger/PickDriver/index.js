@@ -159,7 +159,7 @@ const DriverInfo = ({ driver, selectedDriver }) => {
               <Text>
                 {driver.calification !== "No Calification"
                   ? driver.calification
-                  : 0}
+                  : "0"}
               </Text>
               <View style={{ marginTop: 3 }}>
                 <AntDesign name="star" size={16} color="#f09f35" />

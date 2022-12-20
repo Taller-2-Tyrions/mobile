@@ -38,7 +38,7 @@ const PassengerVoyage = () => {
 
   const goHome = () => {
     if (voyageStatus) clearVoyage();
-    navigation.navigate("SendRequest");
+    navigation.navigate("MapScreen");
   };
 
   const onCancel = () => {

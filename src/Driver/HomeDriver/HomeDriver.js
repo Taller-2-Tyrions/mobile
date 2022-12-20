@@ -54,7 +54,7 @@ const HomeDriver = () => {
   );
 };
 
-const Title = ({ onPressWallet, onPressProfile }) => {
+const Title = ({ onPressProfile, onPressWallet }) => {
   return (
     <View style={styles.titleContainer}>
       <Text style={styles.titleText}>Bienvenido</Text>

@@ -55,9 +55,11 @@ const VoyageDriver = () => {
   };
   const onDecline = () => {
     replyVoyageRequest(false);
+    goHome();
   };
   const onCancel = () => {
     cancelVoyage();
+    goHome();
   };
   const onFinish = () => {
     endVoyage();

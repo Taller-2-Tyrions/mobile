@@ -51,7 +51,7 @@ const SendRequest = () => {
       const timer = setInterval(() => getDriverProfile(driver), 2000);
       return () => clearInterval(timer);
     }
-  }, [driverProfile]);
+  }, [driverProfile, screen, driver]);
 
   useEffect(() => {
     if (voyageStatus && voyageStatus.status !== "WAITING") return;
